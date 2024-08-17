@@ -6,6 +6,8 @@ import { api } from "../../convex/_generated/api";
 import { ModeToggle } from "@afs/components/ui/mode-toggle";
 import MaxWidthWrapper from "@afs/components/ui/MaxWithWrapper";
 import Header from "./Header";
+import { Document } from "@afs/components/custom/DocCard";
+import { UploadDoc } from "@afs/components/custom/UploadFiele";
 
 function App() {
 
@@ -17,16 +19,20 @@ function App() {
     <MaxWidthWrapper>
     <Header />
     <main className="flex min-h-screen flex-col items-center gap-14 p-24">
-      
+    <div className="flex justify-end w-full">
       <Authenticated>
-        <Button  onClick={() => addDoc({text : "let's Goooo afs"})}>add doc</Button>
+        <UploadDoc />
       </Authenticated>
+    </div>
+      
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 ">
       {
         Docs?.map((doc : any) => {
           // console.log(doc, Docs)
-          return <p key={doc._id}>{doc.name}</p>
+          return <Document key={doc._id} doc={doc} />
         })
       }
+      </div>
     </main>
     </MaxWidthWrapper>
   );
