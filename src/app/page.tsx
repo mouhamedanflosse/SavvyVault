@@ -17,7 +17,6 @@ function App() {
   
   return (
     <MaxWidthWrapper>
-    <Header />
     <main className="flex min-h-screen flex-col items-center gap-14 p-24">
     <div className="flex justify-end w-full">
       <Authenticated>

@@ -26,15 +26,23 @@ import {
   FormLabel,
   FormMessage,
 } from "@afs/components/ui/form";
+import { useState } from "react";
+import Afs_Button from "./Loading-button";
 
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "name must be at least 2 characters.",
   }),
+  file : z.instanceof(File,{
+    message : "choose a file"
+  })
 });
 
 export function UploadDoc() {
+    const [isopen ,setIsOpen] = useState(false)
+
   const addDoc = useMutation(api.document.insertDocument);
+  const getURL = useMutation(api.document.generateUploadUrl);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -43,12 +51,24 @@ export function UploadDoc() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+      const URL = await getURL()
+      const result = await fetch(URL, {
+        method: "POST",
+        headers: { "Content-Type": values.file.type },
+        body: values.file,
+      });
+      const { storageId } = await result.json();
+
+      await addDoc({name : values.name, fileId : storageId})
+
+    form.reset({name : ""})
+    setIsOpen(false)
   }
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={setIsOpen} open={isopen}>
       <DialogTrigger asChild>
         <Button>upload doc</Button>
       </DialogTrigger>
@@ -56,21 +76,9 @@ export function UploadDoc() {
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+          file description will generated automatically
           </DialogDescription>
         </DialogHeader>
-        {/* <Form {...form}>
-
-          <div className=" flex flex-col gap-3">
-            <Label htmlFor="name" >
-              Name
-            </Label>
-            <Input
-              id="name"
-              defaultValue="Pedro Duarte"
-              />
-          </div>
-        </Form> */}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
@@ -88,8 +96,26 @@ export function UploadDoc() {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="file"
+              render={({ field : {value , onChange,...fieldProps}}) => (
+                <FormItem>
+                  <FormLabel>file</FormLabel>
+                  <FormControl>
+                    <Input type="file" {...fieldProps} onChange={(event) => {
+                        const file = event.target.files?.[0]
+                        onChange(file)
+                    }}/>
+                  </FormControl>
+                  <FormDescription>
+                    <FormMessage />
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
             <DialogFooter>
-              <Button type="submit">submit</Button>
+                <Afs_Button label="submit" loading={form.formState.isSubmitting}/>
             </DialogFooter>
           </form>
         </Form>

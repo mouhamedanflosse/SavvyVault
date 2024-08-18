@@ -1,6 +1,7 @@
-import * as React from "react"
+import * as React from "react";
 
-import { Button } from "@afs/components/ui/button"
+import { Button } from "@afs/components/ui/button";
+import { Eye } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -8,10 +9,11 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@afs/components/ui/card"
-import {Doc } from'../../../convex/_generated/dataModel'
+} from "@afs/components/ui/card";
+import { Doc } from "../../../convex/_generated/dataModel";
+import Link from "next/link";
 
-export function Document({doc} : {doc : Doc<'docs'>}) {
+export function Document({ doc }: { doc: Doc<"docs"> }) {
   return (
     <Card className="md:min-w-[200px] min-w-[280px]">
       <CardHeader>
@@ -22,8 +24,17 @@ export function Document({doc} : {doc : Doc<'docs'>}) {
       </CardContent>
       <CardFooter className="flex justify-center">
         {/* <Button variant="outline">Cancel</Button> */}
-        <Button className="w-full" variant="secondary">View</Button>
+        <Button
+          asChild
+          className="w-full flex justify-center gap-2"
+          variant="secondary"
+        >
+          <Link href={`/document/${doc._id}`}>
+            <Eye className="text-base" />
+            <span className="text-base">view</span>
+          </Link>
+        </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }
