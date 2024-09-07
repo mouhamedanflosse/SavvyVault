@@ -1,11 +1,27 @@
-import { mutation, query } from "./_generated/server";
+import { action, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { ConvexError } from "convex/values";
+import {api} from './_generated/api'
+import OpenAI from 'openai';
 
 
 export const generateUploadUrl = mutation(async (ctx) => {
   return await ctx.storage.generateUploadUrl();
 });
+
+
+// openai main fn
+const client = new OpenAI({
+  apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
+});
+
+async function main() {
+  const params: OpenAI.Chat.ChatCompletionCreateParams = {
+    messages: [{ role: 'user', content: 'Say this is a test' }],
+    model: 'gpt-3.5-turbo',
+  };
+  const chatCompletion: OpenAI.Chat.ChatCompletion = await client.chat.completions.create(params);
+}
 
 export const insertDocument = mutation({
   args: { name: v.string() , fileId : v.id("_storage")},
@@ -22,6 +38,31 @@ export const insertDocument = mutation({
     return newDoc;
   },
 });
+
+// ask questions 
+export const askQuestion = action({
+  args: {
+    question : v.string(),
+    docId : v.id("docs")
+  },
+  handler: async (ctx, args) => {
+    const user = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
+    if (!user) {
+      throw new ConvexError("Not authenticated");
+    }
+
+    const doc = await ctx.runQuery(api.document.getDocument, {
+      docId : args.docId
+    })
+
+    if (!doc) {
+      throw new ConvexError("Document not found");
+    }
+
+
+
+  },
+})
 
 export const getDocuments = query({
   args: {},

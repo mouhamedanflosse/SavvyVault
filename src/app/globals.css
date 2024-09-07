@@ -78,12 +78,24 @@ body { -ms-overflow-style: none; }
 
 /* -------------------------- custom layout */
 /* hide scrollbar but allow scrolling */
-.iframe > *{
-  -ms-overflow-style: none; /* for Internet Explorer, Edge */
-  scrollbar-width: 0; /* for Firefox */
+.iframe{
+  -ms-overflow-style: none; 
+  scrollbar-width: 0; 
   overflow-y: hidden;
   height: fit-content;
 }
-.iframe::-webkit-scrollbar > *{
-  display: none; /* for Chrome, Safari, and Opera */
+.iframe::-webkit-scrollbar{
+  display: none; 
+}
+
+iframe > html {
+  overflow: hidden !important;
+  height: auto !important; /* Ensure the wrapper grows with its content */
+  -ms-overflow-style: none  !important; 
+  scrollbar-width: 0  !important; 
+  overflow-y: hidden !important;
+  height: fit-content  !important;
+}
+iframe > html::-webkit-scrollbar {
+  display: none !important; 
 }
