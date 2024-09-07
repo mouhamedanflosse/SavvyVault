@@ -33,13 +33,13 @@ const formSchema = z.object({
   name: z.string().min(2, {
     message: "name must be at least 2 characters.",
   }),
-  file : z.instanceof(File,{
-    message : "choose a file"
-  })
+  file: z.instanceof(File, {
+    message: "choose a file",
+  }),
 });
 
 export function UploadDoc() {
-    const [isopen ,setIsOpen] = useState(false)
+  const [isopen, setIsOpen] = useState(false);
 
   const addDoc = useMutation(api.document.insertDocument);
   const getURL = useMutation(api.document.generateUploadUrl);
@@ -51,32 +51,31 @@ export function UploadDoc() {
     },
   });
 
-  
   async function onSubmit(values: z.infer<typeof formSchema>) {
-      const URL = await getURL()
-      const result = await fetch(URL, {
-        method: "POST",
-        headers: { "Content-Type": values.file.type },
-        body: values.file,
-      });
-      const { storageId } = await result.json();
+    const URL = await getURL();
+    const result = await fetch(URL, {
+      method: "POST",
+      headers: { "Content-Type": values.file.type },
+      body: values.file,
+    });
+    const { storageId } = await result.json();
 
-      await addDoc({name : values.name, fileId : storageId})
+    await addDoc({ name: values.name, fileId: storageId });
 
-    form.reset({name : ""})
-    setIsOpen(false)
+    form.reset({ name: "" });
+    setIsOpen(false);
   }
 
   return (
     <Dialog onOpenChange={setIsOpen} open={isopen}>
       <DialogTrigger asChild>
-        <Button>upload doc</Button>
+        <Button>upload</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>
           <DialogDescription>
-          file description will generated automatically
+            file description will generated automatically
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -99,14 +98,19 @@ export function UploadDoc() {
             <FormField
               control={form.control}
               name="file"
-              render={({ field : {value , onChange,...fieldProps}}) => (
+              render={({ field: { value, onChange, ...fieldProps } }) => (
                 <FormItem>
                   <FormLabel>file</FormLabel>
                   <FormControl>
-                    <Input type="file" {...fieldProps} onChange={(event) => {
-                        const file = event.target.files?.[0]
-                        onChange(file)
-                    }}/>
+                    <Input
+                      type="file"
+                      {...fieldProps}
+                      onChange={(event) => {
+                        const file = event.target.files?.[0];
+                        onChange(file);
+                      }}
+                      accept=".doc,.docx,.pdf,.xml,.csv,.txt,.json,.xlsx,.xls,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/pdf,text/plain,application/json"
+                    />
                   </FormControl>
                   <FormDescription>
                     <FormMessage />
@@ -115,7 +119,10 @@ export function UploadDoc() {
               )}
             />
             <DialogFooter>
-                <Afs_Button label="submit" loading={form.formState.isSubmitting}/>
+              <Afs_Button
+                label="submit"
+                loading={form.formState.isSubmitting}
+              />
             </DialogFooter>
           </form>
         </Form>

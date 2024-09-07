@@ -67,3 +67,23 @@
     @apply bg-background text-foreground;
   }
 }
+
+ body ::-webkit-scrollbar { width: 0 !important }  
+
+/* //Firefox */
+body { overflow: -moz-scrollbars-none; }
+
+/* //Internet Explorer, Edge */
+body { -ms-overflow-style: none; }
+
+/* -------------------------- custom layout */
+/* hide scrollbar but allow scrolling */
+.iframe > *{
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: 0; /* for Firefox */
+  overflow-y: hidden;
+  height: fit-content;
+}
+.iframe::-webkit-scrollbar > *{
+  display: none; /* for Chrome, Safari, and Opera */
+}

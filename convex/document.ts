@@ -8,7 +8,7 @@ export const generateUploadUrl = mutation(async (ctx) => {
 });
 
 export const insertDocument = mutation({
-  args: { name: v.string() , fileId : v.string()},
+  args: { name: v.string() , fileId : v.id("_storage")},
   handler: async (ctx, args) => {
     const user = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
     if (!user) {
@@ -53,6 +53,6 @@ export const getDocument = query({
     if (!doc || doc?.tokenIdentifier !== userId ) {
       return null
     }
-    return doc;
+    return {...doc, docURL : await ctx.storage.getUrl(doc.fileId)  };
   },
 });
