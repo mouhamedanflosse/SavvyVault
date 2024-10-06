@@ -1,5 +1,6 @@
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
+import { api, internal } from "./_generated/api";
 
 const http = httpRouter()
 
@@ -11,6 +12,12 @@ http.route({
         const headerPayload = req.headers;
         try {
             console.log(payloadString,headerPayload)
+            const payload = ctx.runAction(internal.clerk.fulfill , {payload : payloadString,headers : {
+                "svix-id": headerPayload.get('svix-id'),
+                "svix-timestamp": headerPayload.get('svix-timestamp'),
+                "svix-signature": headerPayload.get('svix-signature'),
+            }, })
+            console.log(payload)
         } catch (err) {
             console.log(err)
         }
