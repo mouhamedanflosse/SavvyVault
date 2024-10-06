@@ -1,5 +1,5 @@
 'use client'
-import { SignInButton, UserButton } from "@clerk/clerk-react";
+import { SignInButton, UserButton } from "@clerk/nextjs";
 import { Authenticated, Unauthenticated, useMutation, useQuery } from "convex/react";
 import { Button } from "@afs/components/ui/button";
 import { api } from "../../convex/_generated/api";

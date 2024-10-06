@@ -10,18 +10,10 @@ export const generateUploadUrl = mutation(async (ctx) => {
 });
 
 
-// openai main fn
+// init openai client
 const client = new OpenAI({
-  apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
+  apiKey: process.env.OPENAI_API_KEY,
 });
-
-async function main() {
-  const params: OpenAI.Chat.ChatCompletionCreateParams = {
-    messages: [{ role: 'user', content: 'Say this is a test' }],
-    model: 'gpt-3.5-turbo',
-  };
-  const chatCompletion: OpenAI.Chat.ChatCompletion = await client.chat.completions.create(params);
-}
 
 export const insertDocument = mutation({
   args: { name: v.string() , fileId : v.id("_storage")},
@@ -59,7 +51,16 @@ export const askQuestion = action({
       throw new ConvexError("Document not found");
     }
 
+    console.log(doc)
 
+    const chatCompletion: OpenAI.Chat.ChatCompletion = await client.chat.completions.create({
+      messages: [{ role: 'user', content: 'Say this is a test' }],
+      model: 'gpt-3.5-turbo',
+    });
+     
+    console.log(chatCompletion)
+
+    return chatCompletion
 
   },
 })
