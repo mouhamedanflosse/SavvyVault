@@ -6,14 +6,14 @@ export const insertUser = internalMutation({
         name: v.string(),
         tokenIdentifier: v.string(),
         image : v.string(),
-        orgId : v.array(v.string())
+        orgIds : v.array(v.string())
       },
       handler : async (ctx , args) => {
         ctx.db.insert('users' , {
             name : args.name,
             image : args.image,
             tokenIdentifier : args.tokenIdentifier,
-            orgId : args.orgId
+            orgIds : args.orgIds
         })
       }
 })

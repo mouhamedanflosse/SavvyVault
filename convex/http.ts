@@ -23,18 +23,21 @@ http.route({
       console.log(result);
       switch (result.type) {
         case "user.created":
-          const user = await ctx.runMutation(internal.users.insertUser, {
+          console.log('user created')
+          await ctx.runMutation(internal.users.insertUser, {
             tokenIdentifier: result.data.id,
             name: `${result.data.first_name} ${result.data.last_name}`,
             image: result.data.image_url,
-            orgId : []
+            orgIds : []
           });
           break;
-
-        case "organizationMembership.created":
-            const user = await ctx.runMutation(internal.users.insertUser, {
-            //    image : result.data.
-              });
+          
+          case "organizationMembership.created":
+          console.log('organizationMembership created')
+          await ctx.runMutation(internal.users.addOrgId, {
+            orgIds : [result.data.organization.id],
+            tokenIdentifier : result.data.public_user_data.user_id,
+          } )
           break;
         default:
           break;
