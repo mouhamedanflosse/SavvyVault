@@ -28,6 +28,7 @@ import {
 } from "@afs/components/ui/form";
 import { useState } from "react";
 import Afs_Button from "./Loading-button";
+import { useOrganization } from "@clerk/nextjs";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -40,6 +41,7 @@ const formSchema = z.object({
 
 export function UploadDoc() {
   const [isopen, setIsOpen] = useState(false);
+  const {organization}  = useOrganization()
 
   const addDoc = useMutation(api.document.insertDocument);
   const getURL = useMutation(api.document.generateUploadUrl);
@@ -60,7 +62,7 @@ export function UploadDoc() {
     });
     const { storageId } = await result.json();
 
-    await addDoc({ name: values.name, fileId: storageId });
+    await addDoc({ name: values.name, fileId: storageId , orgId : organization?.id! });
 
     form.reset({ name: "" });
     setIsOpen(false);
