@@ -6,18 +6,17 @@ import {
   MutationCtx,
 } from "./_generated/server";
 import { v, ConvexError } from "convex/values";
-import { api } from "./_generated/api";
-import OpenAI from "openai";
-import { getUserById } from "./users";
+// import { api } from "./_generated/api";
+// import OpenAI from "openai";
 
 export const generateUploadUrl = mutation(async (ctx) => {
   return await ctx.storage.generateUploadUrl();
 });
 
 // init openai client
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// const client = new OpenAI({
+//   apiKey: process.env.OPENAI_API_KEY,
+// });
 
 // access verification
 const hasAccessTOrg = async (ctx: QueryCtx | MutationCtx, orgId: string) => {
