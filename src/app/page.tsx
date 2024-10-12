@@ -1,5 +1,5 @@
 'use client'
-import { SignInButton, UserButton } from "@clerk/nextjs";
+import { SignInButton, useOrganization, UserButton } from "@clerk/nextjs";
 import { Authenticated, Unauthenticated, useMutation, useQuery } from "convex/react";
 import { Button } from "@afs/components/ui/button";
 import { api } from "../../convex/_generated/api";
@@ -11,8 +11,9 @@ import { UploadDoc } from "@afs/components/custom/UploadFiele";
 
 function App() {
 
+  const {organization} = useOrganization()
   const addDoc = useMutation(api.document.insertDocument)
-  const Docs = useQuery(api.document.getDocuments)
+  // const Docs = useQuery(api.document.getDocuments ,organization?.id!)
 
   
   return (
@@ -25,12 +26,12 @@ function App() {
     </div>
       
       <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 ">
-      {
+      {/* {
         Docs?.map((doc : any) => {
           // console.log(doc, Docs)
           return <Document key={doc._id} doc={doc} />
         })
-      }
+      } */}
       </div>
     </main>
     </MaxWidthWrapper>

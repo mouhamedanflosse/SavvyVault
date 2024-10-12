@@ -10,13 +10,13 @@ export default clerkMiddleware((auth, request) => {
   }
 })
 
-// export default authMiddleware({
-//     publicRoutes: ["/"],
-// })
+// // export default authMiddleware({
+// //     publicRoutes: ["/"],
+// // })
 
-export default clerkMiddleware((auth, req) => {
+// export default clerkMiddleware((auth, req) => {
   
-})
+// })
 
 export const config = {
   matcher: [
