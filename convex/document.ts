@@ -64,38 +64,38 @@ export const insertDocument = mutation({
 });
 
 // ask questions
-export const askQuestion = action({
-  args: {
-    question: v.string(),
-    docId: v.id("docs"),
-  },
-  handler: async (ctx, args) => {
-    const user = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
-    if (!user) {
-      throw new ConvexError("Not authenticated");
-    }
+// export const askQuestion = action({
+//   args: {
+//     question: v.string(),
+//     docId: v.id("docs"),
+//   },
+//   handler: async (ctx, args) => {
+//     const user = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
+//     if (!user) {
+//       throw new ConvexError("Not authenticated");
+//     }
 
-    const doc = await ctx.runQuery(api.document.getDocument, {
-      docId: args.docId,
-    });
+//     const doc = await ctx.runQuery(api.document.getDocument, {
+//       docId: args.docId,
+//     });
 
-    if (!doc) {
-      throw new ConvexError("Document not found");
-    }
+//     if (!doc) {
+//       throw new ConvexError("Document not found");
+//     }
 
-    console.log(doc);
+//     console.log(doc);
 
-    const chatCompletion: OpenAI.Chat.ChatCompletion =
-      await client.chat.completions.create({
-        messages: [{ role: "user", content: "Say this is a test" }],
-        model: "gpt-3.5-turbo",
-      });
+//     const chatCompletion: OpenAI.Chat.ChatCompletion =
+//       await client.chat.completions.create({
+//         messages: [{ role: "user", content: "Say this is a test" }],
+//         model: "gpt-3.5-turbo",
+//       });
 
-    console.log(chatCompletion);
+//     console.log(chatCompletion);
 
-    return chatCompletion;
-  },
-});
+//     return chatCompletion;
+//   },
+// });
 
 export const getDocuments = query({
   args: { orgId: v.string() },

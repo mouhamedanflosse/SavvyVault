@@ -22,7 +22,7 @@ export default function ChatBox({
 }: {
   docId: Id<"docs">
 }) {
-  const askQuestion = useAction(api.document.askQuestion);
+  // const askQuestion = useAction(api.document.askQuestion);
 
   //  validating the form
   const formSchema = z.object({
@@ -37,10 +37,10 @@ export default function ChatBox({
   });
 
   async function handleSubmit() {
-    await askQuestion({
-      docId : docId,
-      question : formdata.getValues("message")
-    });
+    // await askQuestion({
+    //   docId : docId,
+    //   question : formdata.getValues("message")
+    // });
   }
 
   return (
