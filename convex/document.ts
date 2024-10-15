@@ -20,7 +20,7 @@ export const generateUploadUrl = mutation(async (ctx) => {
 
 // access verification
 const hasAccessTOrg = async (ctx: QueryCtx | MutationCtx, orgId: string | null) => {
-  const identity = await ctx.auth.getUserIdentity();
+  const identity = (await ctx.auth.getUserIdentity());
   if (!identity) {
     return null;
   }
@@ -31,7 +31,7 @@ const hasAccessTOrg = async (ctx: QueryCtx | MutationCtx, orgId: string | null) 
     )
     .first();
 
-    console.log(user)
+    console.log("user:",identity.tokenIdentifier,user)
 
   if (!user) {
     return null;
