@@ -36,8 +36,7 @@ const hasAccessTOrg = async (ctx: QueryCtx | MutationCtx, orgId: string) => {
   }
 
   const hasAccess =
-    user.orgIds.some((item) => item === orgId) ||
-    user.tokenIdentifier.includes(orgId);
+    user.orgIds.some((item) => item === orgId)
 
   if (hasAccess) {
     return null;
@@ -97,18 +96,33 @@ export const insertDocument = mutation({
 // });
 
 export const getDocuments = query({
-  args: { orgId: v.string() },
+  args: { orgId: v.string() || v.null() },
   handler: async (ctx, args) => {
     const user = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
     const hasAccess = await hasAccessTOrg(ctx, args.orgId);
     if (!user) {
       return [];
     }
-    const newDoc = await ctx.db
-      .query("docs")
-      .withIndex("by_token", (q) => q.eq("tokenIdentifier", user))
-      .collect();
-    return newDoc;
+
+    // for oraganizations docs
+    if (args.orgId) {
+      if (hasAccess) {
+        const docs = await ctx.db
+        .query("docs")
+        .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId))
+        .collect();
+        return docs;
+      }
+    }
+    
+    // for users docs
+    const docs = await ctx.db
+    .query("docs")
+    .withIndex("by_token", (q) => q.eq("tokenIdentifier", user))
+    .collect();
+    return docs;
+    
+
   },
 });
 
