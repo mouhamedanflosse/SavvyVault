@@ -37,7 +37,7 @@ const hasAccessTOrg = async (ctx: QueryCtx | MutationCtx, orgId: string | null) 
 
   const hasAccess =
     user.orgIds.some((item) => item === orgId)
-
+    console.log("has acess to the org,",hasAccess)
   if (hasAccess) {
     return null;
   }
@@ -105,24 +105,27 @@ export const getDocuments = query({
     
     // for oraganizations docs
     if (args.orgId) {
+      console.log("for oraganizations")
       const hasAccess = await hasAccessTOrg(ctx, args.orgId);
       if (hasAccess) {
         const docs = await ctx.db
         .query("docs")
         .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId))
         .collect();
+
+        console.log("docs for org", docs)
         return docs;
       }
     }
     
     // for users docs
+    console.log("for user")
     const docs = await ctx.db
     .query("docs")
     .withIndex("by_token", (q) => q.eq("tokenIdentifier", user))
     .collect();
+    console.log("docs for user", docs)
     return docs;
-    
-
   },
 });
 

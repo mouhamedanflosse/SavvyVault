@@ -12,8 +12,7 @@ import { UploadDoc } from "@afs/components/custom/UploadFiele";
 function App() {
 
   const {organization} = useOrganization()
-  const addDoc = useMutation(api.document.insertDocument)
-  // const Docs = useQuery(api.document.getDocuments ,organization?.id!)
+  const Docs = useQuery(api.document.getDocuments ,{orgId : organization?.id || null})
 
   
   return (
@@ -26,12 +25,12 @@ function App() {
     </div>
       
       <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 ">
-      {/* {
+      {
         Docs?.map((doc : any) => {
           // console.log(doc, Docs)
           return <Document key={doc._id} doc={doc} />
         })
-      } */}
+      }
       </div>
     </main>
     </MaxWidthWrapper>
