@@ -31,6 +31,8 @@ const hasAccessTOrg = async (ctx: QueryCtx | MutationCtx, orgId: string | null) 
     )
     .first();
 
+    console.log(user)
+
   if (!user) {
     return null;
   }
@@ -116,6 +118,7 @@ export const getDocuments = query({
         console.log("docs for org", docs)
         return docs;
       }
+      return []
     }
     
     // for users docs
