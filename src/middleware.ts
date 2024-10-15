@@ -1,4 +1,3 @@
-// import { authMiddleware,clerkMiddleware } from '@clerk/nextjs/server'
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 
 
@@ -10,13 +9,6 @@ export default clerkMiddleware((auth, request) => {
   }
 })
 
-// // export default authMiddleware({
-// //     publicRoutes: ["/"],
-// // })
-
-// export default clerkMiddleware((auth, req) => {
-  
-// })
 
 export const config = {
   matcher: [
@@ -26,3 +18,14 @@ export const config = {
     '/(api|trpc)(.*)',
   ],
 }
+
+
+// import { authMiddleware,clerkMiddleware } from '@clerk/nextjs/server'
+// before the migration
+// // export default authMiddleware({
+// //     publicRoutes: ["/"],
+// // })
+
+// export default clerkMiddleware((auth, req) => {
+  
+// })

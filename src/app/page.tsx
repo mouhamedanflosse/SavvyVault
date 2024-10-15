@@ -1,11 +1,8 @@
 'use client'
-import { SignInButton, useOrganization, UserButton } from "@clerk/nextjs";
-import { Authenticated, Unauthenticated, useMutation, useQuery } from "convex/react";
-import { Button } from "@afs/components/ui/button";
+import {  useOrganization } from "@clerk/nextjs";
+import { Authenticated, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { ModeToggle } from "@afs/components/ui/mode-toggle";
 import MaxWidthWrapper from "@afs/components/ui/MaxWithWrapper";
-import Header from "./Header";
 import { Document } from "@afs/components/custom/DocCard";
 import { UploadDoc } from "@afs/components/custom/UploadFiele";
 
@@ -27,7 +24,6 @@ function App() {
       <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 ">
       {
         Docs?.map((doc : any) => {
-          // console.log(doc, Docs)
           return <Document key={doc._id} doc={doc} />
         })
       }

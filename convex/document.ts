@@ -6,7 +6,6 @@ import {
   MutationCtx,
 } from "./_generated/server";
 import { v, ConvexError } from "convex/values";
-// import { api } from "./_generated/api";
 // import OpenAI from "openai";
 
 export const generateUploadUrl = mutation(async (ctx) => {
