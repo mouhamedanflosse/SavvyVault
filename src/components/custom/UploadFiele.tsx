@@ -62,7 +62,7 @@ export function UploadDoc() {
     });
     const { storageId } = await result.json();
 
-    await addDoc({ name: values.name, fileId: storageId , orgId : organization?.id! });
+    await addDoc({ name: values.name, fileId: storageId , orgId : organization?.id ?? null });
 
     form.reset({ name: "" });
     setIsOpen(false);
