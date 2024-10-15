@@ -45,7 +45,7 @@ const hasAccessTOrg = async (ctx: QueryCtx | MutationCtx, orgId: string) => {
 };
 
 export const insertDocument = mutation({
-  args: { name: v.string(), fileId: v.id("_storage"), orgId: v.string() || v.null() },
+  args: { name: v.string(), fileId: v.id("_storage"), orgId: v.union(v.string(), v.null()) },
   handler: async (ctx, args) => {
     const user = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
     if (!user) {
@@ -55,7 +55,7 @@ export const insertDocument = mutation({
       name: args.name,
       tokenIdentifier: user || "test",
       fileId: args.fileId,
-      orgId: args.orgId,
+      orgId: args.orgId ,
     });
     return newDoc;
   },
