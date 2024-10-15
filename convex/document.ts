@@ -19,7 +19,7 @@ export const generateUploadUrl = mutation(async (ctx) => {
 // });
 
 // access verification
-const hasAccessTOrg = async (ctx: QueryCtx | MutationCtx, orgId: string) => {
+const hasAccessTOrg = async (ctx: QueryCtx | MutationCtx, orgId: string | null) => {
   const identity = await ctx.auth.getUserIdentity();
   if (!identity) {
     return null;
@@ -96,16 +96,16 @@ export const insertDocument = mutation({
 // });
 
 export const getDocuments = query({
-  args: { orgId: v.string() || v.null() },
+  args: { orgId: v.union(v.string(), v.null()) },
   handler: async (ctx, args) => {
     const user = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
-    const hasAccess = await hasAccessTOrg(ctx, args.orgId);
     if (!user) {
       return [];
     }
-
+    
     // for oraganizations docs
     if (args.orgId) {
+      const hasAccess = await hasAccessTOrg(ctx, args.orgId);
       if (hasAccess) {
         const docs = await ctx.db
         .query("docs")
