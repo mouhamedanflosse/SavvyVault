@@ -121,7 +121,7 @@ export const insertDocument = mutation({
 export const getDocuments = query({
   args: { orgId: v.optional(v.string()) },
   handler: async (ctx, args) => {
-    const user = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
+    const user = (await ctx.auth.getUserIdentity())?.subject;
     if (!user) {
       return [];
     }
@@ -139,7 +139,7 @@ export const getDocuments = query({
         console.log("docs for org", docs)
         return docs;
       }
-      return []
+      return new ConvexError("you don't have eccess to this organization")
     }
     
     // for users docs
