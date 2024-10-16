@@ -78,7 +78,7 @@ export const insertDocument = mutation({
       name: args.name,
       tokenIdentifier: user.tokenIdentifier,
       fileId: args.fileId,
-      orgId: args.orgId ?? "test" ,
+      orgId: args.orgId  ,
     });
     return newDoc;
   },
