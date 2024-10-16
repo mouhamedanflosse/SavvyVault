@@ -1,5 +1,4 @@
 import {
-  action,
   mutation,
   query,
   QueryCtx,
@@ -26,11 +25,10 @@ const hasAccessTOrg = async (ctx: QueryCtx | MutationCtx, orgId: string | null) 
   const user = await ctx.db
     .query("users")
     .withIndex("by_token", (q) =>
-      q.eq("tokenIdentifier", identity.tokenIdentifier),
+      q.eq("tokenIdentifier", identity.subject),
     )
     .first();
-
-    console.log("user:",identity.tokenIdentifier,user)
+    console.log("user:",user)
 
   if (!user) {
     return null;
@@ -39,7 +37,7 @@ const hasAccessTOrg = async (ctx: QueryCtx | MutationCtx, orgId: string | null) 
   const hasAccess =
     user.orgIds.some((item) => item === orgId)
     console.log("has acess to the org,",hasAccess)
-  if (hasAccess) {
+  if (!hasAccess) {
     return null;
   }
   return user;
