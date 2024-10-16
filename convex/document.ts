@@ -16,18 +16,34 @@ export const generateUploadUrl = mutation(async (ctx) => {
 //   apiKey: process.env.OPENAI_API_KEY,
 // });
 
+
+// get user 
+const getUser = async (ctx : QueryCtx | MutationCtx , id : string) =>  {
+  const user = await ctx.db
+    .query("users")
+    .withIndex("by_token", (q) =>
+      q.eq("tokenIdentifier", id),
+    )
+    .first();
+
+    return user
+}
+
+
 // access verification
 const hasAccessTOrg = async (ctx: QueryCtx | MutationCtx, orgId: string | null) => {
   const identity = (await ctx.auth.getUserIdentity());
   if (!identity) {
     return null;
   }
-  const user = await ctx.db
-    .query("users")
-    .withIndex("by_token", (q) =>
-      q.eq("tokenIdentifier", identity.subject),
-    )
-    .first();
+
+  const user = await getUser(ctx, identity.subject)
+  // const user = await ctx.db
+  //   .query("users")
+  //   .withIndex("by_token", (q) =>
+  //     q.eq("tokenIdentifier", identity.subject),
+  //   )
+  //   .first();
     console.log("user:",user)
 
   if (!user) {
@@ -46,13 +62,21 @@ const hasAccessTOrg = async (ctx: QueryCtx | MutationCtx, orgId: string | null) 
 export const insertDocument = mutation({
   args: { name: v.string(), fileId: v.id("_storage"), orgId: v.optional(v.string()) },
   handler: async (ctx, args) => {
-    const user = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
-    if (!user) {
+    const identity = (await ctx.auth.getUserIdentity());
+    if (!identity) {
       throw new ConvexError("Not authenticated");
     }
+
+    console.log("SB vs TN" ,identity.subject, identity.tokenIdentifier)
+    const user = await getUser(ctx, identity.subject)
+
+    if (!user) {
+      throw new ConvexError("user should be defind")
+    }
+
     const newDoc = await ctx.db.insert("docs", {
       name: args.name,
-      tokenIdentifier: user || "test",
+      tokenIdentifier: user.tokenIdentifier,
       fileId: args.fileId,
       orgId: args.orgId ,
     });
