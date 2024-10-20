@@ -10,7 +10,6 @@ import {
   DialogTrigger,
 } from "@afs/components/ui/dialog";
 import { Input } from "@afs/components/ui/input";
-import { Label } from "@afs/components/ui/label";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { z } from "zod";
