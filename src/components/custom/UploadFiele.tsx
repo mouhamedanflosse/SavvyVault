@@ -29,6 +29,7 @@ import {
 import { useState } from "react";
 import Afs_Button from "./Loading-button";
 import { useOrganization } from "@clerk/nextjs";
+import { useToast } from "@afs/hooks/use-toast";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -42,6 +43,7 @@ const formSchema = z.object({
 export function UploadDoc() {
   const [isopen, setIsOpen] = useState(false);
   const {organization}  = useOrganization()
+  const { toast } = useToast()
 
   const addDoc = useMutation(api.document.insertDocument);
   const getURL = useMutation(api.document.generateUploadUrl);
@@ -66,6 +68,12 @@ export function UploadDoc() {
 
     form.reset({ name: "" });
     setIsOpen(false);
+
+    toast({
+      title: "you file is upoaded",
+      description: organization ? "only you can see it" : "its visible to everyone on your organization",
+    })
+
   }
 
   return (
