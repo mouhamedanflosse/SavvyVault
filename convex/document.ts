@@ -121,10 +121,12 @@ export const insertDocument = mutation({
 export const getDocuments = query({
   args: { orgId: v.optional(v.string()) },
   handler: async (ctx, args) => {
+    console.log("getDocuments started")
     const user = (await ctx.auth.getUserIdentity())?.subject;
     if (!user) {
       return [];
     }
+
     
     // for oraganizations docs
     if (args.orgId) {

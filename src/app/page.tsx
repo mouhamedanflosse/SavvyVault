@@ -9,7 +9,7 @@ import { UploadDoc } from "@afs/components/custom/UploadFiele";
 function App() {
 
   const {organization} = useOrganization()
-  const Docs = useQuery(api.document.getDocuments ,organization?.id ? {orgId : organization?.id } : "skip")
+  const Docs = useQuery(api.document.getDocuments , {orgId : organization?.id } )
 
   
   return (
