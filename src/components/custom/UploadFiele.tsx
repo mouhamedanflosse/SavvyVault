@@ -55,24 +55,34 @@ export function UploadDoc() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const URL = await getURL();
-    const result = await fetch(URL, {
-      method: "POST",
-      headers: { "Content-Type": values.file.type },
-      body: values.file,
-    });
-    const { storageId } = await result.json();
+    try {
 
-    await addDoc({ name: values.name, fileId: storageId , orgId : organization?.id  });
+      const URL = await getURL();
+      const result = await fetch(URL, {
+        method: "POST",
+        headers: { "Content-Type": values.file.type },
+        body: values.file,
+      });
+      const { storageId } = await result.json();
+      
+      await addDoc({ name: values.name, fileId: storageId , orgId : organization?.id  });
+      
+      form.reset({ name: "" });
+      setIsOpen(false);
+      
+      toast({
+        variant : "success",
+        title: "you file is upoaded",
+        description: organization ? "only you can see it" : "its visible to everyone on your organization",
+      })
+    } catch (err) {
+      toast({
+        variant : "destructive",
+        title: "somethig went wrong",
+        description: "yor file is not uploaded,try later",
+      })
 
-    form.reset({ name: "" });
-    setIsOpen(false);
-
-    toast({
-      variant : "success",
-      title: "you file is upoaded",
-      description: organization ? "only you can see it" : "its visible to everyone on your organization",
-    })
+    }
 
   }
 
