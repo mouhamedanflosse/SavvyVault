@@ -7,7 +7,7 @@ export default defineSchema({
     tokenIdentifier: v.string(),
     fileId : v.id("_storage"),
     orgId : v.optional(v.string())
-  }).index("by_token", ["tokenIdentifier"]).index("by_orgId" , ["orgId"]),
+  }).index("by_token", ["tokenIdentifier", "orgId"]).index("by_orgId" , ["orgId"]),
 
   
   users: defineTable({

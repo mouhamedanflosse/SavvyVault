@@ -148,7 +148,7 @@ export const getDocuments = query({
     console.log("for user")
     const docs = await ctx.db
     .query("docs")
-    .withIndex("by_token", (q) => q.eq("tokenIdentifier", user))
+    .withIndex("by_token", (q) => q.eq("tokenIdentifier", user).eq("orgId" , undefined))
     .collect();
     console.log("docs for user", docs)
     return docs;
