@@ -14,22 +14,23 @@ export default function Document({
     docID: Id<"docs">;
   };
 }) {
-  const {organization} = useOrganization()
+  const { organization } = useOrganization();
 
   const doc = useQuery(api.document.getDocument, {
     docId: params.docID,
-    orgId : organization?.id
+    orgId: organization?.id,
   });
 
   if (!doc) {
     return (
       <h1 className="mt-32 text-center text-lg">
-        {" "}
-        you dont have access to that document.
+        You cannot view this content in
+        {!organization
+          ? "personal mode. Please switch to the correct organization."
+          : "this organization. Please switch to the correct organization or your personal account."}
       </h1>
     );
   }
-
 
   return (
     <MaxWidthWrapper>
@@ -43,7 +44,7 @@ export default function Document({
               <iframe className="block h-[500px] w-full" src={doc.docURL} />
             )}
           </ScrollArea>
-          <ChatBox docId={params.docID}/>
+          <ChatBox docId={params.docID} />
         </div>
       </div>
     </MaxWidthWrapper>
