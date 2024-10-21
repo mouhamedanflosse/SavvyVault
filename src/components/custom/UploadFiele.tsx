@@ -69,6 +69,7 @@ export function UploadDoc() {
     setIsOpen(false);
 
     toast({
+      variant : "success",
       title: "you file is upoaded",
       description: organization ? "only you can see it" : "its visible to everyone on your organization",
     })
