@@ -5,6 +5,7 @@ import { Id } from "../../../../convex/_generated/dataModel";
 import MaxWidthWrapper from "@afs/components/ui/MaxWithWrapper";
 import { ScrollArea } from "@afs/components/ui/scroll-area";
 import ChatBox from "./Chat-box";
+import { useOrganization } from "@clerk/nextjs";
 
 export default function Document({
   params,
@@ -13,8 +14,11 @@ export default function Document({
     docID: Id<"docs">;
   };
 }) {
+  const {organization} = useOrganization()
+
   const doc = useQuery(api.document.getDocument, {
     docId: params.docID,
+    orgId : organization?.id
   });
 
   if (!doc) {

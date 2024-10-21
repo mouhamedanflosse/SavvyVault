@@ -38,12 +38,6 @@ const hasAccessTOrg = async (ctx: QueryCtx | MutationCtx, orgId: string | null) 
   }
 
   const user = await getUser(ctx, identity.subject)
-  // const user = await ctx.db
-  //   .query("users")
-  //   .withIndex("by_token", (q) =>
-  //     q.eq("tokenIdentifier", identity.subject),
-  //   )
-  //   .first();
     console.log("user:",user)
 
   if (!user) {
@@ -158,19 +152,35 @@ export const getDocuments = query({
 export const getDocument = query({
   args: {
     docId: v.id("docs"),
+    orgId : v.optional(v.string())
   },
   handler: async (ctx, args) => {
-    const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
+    const userId = (await ctx.auth.getUserIdentity())?.subject;
 
     if (!userId) {
       return null;
     }
 
-    const doc = await ctx.db.get(args.docId);
 
+     // for oraganizations docs
+     if (args.orgId) {
+      console.log("for oraganizations")
+      const hasAccess = await hasAccessTOrg(ctx, args.orgId);
+      if (hasAccess) {
+        const doc = await ctx.db.get(args.docId);
+        if (!doc) {
+          return null;
+        }
+        return { ...doc, docURL: await ctx.storage.getUrl(doc.fileId) };
+      }
+    }
+
+     // for users docs
+    const doc = await ctx.db.get(args.docId);
     if (!doc || doc?.tokenIdentifier !== userId) {
       return null;
     }
+
     return { ...doc, docURL: await ctx.storage.getUrl(doc.fileId) };
   },
 });
