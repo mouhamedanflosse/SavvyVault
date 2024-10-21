@@ -167,17 +167,19 @@ export const getDocument = query({
       console.log("for oraganizations")
       const hasAccess = await hasAccessTOrg(ctx, args.orgId);
       if (hasAccess) {
-        const doc = await ctx.db.get(args.docId);
+        // const doc = await ctx.db.get(args.docId);
+        const doc = await ctx.db.query("docs").withIndex("by_id" , q => q.eq("_id" , args.docId)).first();
         if (!doc) {
           return null;
         }
         return { ...doc, docURL: await ctx.storage.getUrl(doc.fileId) };
       }
     }
-
-     // for users docs
-    const doc = await ctx.db.get(args.docId);
-    if (!doc || doc?.tokenIdentifier !== userId) {
+    // for users docs
+    // const doc = await ctx.db.get(args.docId);
+    const doc = await ctx.db.query("docs").withIndex("by_id" , q => q.eq("_id" , args.docId)).first();
+    console.log(doc)
+    if (!doc || doc?.tokenIdentifier !== userId || doc.orgId !== undefined) {
       return null;
     }
 
