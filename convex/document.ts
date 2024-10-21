@@ -169,7 +169,7 @@ export const getDocument = query({
       if (hasAccess) {
         // const doc = await ctx.db.get(args.docId);
         const doc = await ctx.db.query("docs").withIndex("by_id" , q => q.eq("_id" , args.docId)).first();
-        if (!doc) {
+        if (!doc || doc.orgId === undefined) {
           return null;
         }
         return { ...doc, docURL: await ctx.storage.getUrl(doc.fileId) };
