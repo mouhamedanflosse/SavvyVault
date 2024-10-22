@@ -56,7 +56,6 @@ export function UploadDoc() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-
       const URL = await getURL();
       const result = await fetch(URL, {
         method: "POST",
