@@ -225,3 +225,39 @@ export const deleteDocument = mutation({
     
   }
 })
+export const editDocument = mutation({
+  args : {docId : v.id("docs") , orgId : v.optional(v.string()) , documentInfo : v.object()},
+  handler : async (ctx,args) => {
+    const identity = await ctx.auth.getUserIdentity()
+
+    if (!identity) {
+      throw new ConvexError("yo must be loged in before proceeding to this action")
+    }
+
+    const doc = await ctx.db.get(args.docId)
+
+    if (!doc) {
+      throw new ConvexError("the document must be defined")
+    }
+
+    const hasAccess = await hasAccessTOrg(ctx, args.orgId)
+
+
+   // for an orgnization member
+   if (hasAccess) {
+    console.log("hasAccess" , args , doc )
+    const deletedDocument = await ctx.db.patch(args.docId, {name : args.documentInfo.name})
+    return deletedDocument
+  }
+  
+  // for an document creator
+  if (doc.tokenIdentifier === identity.subject) {
+    console.log("user" , args , doc )
+    const deletedDocument = await ctx.db.patch(args.docId, {name : args.documentInfo.name})
+      return deletedDocument
+    }
+    
+    throw new ConvexError("you don't have the required permissions to perform this action")
+    
+  }
+})
