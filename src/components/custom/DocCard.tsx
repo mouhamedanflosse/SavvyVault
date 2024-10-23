@@ -15,11 +15,12 @@ import Link from "next/link";
 import OptionButton from "./OptionsButton";
 
 export function Document({ doc }: { doc: Doc<"docs"> }) {
+
   return (
     <Card className="md:min-w-[200px] min-w-[280px]">
       <CardHeader className="flex flex-row w-full justify-between items-center">
         <CardTitle>{doc.name}</CardTitle>
-        <OptionButton />
+        <OptionButton docId={doc._id} />
       </CardHeader>
       <CardContent>
         <CardDescription>Deploy your new project in one-click.</CardDescription>

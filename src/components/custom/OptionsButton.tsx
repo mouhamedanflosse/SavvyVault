@@ -21,14 +21,31 @@ import {
   AlertDialogTitle,
 } from "@afs/components/ui/alert-dialog"
 import { MoreVertical, Trash } from 'lucide-react'
+import { useOrganization } from '@clerk/nextjs'
+import { useMutation } from 'convex/react'
+import { api } from '../../../convex/_generated/api'
+import { Id } from '../../../convex/_generated/dataModel'
+import { toast } from '@afs/hooks/use-toast'
 
-export default function OptionButton() {
+export default function OptionButton({ docId }: {docId : Id<"docs">} ) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const {organization} = useOrganization()
+  const deleteDoc = useMutation(api.document.deleteDocument)
 
   const handleDelete = () => {
     // Implement your delete logic here
-    console.log("Item deleted")
-    setShowDeleteDialog(false)
+    try {
+      deleteDoc({docId : docId , orgId : organization?.id})
+      console.log("Item deleted")
+      setShowDeleteDialog(false)
+    } catch (err) {
+      console.log(err)
+      toast({
+        variant : "destructive",
+        title: "somethig went wrong",
+        description: "you can't perfom this action",
+      })
+    }
   }
 
   return (
