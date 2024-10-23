@@ -39,6 +39,12 @@ export default function OptionButton({ docId }: {docId : Id<"docs">} ) {
       deleteDoc({docId : docId , orgId : organization?.id})
       console.log("Item deleted")
       setShowDeleteDialog(false)
+      // alert 
+      toast({
+        variant : "success",
+        title: "1 document deleted successfully",
+        description: organization ? `1 document deleted from ${organization.name}` : "1 document deleted from your personal space",
+      })
     } catch (err) {
       console.log(err)
       toast({

@@ -71,8 +71,8 @@ export function UploadDoc() {
       
       toast({
         variant : "success",
-        title: "you file is upoaded",
-        description: organization ? "only you can see it" : "its visible to everyone on your organization",
+        title: "1 document has been upoaded",
+        description: !organization ? "only you can see it" : `its visible to everyone on ${organization.name}`,
       })
     } catch (err) {
       toast({
