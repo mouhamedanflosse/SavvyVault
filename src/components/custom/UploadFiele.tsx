@@ -78,7 +78,7 @@ export function UploadDoc() {
       toast({
         variant : "destructive",
         title: "somethig went wrong",
-        description: "yor file is not uploaded,try later",
+        description: "your file is not uploaded,try later",
       })
 
     }

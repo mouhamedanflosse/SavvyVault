@@ -43,7 +43,7 @@ export default function OptionButton({ docId }: {docId : Id<"docs">} ) {
       toast({
         variant : "success",
         title: "1 document deleted successfully",
-        description: organization ? `1 document deleted from ${organization.name}` : "1 document deleted from your personal space",
+        description: organization ? `1 document has been deleted in ${organization.name}` : "1 document has been deleted from your personal space",
       })
     } catch (err) {
       console.log(err)
