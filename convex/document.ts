@@ -226,7 +226,7 @@ export const deleteDocument = mutation({
   }
 })
 export const editDocument = mutation({
-  args : {docId : v.id("docs") , orgId : v.optional(v.string()) , documentInfo : v.object()},
+  args : {docId : v.id("docs") , orgId : v.optional(v.string()) , documentInfo : v.object({name :v.string() , fileId : v.string() , orgId : v.string()})},
   handler : async (ctx,args) => {
     const identity = await ctx.auth.getUserIdentity()
 
