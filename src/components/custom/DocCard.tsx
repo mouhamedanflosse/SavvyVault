@@ -23,7 +23,7 @@ export function Document({ doc }: { doc: Doc<"docs"> }) {
         <OptionButton docId={doc._id} />
       </CardHeader>
       <CardContent>
-        <CardDescription>Deploy your new project in one-click.</CardDescription>
+        <CardDescription>generic description by smart poeple</CardDescription>
       </CardContent>
       <CardFooter className="flex justify-center">
         {/* <Button variant="outline">Cancel</Button> */}

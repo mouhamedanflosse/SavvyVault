@@ -92,9 +92,9 @@ export function UploadDoc() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle>upload profile</DialogTitle>
           <DialogDescription>
-            file description will generated automatically
+            document description will generated automatically
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
