@@ -209,12 +209,16 @@ export const deleteDocument = mutation({
 
    // for an orgnization member
    if (hasAccess) {
-     const deleteDocument = await ctx.db.delete(args.docId)
-    }
-    
-    // for an document creator
-    if (doc.tokenIdentifier === identity.subject) {
-      const deleteDocument = await ctx.db.delete(args.docId)
+    console.log("hasAccess" , args , doc )
+    const deletedDocument = await ctx.db.delete(args.docId)
+    return deletedDocument
+  }
+  
+  // for an document creator
+  if (doc.tokenIdentifier === identity.subject) {
+      console.log("user" , args , doc )
+      const deletedDocument = await ctx.db.delete(args.docId)
+      return deletedDocument
     }
     
     throw new ConvexError("you don't have the required permissions to perform this action")

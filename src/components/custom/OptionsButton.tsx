@@ -35,6 +35,7 @@ export default function OptionButton({ docId }: {docId : Id<"docs">} ) {
   const handleDelete = () => {
     // Implement your delete logic here
     try {
+      console.log({docId : docId , orgId : organization?.id})
       deleteDoc({docId : docId , orgId : organization?.id})
       console.log("Item deleted")
       setShowDeleteDialog(false)
