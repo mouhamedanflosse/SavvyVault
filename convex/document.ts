@@ -135,7 +135,7 @@ export const getDocuments = query({
         console.log("docs for org", docs)
         return docs;
       }
-      return new ConvexError("you don't have eccess to this organization")
+      return []
     }
     
     // for users docs

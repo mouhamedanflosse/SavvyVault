@@ -17,7 +17,7 @@ function App() {
     <main className="flex min-h-screen flex-col items-center gap-14 p-24">
     <div className="flex justify-end w-full">
       <Authenticated>
-        <UploadDoc />
+        <UploadDoc editMode={false} />
       </Authenticated>
     </div>
       

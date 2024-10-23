@@ -39,8 +39,8 @@ const formSchema = z.object({
   }),
 });
 
-export function UploadDoc() {
-  const [isopen, setIsOpen] = useState(false);
+export function UploadDoc({editMode } : {editMode : boolean}) {
+  const [isopen, setIsOpen] = useState(editMode);
   const {organization}  = useOrganization()
   const { toast } = useToast()
 
@@ -55,21 +55,23 @@ export function UploadDoc() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      const URL = await getURL();
-      const result = await fetch(URL, {
-        method: "POST",
-        headers: { "Content-Type": values.file.type },
-        body: values.file,
-      });
-      const { storageId } = await result.json();
-      
-      await addDoc({ name: values.name, fileId: storageId , orgId : organization?.id  });
-      
-      form.reset({ name: "" });
-      setIsOpen(false);
-      
-      toast({
+
+    if (!editMode) {
+      try {
+        const URL = await getURL();
+        const result = await fetch(URL, {
+          method: "POST",
+          headers: { "Content-Type": values.file.type },
+          body: values.file,
+        });
+        const { storageId } = await result.json();
+        
+        await addDoc({ name: values.name, fileId: storageId , orgId : organization?.id  });
+        
+        form.reset({ name: "" });
+        setIsOpen(false);
+        
+        toast({
         variant : "success",
         title: "1 document has been upoaded",
         description: !organization ? "only you can see it" : `its visible to everyone on ${organization.name}`,
@@ -80,19 +82,21 @@ export function UploadDoc() {
         title: "somethig went wrong",
         description: "your file is not uploaded,try later",
       })
-
+      
     }
+  }
 
   }
 
   return (
     <Dialog onOpenChange={setIsOpen} open={isopen}>
-      <DialogTrigger asChild>
+      {!editMode ? <DialogTrigger asChild>
         <Button>upload</Button>
       </DialogTrigger>
+      : ""}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>upload profile</DialogTitle>
+          <DialogTitle>{editMode ? "upload document" : "edit document"}</DialogTitle>
           <DialogDescription>
             document description will generated automatically
           </DialogDescription>

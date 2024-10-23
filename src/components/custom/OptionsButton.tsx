@@ -26,9 +26,11 @@ import { useMutation } from 'convex/react'
 import { api } from '../../../convex/_generated/api'
 import { Id } from '../../../convex/_generated/dataModel'
 import { toast } from '@afs/hooks/use-toast'
+import { Pencil } from 'lucide-react';
 
 export default function OptionButton({ docId }: {docId : Id<"docs">} ) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [editDocument, setEditDocument] = useState(false)
   const {organization} = useOrganization()
   const deleteDoc = useMutation(api.document.deleteDocument)
 
@@ -67,9 +69,14 @@ export default function OptionButton({ docId }: {docId : Id<"docs">} ) {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onSelect={() => setShowDeleteDialog(true)}>
+          <DropdownMenuItem className='cursor-pointer' onSelect={() => setShowDeleteDialog(true)}>
             <Trash className="mr-2 h-4 w-4" />
             <span>Delete</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem className='cursor-pointer' onSelect={() => setShowDeleteDialog(true)}>
+            <Pencil className="mr-2 h-4 w-4" />
+            <span>Edit</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -89,6 +96,8 @@ export default function OptionButton({ docId }: {docId : Id<"docs">} ) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      
     </>
   )
 }
