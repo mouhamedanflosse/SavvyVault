@@ -31,7 +31,7 @@ const getUser = async (ctx : QueryCtx | MutationCtx , id : string) =>  {
 
 
 // access verification
-const hasAccessTOrg = async (ctx: QueryCtx | MutationCtx, orgId: string | null) => {
+const hasAccessTOrg = async (ctx: QueryCtx | MutationCtx, orgId: string | undefined) => {
   const identity = (await ctx.auth.getUserIdentity());
   if (!identity) {
     return null;
@@ -186,3 +186,38 @@ export const getDocument = query({
     return { ...doc, docURL: await ctx.storage.getUrl(doc.fileId) };
   },
 });
+
+
+
+export const deleteDocument = mutation({
+  args : {docId : v.id("docs") , orgId : v.optional(v.string())},
+  handler : async (ctx,args) => {
+    const identity = await ctx.auth.getUserIdentity()
+
+    if (!identity) {
+      throw new ConvexError("yo must be loged in before proceeding to this action")
+    }
+
+    const doc = await ctx.db.get(args.docId)
+
+    if (!doc) {
+      throw new ConvexError("the document must be defined")
+    }
+
+    const hasAccess = await hasAccessTOrg(ctx, args.orgId)
+
+
+   // for an orgnization member
+   if (hasAccess) {
+     const deleteDocument = await ctx.db.delete(args.docId)
+    }
+    
+    // for an document creator
+    if (doc.tokenIdentifier === identity.subject) {
+      const deleteDocument = await ctx.db.delete(args.docId)
+    }
+    
+    throw new ConvexError("you don't have the required permissions to perform this action")
+    
+  }
+})
