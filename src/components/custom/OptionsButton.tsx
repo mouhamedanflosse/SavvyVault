@@ -27,6 +27,7 @@ import { api } from '../../../convex/_generated/api'
 import { Id } from '../../../convex/_generated/dataModel'
 import { toast } from '@afs/hooks/use-toast'
 import { Pencil } from 'lucide-react';
+import { UploadDoc } from './UploadFiele'
 
 export default function OptionButton({ docId }: {docId : Id<"docs">} ) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
@@ -74,7 +75,7 @@ export default function OptionButton({ docId }: {docId : Id<"docs">} ) {
             <span>Delete</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className='cursor-pointer' onSelect={() => setShowDeleteDialog(true)}>
+          <DropdownMenuItem className='cursor-pointer' onSelect={() => setEditDocument(true)}>
             <Pencil className="mr-2 h-4 w-4" />
             <span>Edit</span>
           </DropdownMenuItem>
@@ -97,7 +98,9 @@ export default function OptionButton({ docId }: {docId : Id<"docs">} ) {
         </AlertDialogContent>
       </AlertDialog>
 
-      
+      {
+        editDocument ? <UploadDoc editMode={true} /> : ""
+      }
     </>
   )
 }
