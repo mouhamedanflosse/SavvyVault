@@ -22,7 +22,7 @@ import {
 } from "@afs/components/ui/alert-dialog"
 import { MoreVertical, Trash } from 'lucide-react'
 
-export default function DeleteDropdown() {
+export default function OptionButton() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
   const handleDelete = () => {
