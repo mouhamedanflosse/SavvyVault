@@ -226,7 +226,7 @@ export const deleteDocument = mutation({
   }
 })
 export const editDocument = mutation({
-  args : {docId : v.id("docs") , orgId : v.optional(v.string()) , documentInfo : v.object({name :v.string() , fileId : v.string() , orgId : v.string()})},
+  args : {docId : v.id("docs") , orgId : v.optional(v.string()) , documentInfo : v.object({name :v.string() , fileId : v.id("_storage")})},
   handler : async (ctx,args) => {
     const identity = await ctx.auth.getUserIdentity()
 
@@ -246,14 +246,17 @@ export const editDocument = mutation({
    // for an orgnization member
    if (hasAccess) {
     console.log("hasAccess" , args , doc )
-    const deletedDocument = await ctx.db.patch(args.docId, {name : args.documentInfo.name})
+    const deletedDocument = await ctx.db.patch(args.docId, {name : args.documentInfo.name , fileId : args.documentInfo.fileId})
+    const deletedFile = await ctx.storage.delete(doc.fileId)
+    
     return deletedDocument
   }
   
   // for an document creator
   if (doc.tokenIdentifier === identity.subject) {
     console.log("user" , args , doc )
-    const deletedDocument = await ctx.db.patch(args.docId, {name : args.documentInfo.name})
+    const deletedDocument = await ctx.db.patch(args.docId, {name : args.documentInfo.name , fileId : args.documentInfo.fileId})
+    const deletedFile = await ctx.storage.delete(doc.fileId)
       return deletedDocument
     }
     

@@ -29,6 +29,7 @@ import { useState } from "react";
 import Afs_Button from "./Loading-button";
 import { useOrganization } from "@clerk/nextjs";
 import { useToast } from "@afs/hooks/use-toast";
+import { Id } from "../../../convex/_generated/dataModel";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -39,12 +40,13 @@ const formSchema = z.object({
   }),
 });
 
-export function UploadDoc({editMode } : {editMode : boolean}) {
+export function UploadDoc({editMode, docId } : {editMode : boolean , docId? : Id<"docs"> }) {
   const [isopen, setIsOpen] = useState(editMode);
   const {organization}  = useOrganization()
   const { toast } = useToast()
 
   const addDoc = useMutation(api.document.insertDocument);
+  const editDoc = useMutation(api.document.editDocument);
   const getURL = useMutation(api.document.generateUploadUrl);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -84,6 +86,27 @@ export function UploadDoc({editMode } : {editMode : boolean}) {
       })
       
     }
+  } else {
+    const URL = await getURL();
+    const result = await fetch(URL, {
+      method: "POST",
+      headers: { "Content-Type": values.file.type },
+      body: values.file,
+    });
+    const { storageId } = await result.json();
+    
+    // await editDoc({ {name: values.name, fileId: storageId} , orgId : organization?.id , docId });
+    await editDoc({docId : docId! , documentInfo : {name: values.name, fileId: storageId}, orgId : organization?.id });
+    
+    form.reset({ name: "" });
+    setIsOpen(false);
+    
+    toast({
+    variant : "success",
+    title: "1 document has been upoaded",
+    description: !organization ? "only you can see it" : `its visible to everyone on ${organization.name}`,
+  })
+
   }
 
   }
