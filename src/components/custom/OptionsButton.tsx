@@ -30,12 +30,13 @@ import { Pencil } from 'lucide-react';
 import { UploadDoc } from './UploadFiele'
 
 export default function OptionButton({ doc }: {doc : Doc<"docs">} ) {
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
-  const [editDocument, setEditDocument] = useState(false)
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false)
+  const [editing, setEditing] = useState<boolean>(false)
   const {organization} = useOrganization()
   const deleteDoc = useMutation(api.document.deleteDocument)
 
   const handleDelete = () => {
+    console.log(editing)
     // Implement your delete logic here
     try {
       console.log({docId : doc._id , orgId : organization?.id})
@@ -75,7 +76,7 @@ export default function OptionButton({ doc }: {doc : Doc<"docs">} ) {
             <span>Delete</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className='cursor-pointer' onSelect={() => setEditDocument(true)}>
+          <DropdownMenuItem className='cursor-pointer' onSelect={() => setEditing(true)}>
             <Pencil className="mr-2 h-4 w-4" />
             <span>Edit</span>
           </DropdownMenuItem>
@@ -99,7 +100,7 @@ export default function OptionButton({ doc }: {doc : Doc<"docs">} ) {
       </AlertDialog>
 
       {
-        editDocument ? <UploadDoc editMode={true} doc={doc}/> : ""
+        editing ? <UploadDoc setEditing={setEditing}  editMode={true} editing={editing} doc={doc}/> : ""
       }
     </>
   )

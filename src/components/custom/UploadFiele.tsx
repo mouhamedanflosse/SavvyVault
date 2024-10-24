@@ -40,8 +40,8 @@ const formSchema = z.object({
   }),
 });
 
-export function UploadDoc({editMode, doc } : {editMode : boolean , doc? : Doc<"docs"> }) {
-  const [isopen, setIsOpen] = useState(editMode);
+export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boolean ,editing : boolean , setEditing : () => void , doc? : Doc<"docs"> }) {
+  const [isopen, setIsOpen] = useState(editMode ? editing : false );
   const {organization}  = useOrganization()
   const { toast } = useToast()
 
@@ -112,7 +112,7 @@ export function UploadDoc({editMode, doc } : {editMode : boolean , doc? : Doc<"d
   }
 
   return (
-    <Dialog onOpenChange={setIsOpen} open={isopen}>
+    <Dialog onOpenChange={!editMode ? setIsOpen : setEditing} open={isopen}>
       {!editMode ? <DialogTrigger asChild>
         <Button>upload</Button>
       </DialogTrigger>
