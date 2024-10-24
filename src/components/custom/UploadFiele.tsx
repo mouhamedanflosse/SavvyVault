@@ -29,7 +29,7 @@ import { useState } from "react";
 import Afs_Button from "./Loading-button";
 import { useOrganization } from "@clerk/nextjs";
 import { useToast } from "@afs/hooks/use-toast";
-import { Id } from "../../../convex/_generated/dataModel";
+import { Doc, Id } from "../../../convex/_generated/dataModel";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -40,7 +40,7 @@ const formSchema = z.object({
   }),
 });
 
-export function UploadDoc({editMode, docId } : {editMode : boolean , docId? : Id<"docs"> }) {
+export function UploadDoc({editMode, doc } : {editMode : boolean , doc? : Doc<"docs"> }) {
   const [isopen, setIsOpen] = useState(editMode);
   const {organization}  = useOrganization()
   const { toast } = useToast()
@@ -52,7 +52,7 @@ export function UploadDoc({editMode, docId } : {editMode : boolean , docId? : Id
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
+      name:!editMode ? "" : doc?.name,
     },
   });
 
@@ -96,7 +96,7 @@ export function UploadDoc({editMode, docId } : {editMode : boolean , docId? : Id
     const { storageId } = await result.json();
     
     // await editDoc({ {name: values.name, fileId: storageId} , orgId : organization?.id , docId });
-    await editDoc({docId : docId! , documentInfo : {name: values.name, fileId: storageId}, orgId : organization?.id });
+    await editDoc({docId : doc?._id! , documentInfo : {name: values.name, fileId: storageId}, orgId : organization?.id });
     
     form.reset({ name: "" });
     setIsOpen(false);

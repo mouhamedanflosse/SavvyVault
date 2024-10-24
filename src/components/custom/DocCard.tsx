@@ -20,7 +20,7 @@ export function Document({ doc }: { doc: Doc<"docs"> }) {
     <Card className="md:min-w-[200px] min-w-[280px]">
       <CardHeader className="flex flex-row w-full justify-between items-center">
         <CardTitle>{doc.name}</CardTitle>
-        <OptionButton docId={doc._id} />
+        <OptionButton doc={doc} />
       </CardHeader>
       <CardContent>
         <CardDescription>generic description by smart poeple</CardDescription>

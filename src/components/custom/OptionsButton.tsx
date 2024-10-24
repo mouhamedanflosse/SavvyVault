@@ -24,12 +24,12 @@ import { MoreVertical, Trash } from 'lucide-react'
 import { useOrganization } from '@clerk/nextjs'
 import { useMutation } from 'convex/react'
 import { api } from '../../../convex/_generated/api'
-import { Id } from '../../../convex/_generated/dataModel'
+import { Doc } from '../../../convex/_generated/dataModel'
 import { toast } from '@afs/hooks/use-toast'
 import { Pencil } from 'lucide-react';
 import { UploadDoc } from './UploadFiele'
 
-export default function OptionButton({ docId }: {docId : Id<"docs">} ) {
+export default function OptionButton({ doc }: {doc : Doc<"docs">} ) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [editDocument, setEditDocument] = useState(false)
   const {organization} = useOrganization()
@@ -38,8 +38,8 @@ export default function OptionButton({ docId }: {docId : Id<"docs">} ) {
   const handleDelete = () => {
     // Implement your delete logic here
     try {
-      console.log({docId : docId , orgId : organization?.id})
-      deleteDoc({docId : docId , orgId : organization?.id})
+      console.log({docId : doc._id , orgId : organization?.id})
+      deleteDoc({docId : doc._id , orgId : organization?.id})
       console.log("Item deleted")
       setShowDeleteDialog(false)
       // alert 
@@ -99,7 +99,7 @@ export default function OptionButton({ docId }: {docId : Id<"docs">} ) {
       </AlertDialog>
 
       {
-        editDocument ? <UploadDoc editMode={true} /> : ""
+        editDocument ? <UploadDoc editMode={true} doc={doc}/> : ""
       }
     </>
   )
