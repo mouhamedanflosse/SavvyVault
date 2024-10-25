@@ -242,7 +242,6 @@ export const editDocument = mutation({
 
     const hasAccess = await hasAccessTOrg(ctx, args.orgId)
 
-
    // for an orgnization member
    if (hasAccess) {
     console.log("hasAccess" , args , doc )

@@ -100,7 +100,7 @@ export default function OptionButton({ doc }: {doc : Doc<"docs">} ) {
       </AlertDialog>
 
       {
-        editing ? <UploadDoc setEditing={setEditing}  editMode={true} editing={editing} doc={doc}/> : ""
+        editing ? <UploadDoc setEditing={() => setEditing(prev => !prev)}  editMode={true} editing={editing} doc={doc}/> : ""
       }
     </>
   )

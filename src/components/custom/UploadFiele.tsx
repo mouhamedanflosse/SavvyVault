@@ -25,7 +25,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@afs/components/ui/form";
-import { useState } from "react";
+import React, { useState } from "react";
 import Afs_Button from "./Loading-button";
 import { useOrganization } from "@clerk/nextjs";
 import { useToast } from "@afs/hooks/use-toast";
@@ -40,8 +40,8 @@ const formSchema = z.object({
   }),
 });
 
-export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boolean ,editing : boolean , setEditing : () => void , doc? : Doc<"docs"> }) {
-  const [isopen, setIsOpen] = useState(editMode ? editing : false );
+export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boolean ,editing : boolean , setEditing : React.Dispatch<React.SetStateAction<boolean>> , doc? : Doc<"docs"> }) {
+  const [isopen, setIsOpen] = useState<boolean>(false);
   const {organization}  = useOrganization()
   const { toast } = useToast()
 
@@ -71,12 +71,15 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
         await addDoc({ name: values.name, fileId: storageId , orgId : organization?.id  });
         
         form.reset({ name: "" });
-        setIsOpen(false);
+        // fix it later
+        // setEditing(prev => !prev)
+        // setIsOpen(false)
+        setEditing(true)
         
         toast({
         variant : "success",
-        title: "1 document has been upoaded",
-        description: !organization ? "only you can see it" : `its visible to everyone on ${organization.name}`,
+        title: "1 document has been updated successfully",
+        description: 'changes has been applied to this document',
       })
     } catch (err) {
       toast({
@@ -87,16 +90,22 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
       
     }
   } else {
-    const URL = await getURL();
-    const result = await fetch(URL, {
-      method: "POST",
-      headers: { "Content-Type": values.file.type },
-      body: values.file,
-    });
-    const { storageId } = await result.json();
+    let fileId ; 
+    if (values.file) {
+      const URL = await getURL();
+      const result = await fetch(URL, {
+        method: "POST",
+        headers: { "Content-Type": values.file.type },
+        body: values.file,
+      });
+      const { storageId } = await result.json();
+      fileId = storageId
+    } else {
+      fileId = doc?.fileId
+    }
     
     // await editDoc({ {name: values.name, fileId: storageId} , orgId : organization?.id , docId });
-    await editDoc({docId : doc?._id! , documentInfo : {name: values.name, fileId: storageId}, orgId : organization?.id });
+    await editDoc({docId : doc?._id! , documentInfo : {name: values.name, fileId}, orgId : organization?.id });
     
     form.reset({ name: "" });
     setIsOpen(false);
@@ -112,7 +121,7 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
   }
 
   return (
-    <Dialog onOpenChange={!editMode ? setIsOpen : setEditing} open={isopen}>
+    <Dialog onOpenChange={!editMode ? setIsOpen : setEditing} open={ !editMode ? isopen : editing}>
       {!editMode ? <DialogTrigger asChild>
         <Button>upload</Button>
       </DialogTrigger>
