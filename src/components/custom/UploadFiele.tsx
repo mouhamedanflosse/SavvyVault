@@ -74,7 +74,7 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
         // fix it later
         // setEditing(prev => !prev)
         // setIsOpen(false)
-        setEditing(true)
+        setIsOpen(false);
         
         toast({
         variant : "success",
@@ -108,7 +108,7 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
     await editDoc({docId : doc?._id! , documentInfo : {name: values.name, fileId}, orgId : organization?.id });
     
     form.reset({ name: "" });
-    setIsOpen(false);
+    setEditing(false);
     
     toast({
     variant : "success",
