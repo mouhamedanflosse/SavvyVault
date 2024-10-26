@@ -35,12 +35,12 @@ const formSchema = z.object({
   name: z.string().min(2, {
     message: "name must be at least 2 characters.",
   }),
-  file: z.instanceof(File, {
+  file:z.instanceof(File, {
     message: "choose a file",
   }),
 });
 
-export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boolean ,editing : boolean , setEditing : React.Dispatch<React.SetStateAction<boolean>> , doc? : Doc<"docs"> }) {
+export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boolean ,editing? : boolean , setEditing? : React.Dispatch<React.SetStateAction<boolean>> , doc? : Doc<"docs"> }) {
   const [isopen, setIsOpen] = useState<boolean>(false);
   const {organization}  = useOrganization()
   const { toast } = useToast()
