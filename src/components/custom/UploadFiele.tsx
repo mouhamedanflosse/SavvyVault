@@ -36,9 +36,7 @@ const formSchema = z.object({
   name: z.string().min(2, {
     message: "name must be at least 2 characters.",
   }),
-  file:z.instanceof(File, {
-    message: "choose a file",
-  }),
+  file: z.array(z.instanceof(File, 'choose a file')),
 });
 
 export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boolean ,editing? : boolean , setEditing? : React.Dispatch<React.SetStateAction<boolean>> , doc? : Doc<"docs"> }) {
@@ -64,8 +62,8 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
         const URL = await getURL();
         const result = await fetch(URL, {
           method: "POST",
-          headers: { "Content-Type": values.file.type },
-          body: values.file,
+          headers: { "Content-Type": values.file[0].type },
+          body: values.file[0],
         });
         const { storageId } = await result.json();
         
@@ -96,8 +94,8 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
       const URL = await getURL();
       const result = await fetch(URL, {
         method: "POST",
-        headers: { "Content-Type": values.file.type },
-        body: values.file,
+        headers: { "Content-Type": values.file[0].type },
+        body: values.file[0],
       });
       const { storageId } = await result.json();
       fileId = storageId
@@ -154,7 +152,7 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
             <FormField
               control={form.control}
               name="file"
-              render={({ field: { value, onChange, ...fieldProps } }) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>file</FormLabel>
                   <FormControl>
@@ -168,12 +166,12 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
                       // accept=".doc,.docx,.pdf,.xml,.csv,.txt,.json,.xlsx,.xls,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/pdf,text/plain,application/json"
                     /> */}
                     <FileUploader  
-                    value={value}
-                    onValueChange={onChange}
+                    value={field.value}
+                    onValueChange={field.onChange}
                     maxFileCount={4}
                     maxSize={4 * 1024 * 1024}
                     // progresses={progresses}
-                    // disabled={isUploading}
+                    disabled={form.formState.isSubmitting}
                     />
                   </FormControl>
                   <FormDescription>

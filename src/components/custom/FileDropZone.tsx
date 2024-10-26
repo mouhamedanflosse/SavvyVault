@@ -22,7 +22,7 @@ interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
    * @default undefined
    * @example value={files}
    */
-  value?: File[]
+  value?: File
 
   /**
    * Function to be called when the value changes.
@@ -101,6 +101,24 @@ export function FileUploader(props: FileUploaderProps) {
     // progresses,
     accept = {
       "image/*": [],
+      "application/msword": [], // .doc
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [], // .docx
+      "application/pdf": [], // .pdf
+      "application/xml": [], // .xml
+      "text/csv": [], // .csv
+      "text/plain": [], // .txt
+      "application/json": [], // .json
+      "application/vnd.ms-excel": [], // .xls
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [], // .xlsx
+      ".doc": [],
+      ".docx": [],
+      ".pdf": [],
+      ".xml": [],
+      ".csv": [],
+      ".txt": [],
+      ".json": [],
+      ".xlsx": [],
+      ".xls": []
     },
     maxSize = 1024 * 1024 * 2,
     maxFileCount = 1,
@@ -149,6 +167,7 @@ export function FileUploader(props: FileUploaderProps) {
 
       if (rejectedFiles.length > 0) {
         rejectedFiles.forEach(({ file }) => {
+            console.log(`File ${file.name} was rejected`)
           toast({
             variant : "destructive",
             title: "file upload fail",
@@ -159,7 +178,7 @@ export function FileUploader(props: FileUploaderProps) {
 
       if (
         // onUpload &&
-        updatedFiles.length > 0 &&
+        updatedFiles.length >= 0 &&
         updatedFiles.length <= maxFileCount
       ) {
         const target =
@@ -173,10 +192,13 @@ export function FileUploader(props: FileUploaderProps) {
         //   },
         //   error: `Failed to upload ${target}`,
         // })
+        // toast({
+            
+        // })
       }
     },
 
-    [files, maxFileCount, multiple, setFiles]
+    [files, maxFileCount, multiple, setFiles, toast]
   )
 
   function onRemove(index: number) {
@@ -208,7 +230,7 @@ export function FileUploader(props: FileUploaderProps) {
         accept={accept}
         maxSize={maxSize}
         maxFiles={maxFileCount}
-        multiple={maxFileCount > 1 || multiple}
+        multiple={maxFileCount >= 1 || multiple}
         disabled={isDisabled}
       >
         {({ getRootProps, getInputProps, isDragActive }) => (
