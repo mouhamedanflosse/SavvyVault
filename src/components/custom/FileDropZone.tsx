@@ -100,16 +100,23 @@ export function FileUploader(props: FileUploaderProps) {
     // onUpload,
     // progresses,
     accept = {
+      // Microsoft Office formats
+    "application/vnd.ms-powerpoint": [], // .ppt
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation": [], // .pptx
+    "application/msword": [], // .doc
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [], // .docx
+    "application/vnd.ms-excel": [], // .xls
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [], // .xlsx
+
+    // accept all mages formats
       "image/*": [],
-      "application/msword": [], // .doc
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [], // .docx
+
+      // pther files types 
       "application/pdf": [], // .pdf
       "application/xml": [], // .xml
       "text/csv": [], // .csv
       "text/plain": [], // .txt
       "application/json": [], // .json
-      "application/vnd.ms-excel": [], // .xls
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [], // .xlsx
       ".doc": [],
       ".docx": [],
       ".pdf": [],

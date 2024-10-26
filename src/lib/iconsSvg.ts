@@ -1,0 +1,15 @@
+export const iconsSvg = {
+    // Microsoft file types
+    Word_File: '<svg width="100" height="100" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="8" width="48" height="48" rx="8" fill="#2B579A"/><text x="16" y="48" fill="white" font-size="18" font-family="Arial" font-weight="bold">W</text></svg>', // (.doc, .docx)
+    Excel_File: '<svg width="100" height="100" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="8" width="48" height="48" rx="8" fill="#217346"/><text x="16" y="48" fill="white" font-size="18" font-family="Arial" font-weight="bold">X</text></svg>', // (.xls, .xlsx)
+    PowerPoint_File: '<svg width="100" height="100" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="8" width="48" height="48" rx="8" fill="#D24726"/><text x="16" y="48" fill="white" font-size="18" font-family="Arial" font-weight="bold">P</text></svg>', // (.ppt, .pptx)
+    OneNote_File: '<svg width="100" height="100" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="8" width="48" height="48" rx="8" fill="#7719AA"/><text x="10" y="48" fill="white" font-size="18" font-family="Arial" font-weight="bold">ON</text></svg>', // (.one)
+    Access_File: '<svg width="100" height="100" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="8" width="48" height="48" rx="8" fill="#A4373A"/><text x="10" y="48" fill="white" font-size="18" font-family="Arial" font-weight="bold">A</text></svg>', // (.accdb)
+
+    // Other file types
+    PDF_File: '<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="8" width="48" height="48" rx="8" fill="#D32F2F"/><text x="16" y="48" fill="white" font-size="18" font-family="Arial" font-weight="bold">PDF</text></svg>', // (.pdf)
+    XML_File: '<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="8" width="48" height="48" rx="8" fill="#FFA000"/><text x="12" y="48" fill="white" font-size="18" font-family="Arial" font-weight="bold">XML</text></svg>', // (.xml)
+    CSV_File: '<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="8" width="48" height="48" rx="8" fill="#4CAF50"/><text x="12" y="48" fill="white" font-size="18" font-family="Arial" font-weight="bold">CSV</text></svg>', // (.csv)
+    TXT_File: '<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="8" width="48" height="48" rx="8" fill="#616161"/><text x="14" y="48" fill="white" font-size="18" font-family="Arial" font-weight="bold">TXT</text></svg>', // (.txt)
+    JSON_File: '<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="8" width="48" height="48" rx="8" fill="#FFCA28"/><text x="10" y="48" fill="black" font-size="18" font-family="Arial" font-weight="bold">JSON</text></svg>', // (.json)
+};
