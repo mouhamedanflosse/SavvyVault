@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { iconsSvg, MicrosoftIcons } from "./iconsSvg"
+import { iconsSvg } from "./iconsSvg"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
