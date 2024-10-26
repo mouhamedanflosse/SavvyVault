@@ -23,7 +23,12 @@ export function formatBytes(
   }`
 }
 
-const fileTypes = {
+
+type FileTypes = {
+  [key: string]: string;
+};
+
+export const fileTypes : FileTypes = {
   // Microsoft Office formats
   "application/vnd.ms-powerpoint": iconsSvg.PowerPoint_File, // .ppt
   "application/vnd.openxmlformats-officedocument.presentationml.presentation": iconsSvg.PowerPoint_File, // .pptx
@@ -51,3 +56,6 @@ const fileTypes = {
   ".xlsx": iconsSvg.Excel_File, // .xlsx
   ".xls": iconsSvg.Excel_File, // .xls
 };
+
+
+// coomponent 
