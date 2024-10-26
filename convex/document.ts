@@ -211,6 +211,7 @@ export const deleteDocument = mutation({
    if (hasAccess) {
     console.log("hasAccess" , args , doc )
     const deletedDocument = await ctx.db.delete(args.docId)
+    const deletedFile = await ctx.storage.delete(doc.fileId)
     return deletedDocument
   }
   

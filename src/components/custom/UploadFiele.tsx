@@ -36,7 +36,7 @@ const formSchema = z.object({
   name: z.string().min(2, {
     message: "name must be at least 2 characters.",
   }),
-  file: z.array(z.instanceof(File, 'choose a file')),
+  file: z.array(z.instanceof(File))
 });
 
 export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boolean ,editing? : boolean , setEditing? : React.Dispatch<React.SetStateAction<boolean>> , doc? : Doc<"docs"> }) {
