@@ -33,7 +33,7 @@ const fileTypes = {
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": iconsSvg.Excel_File, // .xlsx
 
   // Accept all image formats
-  "image/*": [],
+  "image/*": iconsSvg.Image_File,
 
   // Other file types 
   "application/pdf": iconsSvg.PDF_File, // .pdf
