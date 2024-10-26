@@ -30,6 +30,7 @@ import Afs_Button from "./Loading-button";
 import { useOrganization } from "@clerk/nextjs";
 import { useToast } from "@afs/hooks/use-toast";
 import { Doc, Id } from "../../../convex/_generated/dataModel";
+import { FileUploader } from "./FileDropZone";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -157,7 +158,7 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
                 <FormItem>
                   <FormLabel>file</FormLabel>
                   <FormControl>
-                    <Input
+                    {/* <Input
                       type="file"
                       {...fieldProps}
                       onChange={(event) => {
@@ -165,6 +166,14 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
                         onChange(file);
                       }}
                       // accept=".doc,.docx,.pdf,.xml,.csv,.txt,.json,.xlsx,.xls,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/pdf,text/plain,application/json"
+                    /> */}
+                    <FileUploader  
+                    value={value}
+                    onValueChange={onChange}
+                    maxFileCount={4}
+                    maxSize={4 * 1024 * 1024}
+                    // progresses={progresses}
+                    // disabled={isUploading}
                     />
                   </FormControl>
                   <FormDescription>

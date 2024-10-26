@@ -5,8 +5,6 @@ import { api } from "../../convex/_generated/api";
 import MaxWidthWrapper from "@afs/components/ui/MaxWithWrapper";
 import { UploadDoc } from "@afs/components/custom/UploadFiele";
 import Lottie from "lottie-react";
-import sleepyCat from "../../public/assets/sleepy_cat.json";
-import sleepy_raccoon from "../../public/assets/sleepy_raccoon.json";
 import orange_sleepy_cat from "../../public/assets/orange_sleepy_cat.json";
 import { Document } from "@afs/components/custom/DocCard";
 import { Loader2 } from "lucide-react";
