@@ -54,7 +54,7 @@ const hasAccessTOrg = async (ctx: QueryCtx | MutationCtx, orgId: string | undefi
 };
 
 export const insertDocument = mutation({
-  args: { name: v.string(), fileId: v.id("_storage"), orgId: v.optional(v.string()) },
+  args: { name: v.string(), fileId: v.id("_storage"), orgId: v.optional(v.string()), type : v.string() },
   handler: async (ctx, args) => {
     const identity = (await ctx.auth.getUserIdentity());
     if (!identity) {
@@ -73,6 +73,7 @@ export const insertDocument = mutation({
       tokenIdentifier: user.tokenIdentifier,
       fileId: args.fileId,
       orgId: args.orgId  ,
+      type : args.type
     });
     return newDoc;
   },
@@ -227,7 +228,7 @@ export const deleteDocument = mutation({
   }
 })
 export const editDocument = mutation({
-  args : {docId : v.id("docs") , orgId : v.optional(v.string()) , documentInfo : v.object({name :v.string() , fileId : v.id("_storage")})},
+  args : {docId : v.id("docs") , orgId : v.optional(v.string()) , documentInfo : v.object({name :v.string() , fileId : v.id("_storage"), type : v.string()})},
   handler : async (ctx,args) => {
     const identity = await ctx.auth.getUserIdentity()
 
@@ -246,7 +247,7 @@ export const editDocument = mutation({
    // for an orgnization member
    if (hasAccess) {
     console.log("hasAccess" , args , doc )
-    const deletedDocument = await ctx.db.patch(args.docId, {name : args.documentInfo.name , fileId : args.documentInfo.fileId})
+    const deletedDocument = await ctx.db.patch(args.docId, {name : args.documentInfo.name , fileId : args.documentInfo.fileId , type : args.documentInfo.type})
     const deletedFile = await ctx.storage.delete(doc.fileId)
     
     return deletedDocument
@@ -255,7 +256,7 @@ export const editDocument = mutation({
   // for an document creator
   if (doc.tokenIdentifier === identity.subject) {
     console.log("user" , args , doc )
-    const deletedDocument = await ctx.db.patch(args.docId, {name : args.documentInfo.name , fileId : args.documentInfo.fileId})
+    const deletedDocument = await ctx.db.patch(args.docId, {name : args.documentInfo.name , fileId : args.documentInfo.fileId , type : args.documentInfo.type})
     const deletedFile = await ctx.storage.delete(doc.fileId)
       return deletedDocument
     }

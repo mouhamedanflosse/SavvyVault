@@ -67,7 +67,7 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
         });
         const { storageId } = await result.json();
         
-        await addDoc({ name: values.name, fileId: storageId , orgId : organization?.id  });
+        await addDoc({ name: values.name, fileId: storageId , orgId : organization?.id , type : values.file[0].type });
         
         form.reset({ name: "" });
         // fix it later
@@ -104,7 +104,7 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
     }
     
     // await editDoc({ {name: values.name, fileId: storageId} , orgId : organization?.id , docId });
-    await editDoc({docId : doc?._id! , documentInfo : {name: values.name, fileId}, orgId : organization?.id });
+    await editDoc({docId : doc?._id! , documentInfo : {name: values.name, fileId ,  type : values.file[0].type}, orgId : organization?.id  });
     
     form.reset({ name: "" });
     setEditing(false);

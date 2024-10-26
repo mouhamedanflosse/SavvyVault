@@ -6,7 +6,8 @@ export default defineSchema({
     name: v.string(),
     tokenIdentifier: v.string(),
     fileId : v.id("_storage"),
-    orgId : v.optional(v.string())
+    orgId : v.optional(v.string()),
+    type : v.string()
   }).index("by_token", ["tokenIdentifier", "orgId"]).index("by_orgId" , ["orgId"]),
 
   
