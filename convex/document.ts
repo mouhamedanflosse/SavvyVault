@@ -64,6 +64,8 @@ export const insertDocument = mutation({
     console.log("SB vs TN" ,identity.subject, identity.tokenIdentifier)
     const user = await getUser(ctx, identity.subject)
 
+    const docUrl = (await ctx.storage.getUrl(args.fileId)) as string
+
     if (!user) {
       throw new ConvexError("user should be defind")
     }
@@ -73,7 +75,8 @@ export const insertDocument = mutation({
       tokenIdentifier: user.tokenIdentifier,
       fileId: args.fileId,
       orgId: args.orgId  ,
-      type : args.type
+      type : args.type,
+      docUrl
     });
     return newDoc;
   },
@@ -238,6 +241,8 @@ export const editDocument = mutation({
 
     const doc = await ctx.db.get(args.docId)
 
+    const docUrl = (await ctx.storage.getUrl(args.documentInfo.fileId)) as string
+
     if (!doc) {
       throw new ConvexError("the document must be defined")
     }
@@ -247,7 +252,7 @@ export const editDocument = mutation({
    // for an orgnization member
    if (hasAccess) {
     console.log("hasAccess" , args , doc )
-    const deletedDocument = await ctx.db.patch(args.docId, {name : args.documentInfo.name , fileId : args.documentInfo.fileId , type : args.documentInfo.type})
+    const deletedDocument = await ctx.db.patch(args.docId, {name : args.documentInfo.name , fileId : args.documentInfo.fileId , type : args.documentInfo.type, docUrl })
     const deletedFile = await ctx.storage.delete(doc.fileId)
     
     return deletedDocument
@@ -256,7 +261,7 @@ export const editDocument = mutation({
   // for an document creator
   if (doc.tokenIdentifier === identity.subject) {
     console.log("user" , args , doc )
-    const deletedDocument = await ctx.db.patch(args.docId, {name : args.documentInfo.name , fileId : args.documentInfo.fileId , type : args.documentInfo.type})
+    const deletedDocument = await ctx.db.patch(args.docId, {name : args.documentInfo.name , fileId : args.documentInfo.fileId , type : args.documentInfo.type , docUrl})
     const deletedFile = await ctx.storage.delete(doc.fileId)
       return deletedDocument
     }

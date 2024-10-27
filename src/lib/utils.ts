@@ -37,6 +37,7 @@ export const fileTypes : FileTypes = {
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": iconsSvg.Excel_File, // .xlsx
 
   // Accept all image formats
+  "image/*": iconsSvg.Image_File,
   "image/png": iconsSvg.Image_File,
   "image/jpeg": iconsSvg.Image_File,
   "image/jpg": iconsSvg.Image_File,

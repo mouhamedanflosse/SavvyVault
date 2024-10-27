@@ -23,6 +23,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@afs/components/ui/tooltip";
+import { Paperclip } from 'lucide-react';
 
 export function Document({ doc }: { doc: Doc<"docs"> }) {
   let FileIcon: string = ""; // Initialize with an empty string
@@ -42,15 +43,20 @@ export function Document({ doc }: { doc: Doc<"docs"> }) {
         {/* <Image alt="file type" src={FileIcon} width={64} height={64} /> */}
         {/* <iframe src={fileTypes[doc.type]} ></iframe> */}
         {/* {fileTypes[doc.type]} */}
-        <div className="absolute left-0 top-0">
+        <div className="absolute right-0 top-0">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
+                { FileIcon ?
                 <div
-                  className="h-10 w-10"
+                  className="h-10 w-10 cursor-pointer"
                   dangerouslySetInnerHTML={{ __html: FileIcon }} // Render SVG directly
                   // style={{ width: '44px', height: '44px' }} // Set dimensions here if needed
-                />
+                /> : doc.type.includes("image") ? <div
+                className="h-10 w-10 cursor-pointer"
+                dangerouslySetInnerHTML={{ __html: fileTypes['image/*'] }} // Render SVG directly
+                // style={{ width: '44px', height: '44px' }} // Set dimensions here if needed
+              /> : ""}
               </TooltipTrigger>
               <TooltipContent>
                 <p>{doc.type}</p>
@@ -63,7 +69,16 @@ export function Document({ doc }: { doc: Doc<"docs"> }) {
         <OptionButton doc={doc} />
       </CardHeader>
       <CardContent>
-        <CardDescription>generic description by smart poeple</CardDescription>
+        <div className="relative w-10/12 h-14 flex justify-center items-center mx-auto">
+
+        { 
+        doc.type.includes("image") ?
+        <Image alt="image file" className="absolute mx-auto rounded-md " fill={true} src={doc.docUrl
+        } />
+        : <Paperclip className="w-10 mx-auto" />
+      }
+      </div>
+        {/* <CardDescription>generic description by smart poeple</CardDescription> */}
       </CardContent>
       <CardFooter className="flex justify-center">
         {/* <Button variant="outline">Cancel</Button> */}
