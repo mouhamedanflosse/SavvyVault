@@ -137,7 +137,7 @@ export const getDocuments = query({
         .collect();
         const  query = args.query
         if (query) {
-          const documents = docs.filter((doc) => doc.name.includes(query))
+          const documents = docs.filter((doc) => doc.name.toLowerCase().includes(query.toLowerCase()))
           return documents
         }
         return docs;
@@ -153,10 +153,10 @@ export const getDocuments = query({
 
     const  query = args.query
     if (query) {
-      const documents = docs.filter((doc) => doc.name.includes(query))
+      const documents = docs.filter((doc) => doc.name.toLowerCase().includes(query.toLowerCase()))
       return documents
     }
-    
+
     return docs;
   },
 });
