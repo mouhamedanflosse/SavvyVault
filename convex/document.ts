@@ -117,7 +117,7 @@ export const insertDocument = mutation({
 // });
 
 export const getDocuments = query({
-  args: { orgId: v.optional(v.string()) },
+  args: { orgId: v.optional(v.string()), query : v.optional(v.string())},
   handler: async (ctx, args) => {
     console.log("getDocuments started")
     const user = (await ctx.auth.getUserIdentity())?.subject;
@@ -135,20 +135,28 @@ export const getDocuments = query({
         .query("docs")
         .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId))
         .collect();
-
-        console.log("docs for org", docs)
+        const  query = args.query
+        if (query) {
+          const documents = docs.filter((doc) => doc.name.includes(query))
+          return documents
+        }
         return docs;
       }
       return []
     }
     
     // for users docs
-    console.log("for user")
     const docs = await ctx.db
     .query("docs")
     .withIndex("by_token", (q) => q.eq("tokenIdentifier", user).eq("orgId" , undefined))
     .collect();
-    console.log("docs for user", docs)
+
+    const  query = args.query
+    if (query) {
+      const documents = docs.filter((doc) => doc.name.includes(query))
+      return documents
+    }
+    
     return docs;
   },
 });

@@ -1,35 +1,54 @@
-'use client'
+"use client";
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import * as z from 'zod'
-import { Search } from 'lucide-react'
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Search } from "lucide-react";
 
-import { Button } from '@afs/components/ui/button'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@afs/components/ui/form'
-import { Input } from '@afs/components/ui/input'
+import { Button } from "@afs/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@afs/components/ui/form";
+import { Input } from "@afs/components/ui/input";
+import { Dispatch, SetStateAction } from "react";
 
 const searchSchema = z.object({
-  query: z.string().min(2, 'Search query must be at least 2 characters').max(50, 'Search query must not exceed 50 characters')
-})
+  query: z
+    .string()
+    .min(0, "Search query must be at least 2 characters")
+    .max(50, "Search query must not exceed 50 characters"),
+});
 
-type SearchFormValues = z.infer<typeof searchSchema>
+type SearchFormValues = z.infer<typeof searchSchema>;
 
-export default function SearchBar() {
+export default function SearchBar({
+  query,
+  setQuery,
+}: {
+  query: string;
+  setQuery: Dispatch<SetStateAction<string>>;
+}) {
   const form = useForm<SearchFormValues>({
     resolver: zodResolver(searchSchema),
     defaultValues: {
-      query: '',
+      query: "",
     },
-  })
+  });
 
   function onSubmit(data: SearchFormValues) {
-    console.log('Search query:', data.query)
+    setQuery(data.query);
   }
 
   return (
-    <Form {...form} >
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full max-w-sm md:max-w-56 items-center space-x-2">
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex w-full max-w-sm items-center space-x-2 md:max-w-56"
+      >
         <FormField
           control={form.control}
           name="query"
@@ -48,5 +67,5 @@ export default function SearchBar() {
         </Button>
       </form>
     </Form>
-  )
+  );
 }
