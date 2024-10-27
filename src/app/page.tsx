@@ -51,9 +51,7 @@ function App() {
                 return <Document key={doc._id} doc={doc} />;
               })}
             </div>
-          ) : Docs == undefined && query == null ? (
-            <Loader2 className="mx-auto mt-20 h-20 w-20 animate-spin text-3xl" />
-          ) : (
+          ) : Docs && !Docs.length ? (
             <div>
               <Lottie
                 animationData={orange_sleepy_cat}
@@ -61,6 +59,8 @@ function App() {
                 className="mx-auto w-36"
               />
             </div>
+          ) : (
+            <Loader2 className="mx-auto mt-20 h-20 w-20 animate-spin text-3xl" />
           )}
         </main>
       )}
