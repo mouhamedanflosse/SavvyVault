@@ -35,7 +35,7 @@ export default function SearchBar({
   const form = useForm<SearchFormValues>({
     resolver: zodResolver(searchSchema),
     defaultValues: {
-      query: query,
+      query: !query ? "" : query,
     },
   });
 
