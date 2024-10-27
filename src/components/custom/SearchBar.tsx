@@ -29,8 +29,8 @@ export default function SearchBar({
   query,
   setQuery,
 }: {
-  query: string;
-  setQuery: Dispatch<SetStateAction<string>>;
+  query: string | null;
+  setQuery: Dispatch<SetStateAction<string | null>>;
 }) {
   const form = useForm<SearchFormValues>({
     resolver: zodResolver(searchSchema),
