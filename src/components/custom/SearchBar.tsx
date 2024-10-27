@@ -28,8 +28,8 @@ export default function SearchBar() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full max-w-sm items-center space-x-2">
+    <Form {...form} >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full max-w-sm md:max-w-56 items-center space-x-2">
         <FormField
           control={form.control}
           name="query"
