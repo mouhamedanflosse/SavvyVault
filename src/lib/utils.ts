@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { iconsSvg } from "./iconsSvg"
+import { iconsSvg, TextIcon } from "./iconsSvg"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -24,10 +24,9 @@ export function formatBytes(
 }
 
 
-type FileTypes = {
-  [key: string]: string;
+export type FileTypes = {
+  [key: string]: string 
 };
-
 export const fileTypes : FileTypes = {
   // Microsoft Office formats
   "application/vnd.ms-powerpoint": iconsSvg.PowerPoint_File, // .ppt
@@ -38,7 +37,14 @@ export const fileTypes : FileTypes = {
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": iconsSvg.Excel_File, // .xlsx
 
   // Accept all image formats
-  "image/*": iconsSvg.Image_File,
+  "image/png": iconsSvg.Image_File,
+  "image/jpeg": iconsSvg.Image_File,
+  "image/jpg": iconsSvg.Image_File,
+  "image/webp": iconsSvg.Image_File,
+  "image/svg+xml": iconsSvg.Image_File,
+  "image/apng": iconsSvg.Image_File,
+  "image/avif": iconsSvg.Image_File,
+  "image/gif": iconsSvg.Image_File,
 
   // Other file types 
   "application/pdf": iconsSvg.PDF_File, // .pdf

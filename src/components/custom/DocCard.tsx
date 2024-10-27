@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { Button } from "@afs/components/ui/button";
 import { Eye } from "lucide-react";
@@ -13,11 +13,16 @@ import {
 import { Doc } from "../../../convex/_generated/dataModel";
 import Link from "next/link";
 import OptionButton from "./OptionsButton";
-import {fileTypes} from "@afs/lib/utils";
+import { fileTypes } from "@afs/lib/utils";
 import { string } from "zod";
 import Image from "next/image";
 import { useEffect } from "react";
-
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@afs/components/ui/tooltip";
 
 export function Document({ doc }: { doc: Doc<"docs"> }) {
   let FileIcon: string = ""; // Initialize with an empty string
@@ -31,12 +36,29 @@ export function Document({ doc }: { doc: Doc<"docs"> }) {
     }
   }
 
-
   return (
-    <Card className="md:min-w-[200px] min-w-[280px]">
-      <CardHeader className="flex flex-row w-full justify-between items-center">
-      <Image alt="file type" src={FileIcon} width={64} height={64} />
+    <Card className="min-w-[280px] md:min-w-[200px]">
+      <CardHeader className="relative flex w-full flex-row items-center justify-between">
+        {/* <Image alt="file type" src={FileIcon} width={64} height={64} /> */}
+        {/* <iframe src={fileTypes[doc.type]} ></iframe> */}
         {/* {fileTypes[doc.type]} */}
+        <div className="absolute left-0 top-0">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div
+                  className="h-10 w-10"
+                  dangerouslySetInnerHTML={{ __html: FileIcon }} // Render SVG directly
+                  // style={{ width: '44px', height: '44px' }} // Set dimensions here if needed
+                />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{doc.type}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+
         <CardTitle>{doc.name}</CardTitle>
         <OptionButton doc={doc} />
       </CardHeader>
@@ -47,7 +69,7 @@ export function Document({ doc }: { doc: Doc<"docs"> }) {
         {/* <Button variant="outline">Cancel</Button> */}
         <Button
           asChild
-          className="w-full flex justify-center gap-2"
+          className="flex w-full justify-center gap-2"
           variant="secondary"
         >
           <Link href={`/document/${doc._id}`}>
