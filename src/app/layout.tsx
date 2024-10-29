@@ -30,16 +30,16 @@ export default function RootLayout({
     <html lang="en" >
       <body className={inter.className}>
         <Providers>
-      <SidebarProvider
-      >
-      <AppSidebar />
+      {/* <SidebarProvider
+      > */}
+      {/* <AppSidebar /> */}
       <main>
-      <SidebarTrigger />
-        <Header />
+      {/* <SidebarTrigger /> */}
+        {/* <Header /> */}
         {children}
         <Toaster />
       </main>
-      </SidebarProvider>
+      {/* </SidebarProvider> */}
         </Providers>
         </body>
     </html>

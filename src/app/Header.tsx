@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 export default function Header() {
   return (
-    <MaxWidthWrapper>
+    // <MaxWidthWrapper>
     <div className="w-full flex items-center justify-between p-7">
       <Link href="/" className="text-2xl">SavvyVault</Link>
       <div className="flex gap-4 items-center">
@@ -17,6 +17,6 @@ export default function Header() {
         <ModeToggle />
       </div>
     </div>
-    </MaxWidthWrapper>
+    // </MaxWidthWrapper>
   );
 }

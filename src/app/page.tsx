@@ -1,72 +1,117 @@
-"use client";
+import Link from "next/link";
+import Image from "next/image";
+import { ArrowRightIcon, GitHubLogoIcon } from "@radix-ui/react-icons";
 
-import { useOrganization } from "@clerk/nextjs";
-import { Authenticated, useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
-import MaxWidthWrapper from "@afs/components/ui/MaxWithWrapper";
-import { UploadDoc } from "@afs/components/custom/UploadFiele";
-import Lottie from "lottie-react";
-import orange_sleepy_cat from "../../public/assets/orange_sleepy_cat.json";
-import { Document } from "@afs/components/custom/DocCard";
-import { Loader2 } from "lucide-react";
-import SearchBar from "@afs/components/custom/SearchBar";
-import { useState } from "react";
-import { useAuth } from '@clerk/nextjs'
+import { Button } from "@afs/components/ui/button";
+import { ModeToggle } from "@afs/components/ui/mode-toggle";
+import { ServerCrash } from 'lucide-react';
 
-
-function App() {
-  const { organization } = useOrganization();
-  const [query, setQuery] = useState<string | null>(null);
-
-  const { userId } =  useAuth();
-  const Docs = useQuery(api.document.getDocuments, {
-    orgId: organization?.id,
-    query : !query ? "" : query,
-  });
-
+export default function HomePage() {
   return (
-    <MaxWidthWrapper>
-      {Docs == undefined && userId == undefined  ? (
-        <Loader2 className="mx-auto mt-36 h-20 w-20 animate-spin text-3xl" />
-      ) : (
-        <main className="flex min-h-screen flex-col items-center gap-14 p-24">
-          <div className="flex w-full justify-between">
-            <h1 className="text-3xl">
-              {!organization
-                ? "your documents"
-                : `${organization.name}'s documents`}
+    <div className="flex flex-col min-h-screen mt-4">
+      <header className="z-[50] sticky top-0 w-full bg-background/95 border-b backdrop-blur-sm  border-border/40">
+        <div className="container h-14 flex items-center">
+          <Link
+            href="/"
+            className="flex justify-start items-center hover:opacity-85 transition-opacity duration-300"
+          >
+            <ServerCrash className="w-6 h-6 mr-3" />
+            <span className="font-bold">SavvyVault</span>
+            <span className="sr-only">SavvyVault</span>
+          </Link>
+          <nav className="ml-auto flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full w-8 h-8 bg-background"
+              asChild
+            >
+              <Link href="https://github.com/salimi-my/shadcn-ui-sidebar">
+                <GitHubLogoIcon className="h-[1.2rem] w-[1.2rem]" />
+              </Link>
+            </Button>
+            <ModeToggle />
+          </nav>
+        </div>
+      </header>
+      <main className="min-h-[calc(100vh-57px-97px)] flex-1">
+        <div className="container relative pb-10">
+          <section className="mx-auto flex max-w-[980px] flex-col items-center gap-2 py-8 md:py-12 md:pb-8 lg:py-24 lg:pb-6">
+            <h1 className="text-center text-3xl font-bold leading-tight tracking-tighter md:text-5xl lg:leading-[1.1]">
+            Manage your documents effectively with SavvyVault
             </h1>
-            <Authenticated>
-              <UploadDoc editMode={false} />
-            </Authenticated>
-          </div>
-          <div className="flex w-full justify-end">
-            <SearchBar query={query} setQuery={setQuery} />
-          </div>
-
-          {Docs && Docs.length ? (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {/* use length to handl empty docs page , and null to handl loading */}
-              {/* rememberalso fix the mobile view  */}
-              {Docs?.map((doc: any) => {
-                return <Document key={doc._id} doc={doc} />;
-              })}
+            <span className="max-w-[750px] text-center text-lg font-light text-foreground">
+            Manage team files and documents with real-time, role-based access. Built-in AI features make collaboration easier and more efficient ⚡
+            </span>
+            <div className="flex w-full items-center justify-center space-x-4 py-4 md:pb-6">
+              <Button variant="default" asChild>
+                <Link href="/dashboard">
+                  get started
+                  <ArrowRightIcon className="ml-2" />
+                </Link>
+              </Button>
+              <Button variant="outline" asChild>
+                <Link
+                  href="https://ui.shadcn.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Learn more
+                </Link>
+              </Button>
             </div>
-          ) : Docs && !Docs.length ? (
-            <div>
-              <Lottie
-                animationData={orange_sleepy_cat}
-                loop={true}
-                className="mx-auto w-36"
-              />
-            </div>
-          ) : (
-            <Loader2 className="mx-auto mt-20 h-20 w-20 animate-spin text-3xl" />
-          )}
-        </main>
-      )}
-    </MaxWidthWrapper>
+          </section>
+          <div className="w-full flex justify-center relative">
+            <Image
+              src="/demo-light-min.png"
+              width={1080}
+              height={608}
+              alt="demo"
+              priority
+              className="border rounded-xl shadow-sm dark:hidden"
+            />
+            <Image
+              src="/demo-dark-min.png"
+              width={1080}
+              height={608}
+              alt="demo-dark"
+              priority
+              className="border border-zinc-600 rounded-xl shadow-sm hidden dark:block dark:shadow-gray-500/5"
+            />
+            <Image
+              src="/demo-mobile-light-min.png"
+              width={228}
+              height={494}
+              alt="demo-mobile"
+              className="border rounded-xl absolute bottom-0 right-0 hidden lg:block dark:hidden"
+            />
+            <Image
+              src="/demo-mobile-dark-min.png"
+              width={228}
+              height={494}
+              alt="demo-mobile"
+              className="border border-zinc-600 rounded-xl absolute bottom-0 right-0 hidden dark:lg:block"
+            />
+          </div>
+        </div>
+      </main>
+      <footer className="py-6 md:py-0 border-t border-border/40">
+        <div className="container flex flex-col items-center justify-center gap-4 md:h-24 md:flex-row">
+          <p className="text-balance text-center text-sm leading-loose text-muted-foreground">
+          Built with {'<3'}
+          . The source code is available on{" "}
+          <Link
+            href="https://github.com/mouhamedanflosse/SavvyVault"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium underline underline-offset-4"
+          >
+            GitHub
+          </Link>
+          .
+          </p>
+        </div>
+      </footer>
+    </div>
   );
 }
-
-export default App;
