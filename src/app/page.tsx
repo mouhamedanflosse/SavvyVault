@@ -13,6 +13,7 @@ import SearchBar from "@afs/components/custom/SearchBar";
 import { useState } from "react";
 import { useAuth } from '@clerk/nextjs'
 
+
 function App() {
   const { organization } = useOrganization();
   const [query, setQuery] = useState<string | null>(null);

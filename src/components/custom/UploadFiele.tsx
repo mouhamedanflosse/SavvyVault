@@ -168,7 +168,7 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
                     <FileUploader  
                     value={field.value}
                     onValueChange={field.onChange}
-                    maxFileCount={4}
+                    maxFileCount={1}
                     maxSize={4 * 1024 * 1024}
                     // progresses={progresses}
                     disabled={form.formState.isSubmitting}
