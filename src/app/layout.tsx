@@ -25,45 +25,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // const [sidebarExpanded, setSidebarExpanded] = useState(true)
-  // const [isMobile, setIsMobile] = useState(false)
-
-
-  // const SidebarContent = () => (
-  //   <nav className="p-4">
-  //     <ul className="space-y-2">
-  //       {[
-  //         { icon: Home, label: "Home", href: "#" },
-  //         { icon: LayoutDashboard, label: "Dashboard", href: "#", active: true },
-  //         { icon: User, label: "Profile", href: "#" },
-  //         { icon: Settings, label: "Settings", href: "#" },
-  //       ].map((item, index) => (
-  //         <li key={index}>
-  //           <Link
-  //             href={item.href}
-  //             className={`flex items-center rounded-lg p-2 ${
-  //               item.active
-  //                 ? "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white"
-  //                 : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
-  //             } ${!sidebarExpanded && !isMobile ? "justify-center" : ""}`}
-  //           >
-  //             <item.icon className="h-5 w-5" />
-  //             {(sidebarExpanded || isMobile) && <span className="ml-3">{item.label}</span>}
-  //           </Link>
-  //         </li>
-  //       ))}
-  //     </ul>
-  //   </nav>
-  // )
-
-
-
 
   return (
     <html lang="en" >
       <body className={inter.className}>
         <Providers>
-      <SidebarProvider>
+      <SidebarProvider
+      >
       <AppSidebar />
       <main>
       <SidebarTrigger />
