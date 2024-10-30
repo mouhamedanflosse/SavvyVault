@@ -5,7 +5,7 @@ import { Button } from "@afs/components/ui/button";
 import { useSidebar } from "@afs/hooks/use-sidebar";
 import { useStore } from "@afs/hooks/use-store";
 import { cn } from "@afs/lib/utils";
-import { PanelsTopLeft, ServerCrash } from "lucide-react";
+import {  ServerCrash } from "lucide-react";
 import Link from "next/link";
 
 export function Sidebar() {

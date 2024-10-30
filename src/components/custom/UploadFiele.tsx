@@ -32,14 +32,24 @@ import { useToast } from "@afs/hooks/use-toast";
 import { Doc, Id } from "../../../convex/_generated/dataModel";
 import { FileUploader } from "./FileDropZone";
 
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "name must be at least 2 characters.",
-  }),
-  file: z.array(z.instanceof(File))
-});
 
 export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boolean ,editing? : boolean , setEditing? : React.Dispatch<React.SetStateAction<boolean>> , doc? : Doc<"docs"> }) {
+
+
+  const formSchema = z.object({
+    name: z.string().min(2, {
+      message: "name must be at least 2 characters.",
+    }),
+    // file: z.array(!editMode ? z.instanceof(File) : )
+    file: z
+    .array(z.instanceof(File))
+    .optional() // Makes the field optional
+    .refine((file) => editMode || (file && file.length > 0), {
+      message: "File is required.",
+    }),
+  });
+
+
   const [isopen, setIsOpen] = useState<boolean>(false);
   const {organization}  = useOrganization()
   const { toast } = useToast()
