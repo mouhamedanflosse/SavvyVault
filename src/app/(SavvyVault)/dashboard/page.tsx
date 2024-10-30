@@ -3,7 +3,6 @@
 import { useOrganization } from "@clerk/nextjs";
 import { Authenticated, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import MaxWidthWrapper from "@afs/components/ui/MaxWithWrapper";
 import { UploadDoc } from "@afs/components/custom/UploadFiele";
 import Lottie from "lottie-react";
 import orange_sleepy_cat from "../../../../public/assets/orange_sleepy_cat.json";
@@ -11,25 +10,25 @@ import { Document } from "@afs/components/custom/DocCard";
 import { Loader2 } from "lucide-react";
 import SearchBar from "@afs/components/custom/SearchBar";
 import { useState } from "react";
-import { useAuth } from '@clerk/nextjs'
-
+import { useAuth } from "@clerk/nextjs";
+import { ContentLayout } from "@afs/components/custom/admin-panel/content-layout";
 
 function App() {
   const { organization } = useOrganization();
   const [query, setQuery] = useState<string | null>(null);
 
-  const { userId } =  useAuth();
+  const { userId } = useAuth();
   const Docs = useQuery(api.document.getDocuments, {
     orgId: organization?.id,
-    query : !query ? "" : query,
+    query: !query ? "" : query,
   });
 
   return (
-    <MaxWidthWrapper>
-      {Docs == undefined && userId == undefined  ? (
+    <ContentLayout title="dashboard">
+      {Docs == undefined && userId == undefined ? (
         <Loader2 className="mx-auto mt-36 h-20 w-20 animate-spin text-3xl" />
       ) : (
-        <main className="flex min-h-screen flex-col items-center gap-14 p-24">
+        <main className="flex min-h-screen flex-col items-center gap-14">
           <div className="flex w-full justify-between">
             <h1 className="text-3xl">
               {!organization
@@ -65,7 +64,7 @@ function App() {
           )}
         </main>
       )}
-    </MaxWidthWrapper>
+    </ContentLayout>
   );
 }
 
