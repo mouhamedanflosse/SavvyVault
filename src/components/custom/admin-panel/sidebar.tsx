@@ -5,7 +5,7 @@ import { Button } from "@afs/components/ui/button";
 import { useSidebar } from "@afs/hooks/use-sidebar";
 import { useStore } from "@afs/hooks/use-store";
 import { cn } from "@afs/lib/utils";
-import { PanelsTopLeft } from "lucide-react";
+import { PanelsTopLeft, ServerCrash } from "lucide-react";
 import Link from "next/link";
 
 export function Sidebar() {
@@ -35,7 +35,7 @@ export function Sidebar() {
           asChild
         >
           <Link href="/dashboard" className="flex items-center gap-2">
-            <PanelsTopLeft className="w-6 h-6 mr-1" />
+            <ServerCrash className="w-6 h-6 mr-1" />
             <h1
               className={cn(
                 "font-bold text-lg whitespace-nowrap transition-[transform,opacity,display] ease-in-out duration-300",

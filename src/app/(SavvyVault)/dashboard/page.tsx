@@ -43,7 +43,7 @@ function Dashboard() {
       {Docs == undefined && userId == undefined ? (
         <Loader2 className="mx-auto mt-36 h-20 w-20 animate-spin text-3xl" />
       ) : (
-        <main className="flex min-h-screen flex-col items-center gap-14">
+        <main className="flex min-h-screen flex-col items-center gap-14 pt-4">
           <div className="flex w-full justify-between">
             <h1 className="text-3xl">
               {!organization
