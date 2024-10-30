@@ -12,8 +12,10 @@ import SearchBar from "@afs/components/custom/SearchBar";
 import { useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { ContentLayout } from "@afs/components/custom/admin-panel/content-layout";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@afs/components/ui/breadcrumb";
+import Link from "next/link";
 
-function App() {
+function Dashboard() {
   const { organization } = useOrganization();
   const [query, setQuery] = useState<string | null>(null);
 
@@ -25,6 +27,19 @@ function App() {
 
   return (
     <ContentLayout title="dashboard">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Dashboard</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
       {Docs == undefined && userId == undefined ? (
         <Loader2 className="mx-auto mt-36 h-20 w-20 animate-spin text-3xl" />
       ) : (
@@ -68,4 +83,4 @@ function App() {
   );
 }
 
-export default App;
+export default Dashboard;
