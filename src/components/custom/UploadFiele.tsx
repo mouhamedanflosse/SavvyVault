@@ -114,7 +114,7 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
     }
     
     // await editDoc({ {name: values.name, fileId: storageId} , orgId : organization?.id , docId });
-    await editDoc({docId : doc?._id! , documentInfo : {name: values.name, fileId ,  type : values.file[0].type}, orgId : organization?.id  });
+    await editDoc({docId : doc?._id! , documentInfo : {name: values.name, fileId ,  type : values.file ? values.file[0].type : doc?.type }, orgId : organization?.id  });
     
     form.reset({ name: "" });
     setEditing(false);
