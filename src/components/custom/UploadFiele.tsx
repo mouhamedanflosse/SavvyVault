@@ -31,6 +31,7 @@ import { useOrganization } from "@clerk/nextjs";
 import { useToast } from "@afs/hooks/use-toast";
 import { Doc, Id } from "../../../convex/_generated/dataModel";
 import { FileUploader } from "./FileDropZone";
+import { validateHeaderName } from "http";
 
 
 export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boolean ,editing? : boolean , setEditing? : React.Dispatch<React.SetStateAction<boolean>> , doc? : Doc<"docs"> }) {
@@ -68,12 +69,13 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
   async function onSubmit(values: z.infer<typeof formSchema>) {
 
     if (!editMode) {
+      console.log("inserting")
       try {
         const URL = await getURL();
         const result = await fetch(URL, {
           method: "POST",
-          headers: { "Content-Type": values.file[0].type },
-          body: values.file[0],
+          headers: { "Content-Type": values.file![0].type },
+          body: values.file![0],
         });
         const { storageId } = await result.json();
         
@@ -99,8 +101,9 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
       
     }
   } else {
+    console.log("editing")
     let fileId ; 
-    if (values.file) {
+    if (values.file?.length) {
       const URL = await getURL();
       const result = await fetch(URL, {
         method: "POST",
@@ -109,12 +112,11 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
       });
       const { storageId } = await result.json();
       fileId = storageId
-    } else {
-      fileId = doc?.fileId
     }
     
     // await editDoc({ {name: values.name, fileId: storageId} , orgId : organization?.id , docId });
-    await editDoc({docId : doc?._id! , documentInfo : {name: values.name, fileId ,  type : values.file ? values.file[0].type : doc?.type }, orgId : organization?.id  });
+    console.log(fileId)
+    await editDoc({docId : doc?._id! , documentInfo : {name: values.name, fileId ,  type : values.file ? values.file[0].type : doc?.type! }, orgId : organization?.id  });
     
     form.reset({ name: "" });
     setEditing(false);

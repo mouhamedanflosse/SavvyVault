@@ -1,3 +1,4 @@
+import { Id } from "./_generated/dataModel";
 import {
   mutation,
   query,
@@ -239,7 +240,7 @@ export const deleteDocument = mutation({
   }
 })
 export const editDocument = mutation({
-  args : {docId : v.id("docs") , orgId : v.optional(v.string()) , documentInfo : v.object({name :v.string() , fileId : v.id("_storage"), type : v.string()})},
+  args : {docId : v.id("docs") , orgId : v.optional(v.string()) , documentInfo : v.object({name :v.string() , fileId : v.optional(v.id("_storage")), type : v.string()})},
   handler : async (ctx,args) => {
     const identity = await ctx.auth.getUserIdentity()
 
@@ -249,7 +250,9 @@ export const editDocument = mutation({
 
     const doc = await ctx.db.get(args.docId)
 
-    const docUrl = (await ctx.storage.getUrl(args.documentInfo.fileId)) as string
+    const fileId = doc?.fileId as Id<"_storage">
+
+    const docUrl = (await ctx.storage.getUrl(args.documentInfo.fileId ? args.documentInfo.fileId : fileId )) as string
 
     if (!doc) {
       throw new ConvexError("the document must be defined")
@@ -261,7 +264,9 @@ export const editDocument = mutation({
    if (hasAccess) {
     console.log("hasAccess" , args , doc )
     const deletedDocument = await ctx.db.patch(args.docId, {name : args.documentInfo.name , fileId : args.documentInfo.fileId , type : args.documentInfo.type, docUrl })
-    const deletedFile = await ctx.storage.delete(doc.fileId)
+    if (args.documentInfo.fileId) {
+      const deletedFile = await ctx.storage.delete(doc.fileId)
+    }
     
     return deletedDocument
   }
