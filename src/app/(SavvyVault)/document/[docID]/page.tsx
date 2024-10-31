@@ -80,7 +80,7 @@ export default function Document({
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 mt-6">
         <div className="flex w-full justify-start">
           <h1>{doc.name}</h1>
         </div>

@@ -42,29 +42,14 @@ export default function ChatBox({
   }
 
   return (
-    <div className="flex h-[500px] w-1/2 flex-col rounded-md border bg-gray-900 p-4">
-      <ScrollArea className="mb-4 flex w-full flex-col gap-3">
-        <h1>hello world</h1>
-        <h1>hello world</h1>
-        <h1>hello world</h1>
-        <h1>hello world</h1>
-        <h1>hello world</h1>
-        <h1>hello world</h1>
-        <h1>hello world</h1>
-        <h1>hello world</h1>
-        <h1>hello world</h1>
-        <h1>hello world</h1>
-        <h1>hello world</h1>
-        <h1>hello world</h1>
-        <h1>hello world</h1>
-        <h1>hello world</h1>
-        <h1>hello world</h1>
-        <h1>hello world</h1>
+    <div className="flex h-[500px] w-1/2 flex-col justify-between rounded-md border bg-gray-900 p-4">
+      <ScrollArea className="mb-4 flex w-full flex-col  gap-3 grow">
+       
         <h1>hello world</h1>
         <h1>hello world</h1>
         <h1>hello world</h1>
       </ScrollArea>
-      <div className="flex max-h-16 w-full items-center gap-x-4">
+      <div className="flex max-h-16 w-full items-center gap-x-4 mb-2">
         <Form {...formdata}>
           <form
             onSubmit={formdata.handleSubmit(handleSubmit)}
