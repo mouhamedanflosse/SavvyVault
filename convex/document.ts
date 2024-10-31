@@ -39,7 +39,6 @@ const hasAccessTOrg = async (ctx: QueryCtx | MutationCtx, orgId: string | undefi
   }
 
   const user = await getUser(ctx, identity.subject)
-    console.log("user:",user)
 
   if (!user) {
     return null;
@@ -47,7 +46,6 @@ const hasAccessTOrg = async (ctx: QueryCtx | MutationCtx, orgId: string | undefi
 
   const hasAccess =
     user.orgIds.some((item) => item === orgId)
-    console.log("has acess to the org,",hasAccess)
   if (!hasAccess) {
     return null;
   }
@@ -260,10 +258,11 @@ export const editDocument = mutation({
 
     const hasAccess = await hasAccessTOrg(ctx, args.orgId)
 
+    console.log('data :',args.docId, {name : args.documentInfo.name , fileId : args.documentInfo.fileId  ? fileId : args.documentInfo.fileId, type : args.documentInfo.type, docUrl })
+
    // for an orgnization member
    if (hasAccess) {
-    console.log("hasAccess" , args , doc )
-    const deletedDocument = await ctx.db.patch(args.docId, {name : args.documentInfo.name , fileId : args.documentInfo.fileId , type : args.documentInfo.type, docUrl })
+    const deletedDocument = await ctx.db.patch(args.docId, {name : args.documentInfo.name , fileId : args.documentInfo.fileId  ? args.documentInfo.fileId  : fileId, type : args.documentInfo.type, docUrl })
     if (args.documentInfo.fileId) {
       const deletedFile = await ctx.storage.delete(doc.fileId)
     }
