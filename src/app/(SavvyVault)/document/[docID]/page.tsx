@@ -89,7 +89,7 @@ export default function Document({
             <h1>{doc.name}</h1>
           </div>
           <div className="flex w-full gap-6">
-            <ScrollArea className="h-[500px] w-1/2 overflow-scroll rounded-md border bg-gray-900 p-4">
+            <ScrollArea className="h-full w-1/2  rounded-md border bg-gray-900 p-4">
               {doc.docURL && (
                 <iframe className="block h-[500px] w-full" src={doc.docURL} />
               )}
