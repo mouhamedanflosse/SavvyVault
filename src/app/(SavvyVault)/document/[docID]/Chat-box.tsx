@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@afs/components/ui/button";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { Id } from "../../../../../convex/_generated/dataModel";
 
 export default function ChatBox({
   docId,
@@ -44,6 +44,7 @@ export default function ChatBox({
   return (
     <div className="flex h-[500px] w-1/2 flex-col rounded-md border bg-gray-900 p-4">
       <ScrollArea className="mb-4 flex w-full flex-col gap-3">
+        <h1>hello world</h1>
         <h1>hello world</h1>
         <h1>hello world</h1>
         <h1>hello world</h1>
