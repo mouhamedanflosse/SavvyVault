@@ -16,11 +16,16 @@ import {
 } from "@afs/components/ui/breadcrumb";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@afs/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@afs/components/ui/dialog";
 import { MessageCircle } from "lucide-react";
 import { Button } from "@afs/components/ui/button";
 import { useState } from "react";
-
 
 export default function Document({
   params,
@@ -91,44 +96,40 @@ export default function Document({
         <Loader2 className="mx-auto mt-36 h-20 w-20 animate-spin text-3xl" />
       ) : (
         <div className="mt-6 flex flex-col gap-4">
-      <div className="flex w-full justify-between items-center">
-        <h1 className="text-2xl font-bold">{doc.name}</h1>
-        <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>
-          <DialogTrigger asChild>
-            <Button
-              className="lg:hidden"
-              variant="outline"
-              size="icon"
-            >
-              <MessageCircle className="h-6 w-6" />
-              <span className="sr-only">Open chat</span>
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] h-[calc(100vh-2rem)] p-0">
-            <DialogHeader className="px-4 py-2">
-              <DialogTitle>Chat</DialogTitle>
-            </DialogHeader>
-            <div className="flex-1 overflow-hidden">
+          <div className="flex w-full items-center justify-between">
+            <h1 className="text-2xl font-bold">{doc.name}</h1>
+            <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>
+              <DialogTrigger asChild>
+                <Button className="lg:hidden" variant="outline" size="icon">
+                  <MessageCircle className="h-6 w-6" />
+                  <span className="sr-only">Open chat</span>
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="h-[calc(100vh-2rem)] p-0 sm:max-w-[425px]">
+                <DialogHeader className="px-4 py-2">
+                  <DialogTitle>Chat</DialogTitle>
+                </DialogHeader>
+                <div className="flex-1 overflow-hidden">
+                  <ChatBox docId={params.docID} />
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+          <div className="relative flex w-full flex-col gap-6 lg:flex-row">
+            <ScrollArea className="h-[calc(100vh-12rem)] w-full rounded-md border bg-gray-900 lg:w-1/2">
+              {doc.docURL && (
+                <iframe
+                  className="h-[calc(100vh-12rem)] w-full"
+                  src={doc.docURL}
+                  title={`Document: ${doc.name}`}
+                />
+              )}
+            </ScrollArea>
+            <div className="hidden h-[calc(100vh-12rem)] w-full lg:block lg:w-1/2">
               <ChatBox docId={params.docID} />
             </div>
-          </DialogContent>
-        </Dialog>
-      </div>
-      <div className="flex flex-col lg:flex-row w-full gap-6 relative">
-        <ScrollArea className="h-[calc(100vh-12rem)] w-full lg:w-1/2 rounded-md border bg-gray-900">
-          {doc.docURL && (
-            <iframe 
-              className="w-full h-[calc(100vh-12rem)]" 
-              src={doc.docURL}
-              title={`Document: ${doc.name}`}
-            />
-          )}
-        </ScrollArea>
-        <div className="hidden lg:block w-full lg:w-1/2 h-[calc(100vh-12rem)]">
-          <ChatBox docId={params.docID} />
+          </div>
         </div>
-      </div>
-    </div>
       )}
     </ContentLayout>
   );
