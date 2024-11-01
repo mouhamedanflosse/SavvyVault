@@ -85,18 +85,24 @@ export default function Document({
         <Loader2 className="mx-auto mt-36 h-20 w-20 animate-spin text-3xl" />
       ) : (
         <div className="mt-6 flex flex-col gap-4">
-          <div className="flex w-full justify-start">
-            <h1>{doc.name}</h1>
-          </div>
-          <div className="flex w-full gap-6">
-            <ScrollArea className="h-full w-1/2  rounded-md border bg-gray-900 p-4">
-              {doc.docURL && (
-                <iframe className="block h-[500px] w-full" src={doc.docURL} />
-              )}
-            </ScrollArea>
+        <div className="flex w-full justify-start">
+          <h1 className="text-2xl font-bold">{doc.name}</h1>
+        </div>
+        <div className="flex flex-col lg:flex-row w-full gap-6">
+          <ScrollArea className="h-[500px] lg:h-[600px] w-full lg:w-1/2 rounded-md border bg-gray-900 p-4">
+            {doc.docURL && (
+              <iframe 
+                className="w-full h-full" 
+                src={doc.docURL}
+                title={`Document: ${doc.name}`}
+              />
+            )}
+          </ScrollArea>
+          <div className="w-full lg:w-1/2 mt-6 lg:mt-0">
             <ChatBox docId={params.docID} />
           </div>
         </div>
+      </div>
       )}
     </ContentLayout>
   );
