@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Button } from "@afs/components/ui/button"
+import { useState } from "react";
+import { Button } from "@afs/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,7 +9,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@afs/components/ui/dropdown-menu"
+} from "@afs/components/ui/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,43 +19,70 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@afs/components/ui/alert-dialog"
-import { MoreVertical, Trash } from 'lucide-react'
-import { useOrganization } from '@clerk/nextjs'
-import { useMutation } from 'convex/react'
-import { api } from '../../../convex/_generated/api'
-import { Doc } from '../../../convex/_generated/dataModel'
-import { toast } from '@afs/hooks/use-toast'
-import { Pencil } from 'lucide-react';
-import { UploadDoc } from './UploadFiele'
+} from "@afs/components/ui/alert-dialog";
+import { Bookmark, MoreVertical, Trash } from "lucide-react";
+import { useOrganization } from "@clerk/nextjs";
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { Doc } from "../../../convex/_generated/dataModel";
+import { toast } from "@afs/hooks/use-toast";
+import { Pencil } from "lucide-react";
+import { UploadDoc } from "./UploadFiele";
 
-export default function OptionButton({ doc }: {doc : Doc<"docs">} ) {
-  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false)
-  const [editing, setEditing] = useState<boolean>(false)
-  const {organization} = useOrganization()
-  const deleteDoc = useMutation(api.document.deleteDocument)
+export default function OptionButton({ doc }: { doc: Doc<"docs"> }) {
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [editing, setEditing] = useState<boolean>(false);
+  const { organization } = useOrganization();
+
+  const deleteDoc = useMutation(api.document.deleteDocument);
+  const savedocument = useMutation(api.document.saveDocToUser);
 
   const handleDelete = () => {
-    console.log(editing)
+    console.log(editing);
     // Implement your delete logic here
     try {
-      console.log({docId : doc._id , orgId : organization?.id})
-      deleteDoc({docId : doc._id , orgId : organization?.id})
-      console.log("Item deleted")
-      setShowDeleteDialog(false)
-      // alert 
+      console.log({ docId: doc._id, orgId: organization?.id });
+      deleteDoc({ docId: doc._id, orgId: organization?.id });
+      console.log("Item deleted");
+      setShowDeleteDialog(false);
+      // alert
       toast({
-        variant : "success",
+        variant: "success",
         title: "1 document deleted successfully",
-        description: organization ? `1 document has been deleted in ${organization.name}` : "1 document has been deleted from your personal space",
-      })
+        description: organization
+          ? `1 document has been deleted in ${organization.name}`
+          : "1 document has been deleted from your personal space",
+      });
     } catch (err) {
-      console.log(err)
+      console.log(err);
       toast({
-        variant : "destructive",
+        variant: "destructive",
         title: "somethig went wrong",
         description: "you can't perfom this action",
-      })
+      });
+    }
+  };
+
+  async function saveDoc() {
+    try {
+      const savedoc = await savedocument({
+        docId: doc._id,
+        orgId: organization?.id,
+      });
+      // alert
+      toast({
+        variant: "success",
+        title: "1 document deleted successfully",
+        description: organization
+          ? `1 document has been deleted in ${organization.name}`
+          : "1 document has been deleted from your personal space",
+      });
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "somethig went wrong",
+        description: "you can't perfom this action",
+      });
     }
   }
 
@@ -71,14 +98,28 @@ export default function OptionButton({ doc }: {doc : Doc<"docs">} ) {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className='cursor-pointer' onSelect={() => setShowDeleteDialog(true)}>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onSelect={() => setShowDeleteDialog(true)}
+          >
             <Trash className="mr-2 h-4 w-4" />
             <span>Delete</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className='cursor-pointer' onSelect={() => setEditing(true)}>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onSelect={() => setEditing(true)}
+          >
             <Pencil className="mr-2 h-4 w-4" />
             <span>Edit</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onSelect={() => saveDoc()}
+          >
+            <Bookmark className="mr-2 h-4 w-4" />
+            <span>save</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -88,8 +129,8 @@ export default function OptionButton({ doc }: {doc : Doc<"docs">} ) {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the item
-              and remove the data from our servers.
+              This action cannot be undone. This will permanently delete the
+              item and remove the data from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -99,9 +140,16 @@ export default function OptionButton({ doc }: {doc : Doc<"docs">} ) {
         </AlertDialogContent>
       </AlertDialog>
 
-      {
-        editing ? <UploadDoc setEditing={setEditing}  editMode={true} editing={editing} doc={doc}/> : ""
-      }
+      {editing ? (
+        <UploadDoc
+          setEditing={setEditing}
+          editMode={true}
+          editing={editing}
+          doc={doc}
+        />
+      ) : (
+        ""
+      )}
     </>
-  )
+  );
 }

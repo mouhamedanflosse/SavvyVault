@@ -1,4 +1,4 @@
-import { internalMutation, QueryCtx , MutationCtx } from "./_generated/server";
+import { internalMutation, QueryCtx , MutationCtx, mutation } from "./_generated/server";
 import {ConvexError, v} from 'convex/values'
 
 export const insertUser = internalMutation({
@@ -13,7 +13,8 @@ export const insertUser = internalMutation({
             name : args.name,
             image : args.image,
             tokenIdentifier : args.tokenIdentifier,
-            orgIds : args.orgIds
+            orgIds : args.orgIds,
+            saved : []
         })
       }
 })

@@ -8,7 +8,7 @@ export default defineSchema({
     fileId : v.id("_storage"),
     orgId : v.optional(v.string()),
     type : v.string(),
-    docUrl : v.string()
+    docUrl : v.string(),
   }).index("by_token", ["tokenIdentifier", "orgId"]).index("by_orgId" , ["orgId"]),
 
   
@@ -16,6 +16,7 @@ export default defineSchema({
     name: v.string(),
     tokenIdentifier: v.string(),
     image : v.string(),
-    orgIds : v.array(v.string())
+    orgIds : v.array(v.string()),
+    saved : v.array(v.string())
   }).index("by_token", ["tokenIdentifier"]),
 });
