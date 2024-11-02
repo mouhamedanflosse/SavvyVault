@@ -362,3 +362,73 @@ export const saveDocToUser = mutation({
     );
   },
 });
+
+
+
+
+export const getsavedDocuments = query({
+  args: { query: v.optional(v.string()) , orgId: v.optional(v.string()) },
+  handler: async (ctx, args) => {
+    console.log("getDocuments started");
+    const user = (await ctx.auth.getUserIdentity())?.subject;
+    if (!user) {
+      return [];
+    }
+
+    const userSavedDoc = await getUserById(ctx, user)
+
+    // for oraganizations docs
+    if (args.orgId) {
+      console.log("for oraganizations");
+      const hasAccess = await hasAccessTOrg(ctx, args.orgId);
+      if (hasAccess) {
+        const docs = await ctx.db
+          .query("docs")
+          .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId))
+          .collect();
+        const query = args.query;
+        if (query) {
+          const documents = docs.filter((doc) =>
+            doc.name.toLowerCase().includes(query.toLowerCase()),
+          );
+          const savedDocs = documents.filter((doc) =>
+          userSavedDoc.saved.some((savedId) => savedId == doc._id)
+          );
+          return savedDocs;
+        }
+        const savedDocs = docs.filter((doc) =>
+          userSavedDoc.saved.some((savedId) => savedId == doc._id)
+          );
+        return savedDocs;
+      }
+      return [];
+    }
+
+    // for users docs
+    const docs = await ctx.db
+      .query("docs")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", user).eq("orgId", undefined),
+      )
+      .collect();
+
+    const query = args.query;
+    if (query) {
+      const documents = docs.filter((doc) =>
+        doc.name.toLowerCase().includes(query.toLowerCase()),
+      );
+
+      const savedDocuments = documents.filter((doc) => 
+      userSavedDoc.saved.some((savedId) => savedId == doc._id )
+      )
+
+      return savedDocuments;
+    }
+    
+    const savedDocs = docs.filter((doc) =>
+      userSavedDoc.saved.some((savedId) => savedId == doc._id)
+      );
+    return savedDocs;
+
+  },
+});

@@ -28,7 +28,7 @@ export default function SavedDocuments() {
   const [query, setQuery] = useState<string | null>(null);
 
   const { userId } = useAuth();
-  const Docs = useQuery(api.document.getDocuments, {
+  const Docs = useQuery(api.document.getsavedDocuments, {
     orgId: organization?.id,
     query: !query ? "" : query,
   });
