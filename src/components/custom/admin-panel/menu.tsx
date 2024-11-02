@@ -15,12 +15,14 @@ import {
   TooltipContent,
   TooltipProvider
 } from "@afs/components/ui/tooltip";
+import { useClerk } from '@clerk/nextjs'
 
 interface MenuProps {
   isOpen: boolean | undefined;
 }
 
 export function Menu({ isOpen }: MenuProps) {
+  const { signOut } = useClerk()
   const pathname = usePathname();
   const menuList = getMenuList(pathname);
 
@@ -118,7 +120,7 @@ export function Menu({ isOpen }: MenuProps) {
               <Tooltip delayDuration={100}>
                 <TooltipTrigger asChild>
                   <Button
-                    onClick={() => {}}
+                    onClick={() => signOut({ redirectUrl: '/' })}
                     variant="outline"
                     className="w-full justify-center h-10 mt-5"
                   >
