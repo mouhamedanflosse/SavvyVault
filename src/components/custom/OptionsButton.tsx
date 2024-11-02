@@ -35,7 +35,7 @@ export default function OptionButton({ doc }: { doc: Doc<"docs"> }) {
   const { organization } = useOrganization();
 
   const deleteDoc = useMutation(api.document.deleteDocument);
-  const savedocument = useMutation(api.document.saveDocToUser);
+  const savedocument = useMutation(api.document.toggleSaveDoc);
 
   const handleDelete = () => {
     console.log(editing);
@@ -119,7 +119,9 @@ export default function OptionButton({ doc }: { doc: Doc<"docs"> }) {
             onSelect={() => saveDoc()}
           >
             <Bookmark className="mr-2 h-4 w-4" />
+
             <span>save</span>
+            
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

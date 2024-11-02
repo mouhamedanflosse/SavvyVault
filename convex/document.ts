@@ -320,7 +320,7 @@ export const editDocument = mutation({
   },
 });
 
-export const saveDocToUser = mutation({
+export const toggleSaveDoc = mutation({
   args: { docId: v.id("docs"), orgId: v.optional(v.string()) },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -339,10 +339,19 @@ export const saveDocToUser = mutation({
 
     const user = await getUserById(ctx, identity.subject);
 
+    const docAlreadySaved = user.saved.some((Id) => Id == args.docId)
+
     const hasAccess = await hasAccessTOrg(ctx, args.docId);
 
     // for an orgnization member
     if (hasAccess) {
+      if (docAlreadySaved) {
+        const saveDocTouser = ctx.db.patch(user?._id, {
+          saved: [...user.saved].filter((id) => id !== args.docId),
+        });
+        return saveDocTouser;
+
+      }
       const saveDocTouser = ctx.db.patch(user?._id, {
         saved: [...user.saved, args.docId],
       });
@@ -351,6 +360,13 @@ export const saveDocToUser = mutation({
 
     // for an document creator
     if (doc.tokenIdentifier === identity.subject) {
+      if (docAlreadySaved) {
+        const saveDocTouser = ctx.db.patch(user?._id, {
+          saved: [...user.saved].filter((id) => id !== args.docId),
+        });
+        return saveDocTouser;
+
+      }
       const saveDocTouser = ctx.db.patch(user?._id, {
         saved: [...user.saved, args.docId],
       });
@@ -424,7 +440,7 @@ export const getsavedDocuments = query({
 
       return savedDocuments;
     }
-    
+
     const savedDocs = docs.filter((doc) =>
       userSavedDoc.saved.some((savedId) => savedId == doc._id)
       );
