@@ -32,7 +32,7 @@ http.route({
           
           case "organizationMembership.created":
             console.log('organizationMembership created')
-          await ctx.runMutation(internal.users.addOrgId, {
+          await ctx.runMutation(internal.users.addOrgMember, {
             orgId : result.data.organization.id,
             role : result.data.role,
             tokenIdentifier : result.data.public_user_data.user_id,
@@ -41,9 +41,17 @@ http.route({
 
           case "organizationMembership.updated":
           console.log('organizationMembership updated')
-          await ctx.runMutation(internal.users.addOrgId, {
+          await ctx.runMutation(internal.users.updateOrgMember, {
             orgId : result.data.organization.id,
             role : result.data.role,
+            tokenIdentifier : result.data.public_user_data.user_id,
+          } )
+          break;
+
+          case "organizationMembership.deleted":
+          console.log('organizationMembership deleted')
+          await ctx.runMutation(internal.users.deleteOrgMember, {
+            orgId : result.data.organization.id,
             tokenIdentifier : result.data.public_user_data.user_id,
           } )
           break;

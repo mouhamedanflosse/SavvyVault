@@ -39,7 +39,7 @@ const hasAccessTOrg = async (
     return null;
   }
 
-  const hasAccess = user.orgIds.some((item) => item === orgId);
+  const hasAccess = user.orgIds.some((item) => item.orgId === orgId);
   if (!hasAccess) {
     return null;
   }

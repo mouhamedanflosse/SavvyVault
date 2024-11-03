@@ -32,7 +32,7 @@ export const getUserById = async (ctx : QueryCtx | MutationCtx , tokenIdentifier
 }
 
 
-export const addOrgId = internalMutation({
+export const addOrgMember = internalMutation({
     args : {
         tokenIdentifier: v.string(),
         orgId : v.string(),
@@ -51,7 +51,7 @@ export const addOrgId = internalMutation({
       }
 })
 
-export const updateOrgId = internalMutation({
+export const updateOrgMember = internalMutation({
     args : {
         tokenIdentifier: v.string(),
         orgId : v.string(),
@@ -63,6 +63,26 @@ export const updateOrgId = internalMutation({
 
         if (user) {
           const orgIds = user.orgIds.map((org) => org.orgId == args.orgId ? {orgId : args.orgId , role : args.role} : org )
+           
+          const data = ctx.db.patch(user._id , {
+                orgIds : orgIds
+            })
+        }
+      }
+})
+
+
+export const deleteOrgMember = internalMutation({
+    args : {
+        tokenIdentifier: v.string(),
+        orgId : v.string(),
+      },
+      handler : async (ctx , args) => {
+
+        const user = await getUserById(ctx, args.tokenIdentifier)
+
+        if (user) {
+          const orgIds = user.orgIds.filter((org) => org.orgId !== args.orgId )
            
           const data = ctx.db.patch(user._id , {
                 orgIds : orgIds
