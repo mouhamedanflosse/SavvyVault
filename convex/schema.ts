@@ -16,7 +16,7 @@ export default defineSchema({
     name: v.string(),
     tokenIdentifier: v.string(),
     image : v.string(),
-    orgIds : v.array(v.string()),
-    saved : v.array(v.string())
+    orgIds : v.array(v.object({orgId : v.string() , role : v.string()})),
+    saved : v.array(v.string()),
   }).index("by_token", ["tokenIdentifier"]),
 });

@@ -151,7 +151,7 @@ export const getDocuments = query({
         q.eq("tokenIdentifier", user).eq("orgId", undefined),
       )
       .collect();
-      
+
       const userdata = await getUser(ctx, user);
 
     const query = args.query;
@@ -172,7 +172,7 @@ export const getDocument = query({
   },
   handler: async (ctx, args) => {
     const userId = (await ctx.auth.getUserIdentity())?.subject;
-
+    const user_ = (await ctx.auth.getUserIdentity());
     if (!userId) {
       return null;
     }

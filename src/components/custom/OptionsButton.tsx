@@ -21,18 +21,22 @@ import {
   AlertDialogTitle,
 } from "@afs/components/ui/alert-dialog";
 import { Bookmark, MoreVertical, Trash } from "lucide-react";
-import { useOrganization } from "@clerk/nextjs";
+import { useAuth, useOrganization } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Doc } from "../../../convex/_generated/dataModel";
 import { toast } from "@afs/hooks/use-toast";
 import { Pencil } from "lucide-react";
 import { UploadDoc } from "./UploadFiele";
+import { BookmarkCheck } from 'lucide-react';
 
 export default function OptionButton({ doc,saved }: { doc: Doc<"docs">,saved : boolean }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [editing, setEditing] = useState<boolean>(false);
   const { organization } = useOrganization();
+
+  const { userId, orgRole } = useAuth()
+  console.log(orgRole)
 
   const deleteDoc = useMutation(api.document.deleteDocument);
   const savedocument = useMutation(api.document.toggleSaveDoc);
@@ -118,8 +122,10 @@ export default function OptionButton({ doc,saved }: { doc: Doc<"docs">,saved : b
             className="cursor-pointer"
             onSelect={() => saveDoc()}
           >
-            <Bookmark className="mr-2 h-4 w-4" />
-
+           { !saved ?
+            <Bookmark  className="mr-2 h-4 w-4" /> :
+            <BookmarkCheck  className="mr-2 h-4 w-4" /> 
+            }
             <span>
              {!saved ?
               'save' : 'unsave'

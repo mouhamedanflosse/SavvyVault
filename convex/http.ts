@@ -11,7 +11,6 @@ http.route({
     const payloadString = await req.text();
     const headerPayload = req.headers;
     try {
-      console.log(payloadString, headerPayload);
       const result = await ctx.runAction(internal.clerk.fulfill, {
         payload: payloadString,
         headers: {
@@ -20,7 +19,6 @@ http.route({
           "svix-signature": headerPayload.get("svix-signature"),
         },
       });
-      console.log(result);
       switch (result.type) {
         case "user.created":
           console.log('user created')
@@ -33,12 +31,23 @@ http.route({
           break;
           
           case "organizationMembership.created":
-          console.log('organizationMembership created')
+            console.log('organizationMembership created')
           await ctx.runMutation(internal.users.addOrgId, {
-            orgIds : [result.data.organization.id],
+            orgId : result.data.organization.id,
+            role : result.data.role,
             tokenIdentifier : result.data.public_user_data.user_id,
           } )
           break;
+
+          case "organizationMembership.updated":
+          console.log('organizationMembership updated')
+          await ctx.runMutation(internal.users.addOrgId, {
+            orgId : result.data.organization.id,
+            role : result.data.role,
+            tokenIdentifier : result.data.public_user_data.user_id,
+          } )
+          break;
+
         default:
           break;
       }

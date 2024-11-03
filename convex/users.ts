@@ -13,7 +13,7 @@ export const insertUser = internalMutation({
             name : args.name,
             image : args.image,
             tokenIdentifier : args.tokenIdentifier,
-            orgIds : args.orgIds,
+            orgIds : [],
             saved : []
         })
       }
@@ -35,7 +35,8 @@ export const getUserById = async (ctx : QueryCtx | MutationCtx , tokenIdentifier
 export const addOrgId = internalMutation({
     args : {
         tokenIdentifier: v.string(),
-        orgIds : v.array(v.string())
+        orgId : v.string(),
+        role : v.string()
       },
       handler : async (ctx , args) => {
 
@@ -44,7 +45,27 @@ export const addOrgId = internalMutation({
         if (user) {
 
             const data = ctx.db.patch(user._id , {
-                orgIds : [...user.orgIds, ...args.orgIds]
+                orgIds : [...user.orgIds, {orgId : args.orgId , role : args.role }]
+            })
+        }
+      }
+})
+
+export const updateOrgId = internalMutation({
+    args : {
+        tokenIdentifier: v.string(),
+        orgId : v.string(),
+        role : v.string()
+      },
+      handler : async (ctx , args) => {
+
+        const user = await getUserById(ctx, args.tokenIdentifier)
+
+        if (user) {
+          const orgIds = user.orgIds.map((org) => org.orgId == args.orgId ? {orgId : args.orgId , role : args.role} : org )
+           
+          const data = ctx.db.patch(user._id , {
+                orgIds : orgIds
             })
         }
       }
