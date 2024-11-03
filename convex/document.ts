@@ -123,8 +123,6 @@ export const getDocuments = query({
       return {docs : [],user : null};
     }
 
-    const userSavedDoc = await getUserById(ctx, user)
-
     // for oraganizations docs
     if (args.orgId) {
       console.log("for oraganizations");
@@ -139,17 +137,11 @@ export const getDocuments = query({
           const documents = docs.filter((doc) =>
             doc.name.toLowerCase().includes(query.toLowerCase()),
           );
-          const savedDocs = documents.filter((doc) =>
-          userSavedDoc.saved.some((savedId) => savedId == doc._id)
-          );
-          return {docs : savedDocs,user : userSavedDoc};
+          return {docs:documents , user:hasAccess};
         }
-        const savedDocs = docs.filter((doc) =>
-          userSavedDoc.saved.some((savedId) => savedId == doc._id)
-          );
-        return {docs : savedDocs,user : userSavedDoc};
+        return {docs, user : hasAccess};
       }
-      return {docs : [],user : null};
+      return {docs: [] , user : null};
     }
 
     // for users docs
@@ -159,25 +151,17 @@ export const getDocuments = query({
         q.eq("tokenIdentifier", user).eq("orgId", undefined),
       )
       .collect();
+      
+      const userdata = await getUser(ctx, user);
 
     const query = args.query;
     if (query) {
       const documents = docs.filter((doc) =>
         doc.name.toLowerCase().includes(query.toLowerCase()),
       );
-
-      const savedDocuments = documents.filter((doc) => 
-      userSavedDoc.saved.some((savedId) => savedId == doc._id )
-      )
-
-      return {docs : savedDocuments,user : userSavedDoc};
+      return {docs: documents, user : userdata};
     }
-
-    const savedDocs = docs.filter((doc) =>
-      userSavedDoc.saved.some((savedId) => savedId == doc._id)
-      );
-    return {docs : savedDocs, user : userSavedDoc};
-
+    return {docs, user : userdata};
   },
 });
 
@@ -396,16 +380,14 @@ export const toggleSaveDoc = mutation({
   },
 });
 
-
-
-
+// for saved section
 export const getsavedDocuments = query({
   args: { query: v.optional(v.string()) , orgId: v.optional(v.string()) },
   handler: async (ctx, args) => {
     console.log("getDocuments started");
     const user = (await ctx.auth.getUserIdentity())?.subject;
     if (!user) {
-      return [];
+      return {docs : [],user : null};
     }
 
     const userSavedDoc = await getUserById(ctx, user)
@@ -419,6 +401,7 @@ export const getsavedDocuments = query({
           .query("docs")
           .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId))
           .collect();
+          console.log("docs:" , docs)
         const query = args.query;
         if (query) {
           const documents = docs.filter((doc) =>
@@ -427,14 +410,14 @@ export const getsavedDocuments = query({
           const savedDocs = documents.filter((doc) =>
           userSavedDoc.saved.some((savedId) => savedId == doc._id)
           );
-          return {savedDocs,userSavedDoc};
+          return {docs : savedDocs,user : userSavedDoc};
         }
         const savedDocs = docs.filter((doc) =>
           userSavedDoc.saved.some((savedId) => savedId == doc._id)
           );
-        return {savedDocs,userSavedDoc};
+        return {docs : savedDocs,user : userSavedDoc};
       }
-      return [];
+      return {docs : [],user : null};
     }
 
     // for users docs
@@ -455,13 +438,13 @@ export const getsavedDocuments = query({
       userSavedDoc.saved.some((savedId) => savedId == doc._id )
       )
 
-      return {savedDocuments,userSavedDoc};
+      return {docs : savedDocuments,user : userSavedDoc};
     }
 
     const savedDocs = docs.filter((doc) =>
       userSavedDoc.saved.some((savedId) => savedId == doc._id)
       );
-    return {savedDocs,userSavedDoc};
+    return {docs : savedDocs, user : userSavedDoc};
 
   },
 });
