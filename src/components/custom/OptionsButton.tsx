@@ -29,7 +29,7 @@ import { toast } from "@afs/hooks/use-toast";
 import { Pencil } from "lucide-react";
 import { UploadDoc } from "./UploadFiele";
 
-export default function OptionButton({ doc }: { doc: Doc<"docs"> }) {
+export default function OptionButton({ doc,saved }: { doc: Doc<"docs">,saved : boolean }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [editing, setEditing] = useState<boolean>(false);
   const { organization } = useOrganization();
@@ -120,7 +120,11 @@ export default function OptionButton({ doc }: { doc: Doc<"docs"> }) {
           >
             <Bookmark className="mr-2 h-4 w-4" />
 
-            <span>save</span>
+            <span>
+             {!saved ?
+              'save' : 'unsave'
+              }
+              </span>
             
           </DropdownMenuItem>
         </DropdownMenuContent>

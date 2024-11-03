@@ -14,6 +14,7 @@ import { useAuth } from "@clerk/nextjs";
 import { ContentLayout } from "@afs/components/custom/admin-panel/content-layout";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@afs/components/ui/breadcrumb";
 import Link from "next/link";
+import { Doc } from "../../../../convex/_generated/dataModel";
 
 function Dashboard() {
   const { organization } = useOrganization();
@@ -24,6 +25,7 @@ function Dashboard() {
     orgId: organization?.id,
     query: !query ? "" : query,
   });
+
 
   return (
     <ContentLayout title="dashboard">
@@ -58,15 +60,15 @@ function Dashboard() {
             <SearchBar query={query} setQuery={setQuery} />
           </div>
 
-          {Docs && Docs.length ? (
+          {Docs && Docs.docs?.length ? (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {/* use length to handl empty docs page , and null to handl loading */}
               {/* rememberalso fix the mobile view  */}
-              {Docs?.map((doc: any) => {
-                return <Document key={doc._id} doc={doc} />;
+              {Docs?.docs?.map((doc: Doc<"docs">) => {
+                return <Document key={doc._id} saved={Docs.user?.saved && Docs.user.saved.some((id) => id == doc._id ) ? true : false} doc={doc} />;
               })}
             </div>
-          ) : Docs && !Docs.length ? (
+          ) : Docs && !Docs.docs?.length ? (
             <div>
               <Lottie
                 animationData={orange_sleepy_cat}

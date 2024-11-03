@@ -25,7 +25,7 @@ import {
 } from "@afs/components/ui/tooltip";
 import { Paperclip } from 'lucide-react';
 
-export function Document({ doc }: { doc: Doc<"docs"> }) {
+export function Document({ doc, saved }: { doc: Doc<"docs"> , saved : boolean }) {
   let FileIcon: string = ""; // Initialize with an empty string
   const icons = Object.keys(fileTypes);
 
@@ -66,7 +66,7 @@ export function Document({ doc }: { doc: Doc<"docs"> }) {
         </div>
 
         <CardTitle>{doc.name}</CardTitle>
-        <OptionButton doc={doc} />
+        <OptionButton saved={saved} doc={doc} />
       </CardHeader>
       <CardContent>
         <div className="relative w-10/12 h-14 flex justify-center items-center mx-auto">
