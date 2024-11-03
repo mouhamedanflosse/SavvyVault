@@ -22,6 +22,7 @@ import {
 } from "@afs/components/ui/breadcrumb";
 import { ContentLayout } from "@afs/components/custom/admin-panel/content-layout";
 import Link from "next/link";
+import { Doc } from "../../../../convex/_generated/dataModel";
 
 export default function SavedDocuments() {
   const { organization } = useOrganization();
