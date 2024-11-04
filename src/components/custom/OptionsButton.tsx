@@ -45,7 +45,7 @@ export default function OptionButton({
 
   const { userId, orgRole } = useAuth();
 
-  const deleteDoc = useMutation(api.document.deleteDocument);
+  const deleteDoc = useMutation(api.document.markAsDeleted);
   const savedocument = useMutation(api.document.toggleSaveDoc);
 
   const handleDelete = () => {

@@ -10,7 +10,7 @@ export default defineSchema({
     type : v.string(),
     docUrl : v.string(),
     status : v.string()
-  }).index("by_token", ["tokenIdentifier", "orgId"]).index("by_orgId" , ["orgId"]),
+  }).index("by_token", ["tokenIdentifier", "orgId" , "status"]).index("by_orgId" , ["orgId" , "status"]),
 
   
   users: defineTable({

@@ -132,7 +132,7 @@ export const getDocuments = query({
       if (hasAccess) {
         const docs = await ctx.db
           .query("docs")
-          .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId))
+          .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId).eq("status" , ""))
           .collect();
         const query = args.query;
         if (query) {
@@ -150,7 +150,7 @@ export const getDocuments = query({
     const docs = await ctx.db
       .query("docs")
       .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", user).eq("orgId", undefined),
+        q.eq("tokenIdentifier", user).eq("orgId", undefined).eq("status" , ""),
       )
       .collect();
 
@@ -421,7 +421,7 @@ export const getsavedDocuments = query({
       if (hasAccess) {
         const docs = await ctx.db
           .query("docs")
-          .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId))
+          .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId).eq("status" , ""))
           .collect();
         console.log("docs:", docs);
         const query = args.query;
@@ -446,7 +446,7 @@ export const getsavedDocuments = query({
     const docs = await ctx.db
       .query("docs")
       .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", user).eq("orgId", undefined),
+        q.eq("tokenIdentifier", user).eq("orgId", undefined).eq("status" , ""),
       )
       .collect();
 
@@ -467,5 +467,59 @@ export const getsavedDocuments = query({
       userSavedDoc.saved.some((savedId) => savedId == doc._id),
     );
     return { docs: savedDocs, user: userSavedDoc };
+  },
+});
+
+// for deleted document
+export const getDeletedDocuments = query({
+  args: { query: v.optional(v.string()), orgId: v.optional(v.string()) },
+  handler: async (ctx, args) => {
+    console.log("getDocuments started");
+    const user = (await ctx.auth.getUserIdentity())?.subject;
+    if (!user) {
+      return { docs: [], user: null };
+    }
+
+    const userSavedDoc = await getUserById(ctx, user);
+
+    // for oraganizations docs
+    if (args.orgId) {
+      console.log("for oraganizations");
+      const hasAccess = await hasAccessTOrg(ctx, args.orgId);
+      if (hasAccess) {
+        const docs = await ctx.db
+          .query("docs")
+          .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId).eq("status" , "deleted"))
+          .collect();
+        console.log("docs:", docs);
+        const query = args.query;
+        if (query) {
+          const documents = docs.filter((doc) =>
+            doc.name.toLowerCase().includes(query.toLowerCase()),
+          );
+          return { docs: documents, user: userSavedDoc };
+        }
+        return { docs, user: userSavedDoc };
+      }
+      return { docs: [], user: null };
+    }
+
+    // for users docs
+    const docs = await ctx.db
+      .query("docs")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", user).eq("orgId", undefined).eq("status" , "deleted"),
+      )
+      .collect();
+
+    const query = args.query;
+    if (query) {
+      const documents = docs.filter((doc) =>
+        doc.name.toLowerCase().includes(query.toLowerCase()),
+      );
+      return { docs: documents, user: userSavedDoc };
+    }
+
+    return { docs, user: userSavedDoc };
   },
 });
