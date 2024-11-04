@@ -72,7 +72,7 @@ export default function Trash() {
               {/* use length to handl empty docs page , and null to handl loading */}
               {/* rememberalso fix the mobile view  */}
               {Docs?.docs?.map((doc: Doc<"docs">) => {
-                return <Document key={doc._id} user={Docs.user} saved={Docs.user?.saved && Docs.user.saved.some((id) => id == doc._id ) ? true : false} doc={doc} />;
+                return <Document restore={true} key={doc._id} user={Docs.user} saved={Docs.user?.saved && Docs.user.saved.some((id) => id == doc._id ) ? true : false} doc={doc} />;
               })}
             </div>
           ) : Docs && !Docs.docs?.length ? (

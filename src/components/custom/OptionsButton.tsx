@@ -20,7 +20,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@afs/components/ui/alert-dialog";
-import { Bookmark, MoreVertical, Trash } from "lucide-react";
+import { Bookmark, MoreVertical, Trash, UndoIcon } from "lucide-react";
 import { useAuth, useOrganization } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
@@ -34,10 +34,12 @@ export default function OptionButton({
   doc,
   saved,
   user,
+  restore,
 }: {
   doc: Doc<"docs">;
   saved: boolean;
   user: Doc<"users"> | null;
+  restore?: boolean;
 }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [editing, setEditing] = useState<boolean>(false);
@@ -45,10 +47,38 @@ export default function OptionButton({
 
   const { userId, orgRole } = useAuth();
 
-  const deleteDoc = useMutation(api.document.markAsDeleted);
+  const moveToTrash = useMutation(api.document.moveToTrash);
   const savedocument = useMutation(api.document.toggleSaveDoc);
-  const restoreDoc = useMutation(api.document.restoreDocument);
 
+
+  // for restore page 
+  const restoreDoc = useMutation(api.document.restoreDocument);
+  const deleteDoc = useMutation(api.document.deleteDocument);
+
+  // move to trash
+  const MoveDocToTrash = () => {
+    console.log(editing);
+    // Implement your delete logic here
+    try {
+      moveToTrash({ docId: doc._id, orgId: organization?.id });
+      setShowDeleteDialog(false);
+      // alert
+      toast({
+        variant: "success",
+        title: "moved to trash successfully",
+        description: `1 document has been moved to trash`
+      });
+    } catch (err) {
+      console.log(err);
+      toast({
+        variant: "destructive",
+        title: "somethig went wrong",
+        description: "you can't perfom this action",
+      });
+    }
+  };
+
+  // delete permently 
   const handleDelete = () => {
     console.log(editing);
     // Implement your delete logic here
@@ -99,7 +129,6 @@ export default function OptionButton({
     }
   }
 
-
   // saving file
   async function RestoreDoc() {
     try {
@@ -124,7 +153,19 @@ export default function OptionButton({
     }
   }
 
-
+   function allowEditDelete() {
+    if (
+      doc.tokenIdentifier == userId ||
+      user?.orgIds
+        .find((org) => org.orgId == organization?.id)
+        ?.role.includes("admin")
+    ) {
+      if (!restore) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   return (
     <>
@@ -138,10 +179,7 @@ export default function OptionButton({
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-          {doc.tokenIdentifier == userId ||
-          user?.orgIds
-            .find((org) => org.orgId == organization?.id)
-            ?.role.includes("admin") ? (
+          {allowEditDelete() ? (
             <>
               <DropdownMenuSeparator />
               <DropdownMenuItem
@@ -149,16 +187,13 @@ export default function OptionButton({
                 onSelect={() => setShowDeleteDialog(true)}
               >
                 <Trash className="mr-2 h-4 w-4" />
-                <span>Delete</span>
+                <span>{!restore ? "move to trash" : "delete"}</span>
               </DropdownMenuItem>
             </>
           ) : (
             ""
           )}
-          {doc.tokenIdentifier == userId ||
-          user?.orgIds
-            .find((org) => org.orgId == organization?.id)
-            ?.role.includes("admin") ? (
+          {allowEditDelete() ? (
             <>
               <DropdownMenuSeparator />
               <DropdownMenuItem
@@ -172,18 +207,33 @@ export default function OptionButton({
           ) : (
             ""
           )}
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="cursor-pointer"
-            onSelect={() => saveDoc()}
-          >
-            {!saved ? (
-              <Bookmark className="mr-2 h-4 w-4" />
-            ) : (
-              <BookmarkCheck className="mr-2 h-4 w-4" />
-            )}
-            <span>{!saved ? "save" : "unsave"}</span>
-          </DropdownMenuItem>
+          {!restore ? (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onSelect={() => saveDoc()}
+              >
+                {!saved ? (
+                  <Bookmark className="mr-2 h-4 w-4" />
+                ) : (
+                  <BookmarkCheck className="mr-2 h-4 w-4" />
+                )}
+                <span>{!saved ? "save" : "unsave"}</span>
+              </DropdownMenuItem>
+            </>
+          ) : (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onSelect={() => RestoreDoc()}
+              >
+                <UndoIcon className="mr-2 h-4 w-4" />
+                <span>Restore</span>
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
 
@@ -191,18 +241,16 @@ export default function OptionButton({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the
-              item and remove the data from our servers.
+            <AlertDialogDescription>{ restore ?
+              "This action cannot be undone. This will permanently delete the item and remove the data from our servers." : "this item will be move to trash you can permanently delete it from there " }
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+            <AlertDialogAction onClick={!restore ? MoveDocToTrash : handleDelete }>{restore ? 'Delete' : "move to trash"}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
       {editing ? (
         <UploadDoc
           setEditing={setEditing}
