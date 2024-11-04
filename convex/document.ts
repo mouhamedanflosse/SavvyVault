@@ -234,6 +234,9 @@ export const deleteDocument = mutation({
     if (hasAccess) {
       const deletedDocument = await ctx.db.delete(args.docId);
       const deletedFile = await ctx.storage.delete(doc.fileId);
+      if (doc.schedulerId) {
+        const processDeletion = await ctx.scheduler.cancel(doc.schedulerId)
+      }
       return deletedDocument;
     }
 
@@ -241,6 +244,9 @@ export const deleteDocument = mutation({
     if (doc.tokenIdentifier === identity.subject) {
       const deletedDocument = await ctx.db.delete(args.docId);
       const deletedFile = await ctx.storage.delete(doc.fileId);
+      if (doc.schedulerId) {
+        const processDeletion = await ctx.scheduler.cancel(doc.schedulerId)
+      }
       return deletedDocument;
     }
 

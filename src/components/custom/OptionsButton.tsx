@@ -50,8 +50,7 @@ export default function OptionButton({
   const moveToTrash = useMutation(api.document.moveToTrash);
   const savedocument = useMutation(api.document.toggleSaveDoc);
 
-
-  // for restore page 
+  // for restore page
   const restoreDoc = useMutation(api.document.restoreDocument);
   const deleteDoc = useMutation(api.document.deleteDocument);
 
@@ -66,7 +65,7 @@ export default function OptionButton({
       toast({
         variant: "success",
         title: "moved to trash successfully",
-        description: `1 document has been moved to trash`
+        description: `1 document has been moved to trash`,
       });
     } catch (err) {
       console.log(err);
@@ -78,7 +77,7 @@ export default function OptionButton({
     }
   };
 
-  // delete permently 
+  // delete permently
   const handleDelete = () => {
     console.log(editing);
     // Implement your delete logic here
@@ -153,7 +152,7 @@ export default function OptionButton({
     }
   }
 
-   function allowEditDelete() {
+  function allowEditDelete() {
     if (
       doc.tokenIdentifier == userId ||
       user?.orgIds
@@ -207,6 +206,20 @@ export default function OptionButton({
           ) : (
             ""
           )}
+          {restore ? (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onSelect={() => setShowDeleteDialog(true)}
+              >
+                <Trash className="mr-2 h-4 w-4" />
+                <span> delete</span>
+              </DropdownMenuItem>
+            </>
+          ) : (
+            ""
+          )}
           {!restore ? (
             <>
               <DropdownMenuSeparator />
@@ -241,13 +254,19 @@ export default function OptionButton({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>{ restore ?
-              "This action cannot be undone. This will permanently delete the item and remove the data from our servers." : "this item will be move to trash you can permanently delete it from there " }
+            <AlertDialogDescription>
+              {restore
+                ? "This action cannot be undone. This will permanently delete the item and remove the data from our servers."
+                : "this item will be move to trash you can permanently delete it from there "}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={!restore ? MoveDocToTrash : handleDelete }>{restore ? 'Delete' : "move to trash"}</AlertDialogAction>
+            <AlertDialogAction
+              onClick={!restore ? MoveDocToTrash : handleDelete}
+            >
+              {restore ? "Delete" : "move to trash"}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
