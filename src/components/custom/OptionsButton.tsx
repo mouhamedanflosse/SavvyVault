@@ -28,15 +28,22 @@ import { Doc } from "../../../convex/_generated/dataModel";
 import { toast } from "@afs/hooks/use-toast";
 import { Pencil } from "lucide-react";
 import { UploadDoc } from "./UploadFiele";
-import { BookmarkCheck } from 'lucide-react';
+import { BookmarkCheck } from "lucide-react";
 
-export default function OptionButton({ doc,saved }: { doc: Doc<"docs">,saved : boolean }) {
+export default function OptionButton({
+  doc,
+  saved,
+  user,
+}: {
+  doc: Doc<"docs">;
+  saved: boolean;
+  user: Doc<"users">;
+}) {
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [editing, setEditing] = useState<boolean>(false);
   const { organization } = useOrganization();
 
-  const { userId, orgRole } = useAuth()
-  console.log(orgRole)
+  const { userId, orgRole } = useAuth();
 
   const deleteDoc = useMutation(api.document.deleteDocument);
   const savedocument = useMutation(api.document.toggleSaveDoc);
@@ -101,37 +108,52 @@ export default function OptionButton({ doc,saved }: { doc: Doc<"docs">,saved : b
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="cursor-pointer"
-            onSelect={() => setShowDeleteDialog(true)}
-          >
-            <Trash className="mr-2 h-4 w-4" />
-            <span>Delete</span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="cursor-pointer"
-            onSelect={() => setEditing(true)}
-          >
-            <Pencil className="mr-2 h-4 w-4" />
-            <span>Edit</span>
-          </DropdownMenuItem>
+
+          {doc.tokenIdentifier == userId ||
+          user.orgIds
+            .find((org) => org.orgId == organization?.id)
+            ?.role.includes("admin") ? (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onSelect={() => setShowDeleteDialog(true)}
+              >
+                <Trash className="mr-2 h-4 w-4" />
+                <span>Delete</span>
+              </DropdownMenuItem>
+            </>
+          ) : (
+            ""
+          )}
+          {doc.tokenIdentifier == userId ||
+          user.orgIds
+            .find((org) => org.orgId == organization?.id)
+            ?.role.includes("admin") ? (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onSelect={() => setEditing(true)}
+              >
+                <Pencil className="mr-2 h-4 w-4" />
+                <span>Edit</span>
+              </DropdownMenuItem>
+            </>
+          ) : (
+            ""
+          )}
           <DropdownMenuSeparator />
           <DropdownMenuItem
             className="cursor-pointer"
             onSelect={() => saveDoc()}
           >
-           { !saved ?
-            <Bookmark  className="mr-2 h-4 w-4" /> :
-            <BookmarkCheck  className="mr-2 h-4 w-4" /> 
-            }
-            <span>
-             {!saved ?
-              'save' : 'unsave'
-              }
-              </span>
-            
+            {!saved ? (
+              <Bookmark className="mr-2 h-4 w-4" />
+            ) : (
+              <BookmarkCheck className="mr-2 h-4 w-4" />
+            )}
+            <span>{!saved ? "save" : "unsave"}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
