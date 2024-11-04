@@ -47,6 +47,7 @@ export default function OptionButton({
 
   const deleteDoc = useMutation(api.document.markAsDeleted);
   const savedocument = useMutation(api.document.toggleSaveDoc);
+  const restoreDoc = useMutation(api.document.restoreDocument);
 
   const handleDelete = () => {
     console.log(editing);
@@ -74,6 +75,7 @@ export default function OptionButton({
     }
   };
 
+  // saving file
   async function saveDoc() {
     try {
       const savedoc = await savedocument({
@@ -83,10 +85,10 @@ export default function OptionButton({
       // alert
       toast({
         variant: "success",
-        title: "1 document deleted successfully",
+        title: "document saved successfully",
         description: organization
-          ? `1 document has been deleted in ${organization.name}`
-          : "1 document has been deleted from your personal space",
+          ? `1 document has been saved from ${organization.name}`
+          : "1 document has been saved from your personal space",
       });
     } catch (err) {
       toast({
@@ -96,6 +98,33 @@ export default function OptionButton({
       });
     }
   }
+
+
+  // saving file
+  async function RestoreDoc() {
+    try {
+      const savedoc = await restoreDoc({
+        docId: doc._id,
+        orgId: organization?.id,
+      });
+      // alert
+      toast({
+        variant: "success",
+        title: "document restored successfully",
+        description: organization
+          ? `1 document has restored successfully`
+          : "1 document has been saved from your personal space",
+      });
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "somethig went wrong",
+        description: "you can't perfom this action",
+      });
+    }
+  }
+
+
 
   return (
     <>

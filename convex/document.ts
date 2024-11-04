@@ -76,7 +76,8 @@ export const insertDocument = mutation({
       orgId: args.orgId,
       type: args.type,
       docUrl,
-      status : ""
+      status : "active",
+      schedulerId : null
     });
     return newDoc;
   },
@@ -132,7 +133,7 @@ export const getDocuments = query({
       if (hasAccess) {
         const docs = await ctx.db
           .query("docs")
-          .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId).eq("status" , ""))
+          .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId).eq("status" , "active"))
           .collect();
         const query = args.query;
         if (query) {
@@ -150,7 +151,7 @@ export const getDocuments = query({
     const docs = await ctx.db
       .query("docs")
       .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", user).eq("orgId", undefined).eq("status" , ""),
+        q.eq("tokenIdentifier", user).eq("orgId", undefined).eq("status" , "active"),
       )
       .collect();
 
@@ -234,18 +235,19 @@ export const markAsDeleted = mutation({
       console.log("hasAccess", args, doc);
       // const deletedDocument = await ctx.db.delete(args.docId);
       // const deletedFile = await ctx.storage.delete(doc.fileId);
-      const processDeletion = await ctx.scheduler.runAfter(30000 , internal.document.deletedDocument , {docId : args.docId,fileId: doc.fileId})
-      const markAsdeleteed = await ctx.db.patch(args.docId , {status : "deleted"})
-      return deletedDocument;
+      const schedulerId = (await ctx.scheduler.runAfter(3000000 , internal.document.deletedDocument , {docId : args.docId,fileId: doc.fileId})) as Id<"_scheduled_functions">
+      const markAsdeleteed = await ctx.db.patch(args.docId , {status : "deleted" , schedulerId})
+      console.log('scheduler:' , schedulerId)
+      return markAsdeleteed;
     }
 
     // for an document creator
     if (doc.tokenIdentifier === identity.subject) {
       console.log("user", args, doc);
       // const deletedDocument = await ctx.db.delete(args.docId);
-      const processDeletion = await ctx.scheduler.runAfter(30000 , internal.document.deletedDocument , {docId : args.docId,fileId: doc.fileId})
-      const markAsdeleteed = await ctx.db.patch(args.docId , {status : "deleted"})
-      return deletedDocument;
+      const schedulerId = (await ctx.scheduler.runAfter(3000000 , internal.document.deletedDocument , {docId : args.docId,fileId: doc.fileId})) as Id<"_scheduled_functions">
+      const markAsdeleteed = await ctx.db.patch(args.docId , {status : "deleted" , schedulerId})
+      return markAsdeleteed;
     }
 
     throw new ConvexError(
@@ -421,7 +423,7 @@ export const getsavedDocuments = query({
       if (hasAccess) {
         const docs = await ctx.db
           .query("docs")
-          .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId).eq("status" , ""))
+          .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId).eq("status" , "active"))
           .collect();
         console.log("docs:", docs);
         const query = args.query;
@@ -446,7 +448,7 @@ export const getsavedDocuments = query({
     const docs = await ctx.db
       .query("docs")
       .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", user).eq("orgId", undefined).eq("status" , ""),
+        q.eq("tokenIdentifier", user).eq("orgId", undefined).eq("status" , "active"),
       )
       .collect();
 
@@ -521,5 +523,52 @@ export const getDeletedDocuments = query({
     }
 
     return { docs, user: userSavedDoc };
+  },
+});
+
+// for restore document
+export const restoreDocument = mutation({
+  args: { docId: v.id("docs"), orgId: v.optional(v.string()) },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new ConvexError(
+        "yo must be loged in before proceeding to this action",
+      );
+    }
+
+    const doc = await ctx.db.get(args.docId);
+
+    if (!doc) {
+      throw new ConvexError("the document must be defined");
+    }
+
+    const hasAccess = await hasAccessTOrg(ctx, args.orgId);
+
+    // for an orgnization member
+    if (hasAccess) {
+      console.log("hasAccess", args, doc);
+      if (doc.schedulerId) {
+        const processDeletion = await ctx.scheduler.cancel(doc.schedulerId)
+        const markAsdeleteed = await ctx.db.patch(args.docId , {status : "active"})
+        return markAsdeleteed;
+      }
+    }
+
+    // for an document creator
+    if (doc.tokenIdentifier === identity.subject) {
+      console.log("user", args, doc);
+      if (doc.schedulerId) {
+        const processDeletion = await ctx.scheduler.cancel(doc.schedulerId)
+        
+        const markAsdeleteed = await ctx.db.patch(args.docId , {status : "active"})
+        return markAsdeleteed;
+      }
+    }
+
+    throw new ConvexError(
+      "you don't have the required permissions to perform this action",
+    );
   },
 });

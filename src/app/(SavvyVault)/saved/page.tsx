@@ -58,9 +58,9 @@ export default function SavedDocuments() {
                 ? "your documents"
                 : `${organization.name}'s documents`}
             </h1>
-            <Authenticated>
+            {/* <Authenticated>
               <UploadDoc editMode={false} />
-            </Authenticated>
+            </Authenticated> */}
           </div>
           <div className="flex w-full justify-end">
             <SearchBar query={query} setQuery={setQuery} />

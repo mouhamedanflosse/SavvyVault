@@ -9,7 +9,8 @@ export default defineSchema({
     orgId : v.optional(v.string()),
     type : v.string(),
     docUrl : v.string(),
-    status : v.string()
+    status : v.string(),
+    schedulerId : v.union(v.id("_scheduled_functions") , v.null())
   }).index("by_token", ["tokenIdentifier", "orgId" , "status"]).index("by_orgId" , ["orgId" , "status"]),
 
   

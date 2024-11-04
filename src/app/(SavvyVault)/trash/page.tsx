@@ -1,7 +1,8 @@
+'use client'
+
 import { useOrganization } from "@clerk/nextjs";
-import { Authenticated, useQuery } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { UploadDoc } from "@afs/components/custom/UploadFiele";
 import Lottie from "lottie-react";
 import orange_sleepy_cat from "../../../../public/assets/orange_sleepy_cat.json";
 import { Document } from "@afs/components/custom/DocCard";
@@ -27,10 +28,12 @@ export default function Trash() {
   const [query, setQuery] = useState<string | null>(null);
 
   const { userId } = useAuth();
+
   const Docs = useQuery(api.document.getDeletedDocuments, {
     orgId: organization?.id,
     query: !query ? "" : query,
   });
+
   return (
     <ContentLayout title="dashboard">
       <Breadcrumb>
@@ -56,9 +59,9 @@ export default function Trash() {
                 ? "your documents"
                 : `${organization.name}'s documents`}
             </h1>
-            <Authenticated>
+            {/* <Authenticated>
               <UploadDoc editMode={false} />
-            </Authenticated>
+            </Authenticated> */}
           </div>
           <div className="flex w-full justify-end">
             <SearchBar query={query} setQuery={setQuery} />
