@@ -37,7 +37,7 @@ export default function OptionButton({
 }: {
   doc: Doc<"docs">;
   saved: boolean;
-  user: Doc<"users">;
+  user: Doc<"users"> | null;
 }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [editing, setEditing] = useState<boolean>(false);
@@ -110,7 +110,7 @@ export default function OptionButton({
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
           {doc.tokenIdentifier == userId ||
-          user.orgIds
+          user?.orgIds
             .find((org) => org.orgId == organization?.id)
             ?.role.includes("admin") ? (
             <>
@@ -127,7 +127,7 @@ export default function OptionButton({
             ""
           )}
           {doc.tokenIdentifier == userId ||
-          user.orgIds
+          user?.orgIds
             .find((org) => org.orgId == organization?.id)
             ?.role.includes("admin") ? (
             <>

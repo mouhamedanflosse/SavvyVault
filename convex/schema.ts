@@ -9,6 +9,7 @@ export default defineSchema({
     orgId : v.optional(v.string()),
     type : v.string(),
     docUrl : v.string(),
+    status : v.string()
   }).index("by_token", ["tokenIdentifier", "orgId"]).index("by_orgId" , ["orgId"]),
 
   

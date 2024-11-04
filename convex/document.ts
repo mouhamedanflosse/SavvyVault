@@ -1,7 +1,8 @@
 import { Doc, Id, TableNames } from "./_generated/dataModel";
-import { mutation, query, QueryCtx, MutationCtx } from "./_generated/server";
+import { mutation, query, QueryCtx, MutationCtx, internalMutation } from "./_generated/server";
 import { v, ConvexError } from "convex/values";
 import { getUserById } from "./users";
+import { internal } from "./_generated/api";
 // import OpenAI from "openai";
 
 export const generateUploadUrl = mutation(async (ctx) => {
@@ -75,6 +76,7 @@ export const insertDocument = mutation({
       orgId: args.orgId,
       type: args.type,
       docUrl,
+      status : ""
     });
     return newDoc;
   },
@@ -120,7 +122,7 @@ export const getDocuments = query({
     console.log("getDocuments started");
     const user = (await ctx.auth.getUserIdentity())?.subject;
     if (!user) {
-      return {docs : [],user : null};
+      return { docs: [], user: null };
     }
 
     // for oraganizations docs
@@ -137,11 +139,11 @@ export const getDocuments = query({
           const documents = docs.filter((doc) =>
             doc.name.toLowerCase().includes(query.toLowerCase()),
           );
-          return {docs:documents , user:hasAccess};
+          return { docs: documents, user: hasAccess };
         }
-        return {docs, user : hasAccess};
+        return { docs, user: hasAccess };
       }
-      return {docs: [] , user : null};
+      return { docs: [], user: null };
     }
 
     // for users docs
@@ -152,16 +154,16 @@ export const getDocuments = query({
       )
       .collect();
 
-      const userdata = await getUser(ctx, user);
+    const userdata = await getUser(ctx, user);
 
     const query = args.query;
     if (query) {
       const documents = docs.filter((doc) =>
         doc.name.toLowerCase().includes(query.toLowerCase()),
       );
-      return {docs: documents, user : userdata};
+      return { docs: documents, user: userdata };
     }
-    return {docs, user : userdata};
+    return { docs, user: userdata };
   },
 });
 
@@ -172,7 +174,7 @@ export const getDocument = query({
   },
   handler: async (ctx, args) => {
     const userId = (await ctx.auth.getUserIdentity())?.subject;
-    const user_ = (await ctx.auth.getUserIdentity());
+    const user_ = await ctx.auth.getUserIdentity();
     if (!userId) {
       return null;
     }
@@ -208,7 +210,7 @@ export const getDocument = query({
   },
 });
 
-export const deleteDocument = mutation({
+export const markAsDeleted = mutation({
   args: { docId: v.id("docs"), orgId: v.optional(v.string()) },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -230,15 +232,19 @@ export const deleteDocument = mutation({
     // for an orgnization member
     if (hasAccess) {
       console.log("hasAccess", args, doc);
-      const deletedDocument = await ctx.db.delete(args.docId);
-      const deletedFile = await ctx.storage.delete(doc.fileId);
+      // const deletedDocument = await ctx.db.delete(args.docId);
+      // const deletedFile = await ctx.storage.delete(doc.fileId);
+      const processDeletion = await ctx.scheduler.runAfter(30000 , internal.document.deletedDocument , {docId : args.docId,fileId: doc.fileId})
+      const markAsdeleteed = await ctx.db.patch(args.docId , {status : "deleted"})
       return deletedDocument;
     }
 
     // for an document creator
     if (doc.tokenIdentifier === identity.subject) {
       console.log("user", args, doc);
-      const deletedDocument = await ctx.db.delete(args.docId);
+      // const deletedDocument = await ctx.db.delete(args.docId);
+      const processDeletion = await ctx.scheduler.runAfter(30000 , internal.document.deletedDocument , {docId : args.docId,fileId: doc.fileId})
+      const markAsdeleteed = await ctx.db.patch(args.docId , {status : "deleted"})
       return deletedDocument;
     }
 
@@ -247,6 +253,20 @@ export const deleteDocument = mutation({
     );
   },
 });
+
+// schadule deletion
+export const deletedDocument = internalMutation({
+  args: {
+    docId: v.id("docs"),
+    fileId : v.id("_storage")
+  },
+  handler: async (ctx, args) => {
+    const deletedDocument = await ctx.db.delete(args.docId);
+    const deletedFile = await ctx.storage.delete(args.fileId);
+    return deletedDocument
+  },
+});
+
 export const editDocument = mutation({
   args: {
     docId: v.id("docs"),
@@ -289,17 +309,21 @@ export const editDocument = mutation({
 
     // for an orgnization member
     if (hasAccess) {
-      const deletedDocument = await ctx.db.patch(args.docId, {
-        name: args.documentInfo.name,
-        fileId: args.documentInfo.fileId ? args.documentInfo.fileId : fileId,
-        type: args.documentInfo.type,
-        docUrl,
-      });
-      if (args.documentInfo.fileId) {
-        const deletedFile = await ctx.storage.delete(doc.fileId);
+      const isAdmin = hasAccess.orgIds
+        .find((org) => org.orgId == args.orgId)
+        ?.role.includes("admin");
+      if (isAdmin) {
+        const deletedDocument = await ctx.db.patch(args.docId, {
+          name: args.documentInfo.name,
+          fileId: args.documentInfo.fileId ? args.documentInfo.fileId : fileId,
+          type: args.documentInfo.type,
+          docUrl,
+        });
+        if (args.documentInfo.fileId) {
+          const deletedFile = await ctx.storage.delete(doc.fileId);
+        }
+        return deletedDocument;
       }
-
-      return deletedDocument;
     }
 
     // for an document creator
@@ -340,7 +364,7 @@ export const toggleSaveDoc = mutation({
 
     const user = await getUserById(ctx, identity.subject);
 
-    const docAlreadySaved = user.saved.some((Id) => Id == args.docId)
+    const docAlreadySaved = user.saved.some((Id) => Id == args.docId);
 
     const hasAccess = await hasAccessTOrg(ctx, args.docId);
 
@@ -351,7 +375,6 @@ export const toggleSaveDoc = mutation({
           saved: [...user.saved].filter((id) => id !== args.docId),
         });
         return saveDocTouser;
-
       }
       const saveDocTouser = ctx.db.patch(user?._id, {
         saved: [...user.saved, args.docId],
@@ -366,7 +389,6 @@ export const toggleSaveDoc = mutation({
           saved: [...user.saved].filter((id) => id !== args.docId),
         });
         return saveDocTouser;
-
       }
       const saveDocTouser = ctx.db.patch(user?._id, {
         saved: [...user.saved, args.docId],
@@ -382,15 +404,15 @@ export const toggleSaveDoc = mutation({
 
 // for saved section
 export const getsavedDocuments = query({
-  args: { query: v.optional(v.string()) , orgId: v.optional(v.string()) },
+  args: { query: v.optional(v.string()), orgId: v.optional(v.string()) },
   handler: async (ctx, args) => {
     console.log("getDocuments started");
     const user = (await ctx.auth.getUserIdentity())?.subject;
     if (!user) {
-      return {docs : [],user : null};
+      return { docs: [], user: null };
     }
 
-    const userSavedDoc = await getUserById(ctx, user)
+    const userSavedDoc = await getUserById(ctx, user);
 
     // for oraganizations docs
     if (args.orgId) {
@@ -401,23 +423,23 @@ export const getsavedDocuments = query({
           .query("docs")
           .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId))
           .collect();
-          console.log("docs:" , docs)
+        console.log("docs:", docs);
         const query = args.query;
         if (query) {
           const documents = docs.filter((doc) =>
             doc.name.toLowerCase().includes(query.toLowerCase()),
           );
           const savedDocs = documents.filter((doc) =>
-          userSavedDoc.saved.some((savedId) => savedId == doc._id)
+            userSavedDoc.saved.some((savedId) => savedId == doc._id),
           );
-          return {docs : savedDocs,user : userSavedDoc};
+          return { docs: savedDocs, user: userSavedDoc };
         }
         const savedDocs = docs.filter((doc) =>
-          userSavedDoc.saved.some((savedId) => savedId == doc._id)
-          );
-        return {docs : savedDocs,user : userSavedDoc};
+          userSavedDoc.saved.some((savedId) => savedId == doc._id),
+        );
+        return { docs: savedDocs, user: userSavedDoc };
       }
-      return {docs : [],user : null};
+      return { docs: [], user: null };
     }
 
     // for users docs
@@ -434,17 +456,16 @@ export const getsavedDocuments = query({
         doc.name.toLowerCase().includes(query.toLowerCase()),
       );
 
-      const savedDocuments = documents.filter((doc) => 
-      userSavedDoc.saved.some((savedId) => savedId == doc._id )
-      )
+      const savedDocuments = documents.filter((doc) =>
+        userSavedDoc.saved.some((savedId) => savedId == doc._id),
+      );
 
-      return {docs : savedDocuments,user : userSavedDoc};
+      return { docs: savedDocuments, user: userSavedDoc };
     }
 
     const savedDocs = docs.filter((doc) =>
-      userSavedDoc.saved.some((savedId) => savedId == doc._id)
-      );
-    return {docs : savedDocs, user : userSavedDoc};
-
+      userSavedDoc.saved.some((savedId) => savedId == doc._id),
+    );
+    return { docs: savedDocs, user: userSavedDoc };
   },
 });
