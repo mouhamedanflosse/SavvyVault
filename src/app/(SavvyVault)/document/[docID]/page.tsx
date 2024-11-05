@@ -19,6 +19,7 @@ import { Loader2 } from "lucide-react";
 import MobileChatBotLayout from "@afs/components/custom/MobileChatBotLayout";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import axios from "axios"
 
 
 export default  function Document({
@@ -40,10 +41,25 @@ export default  function Document({
 
 
   useEffect(() => {
-    if (doc?.docURL) {
-      fetch(`/api/getPlaiceholder?imageUrl=${encodeURIComponent(doc.docURL)}`)
-        .then((res) => res.json())
-        .then((data) => setPlaceholder(data.base64));
+    if (doc && doc.docURL) {
+      // fetch(`/api/getPlaiceholder?imageUrl=${encodeURIComponent(doc.docURL)}` ,  {
+      //   headers: {
+      //     accept: 'application/json',
+      //     'User-agent': 'learning app',
+      //   },
+      //   method: "POST",
+      //   body: JSON.stringify({ docURL : doc.docURL  }),
+      //   // body: JSON.stringify({ username: "example" }),
+      // })
+      //   .then((res) => res.json())
+      //   .then((data) => setPlaceholder(data.base64)).catch((err) => console.log(err));
+
+        axios({
+          method : "post",
+          url : `/api/getPlaiceholder?imageUrl=${encodeURIComponent(doc.docURL)}` ,
+          data : { docURL : doc.docURL  }
+        }).then((data : any) => setPlaceholder(data.base64)).catch((err : any) => console.log(err));
+
         console.log(doc)
         console.log(placeholder)
     }
