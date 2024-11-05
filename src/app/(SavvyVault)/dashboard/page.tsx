@@ -26,7 +26,6 @@ function Dashboard() {
     query: !query ? "" : query,
   });
 
-
   return (
     <ContentLayout title="dashboard">
       <Breadcrumb>

@@ -1,4 +1,4 @@
-"use client";
+'use client'
 import { useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { Id } from "../../../../../convex/_generated/dataModel";
@@ -16,18 +16,11 @@ import {
 } from "@afs/components/ui/breadcrumb";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@afs/components/ui/dialog";
-import { MessageCircle } from "lucide-react";
-import { Button } from "@afs/components/ui/button";
-import { useState } from "react";
+import MobileChatBotLayout from "@afs/components/custom/MobileChatBotLayout";
+import { getPlaiceholder } from "plaiceholder";
 
-export default function Document({
+
+export default  function Document({
   params,
 }: {
   params: {
@@ -35,12 +28,17 @@ export default function Document({
   };
 }) {
   const { organization } = useOrganization();
-  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const doc = useQuery(api.document.getDocument, {
     docId: params.docID,
     orgId: organization?.id,
   });
+
+
+  // const {
+  //   metadata: { height, width },
+  //   ...plaiceholder
+  // } =  getPlaiceholder(Buffer.from(doc?.docURL),{size : 10});
 
   // if (!doc) {
   //   return (
@@ -98,7 +96,7 @@ export default function Document({
         <div className="mt-6 flex flex-col gap-4">
           <div className="flex w-full items-center justify-between">
             <h1 className="text-2xl font-bold">{doc.name}</h1>
-            <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>
+            {/* <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>
               <DialogTrigger asChild>
                 <Button className="lg:hidden" variant="outline" size="icon">
                   <MessageCircle className="h-6 w-6" />
@@ -113,7 +111,8 @@ export default function Document({
                   <ChatBox docId={params.docID} />
                 </div>
               </DialogContent>
-            </Dialog>
+            </Dialog> */}
+            <MobileChatBotLayout docId={params.docID} />
           </div>
           <div className="relative flex w-full flex-col gap-6 lg:flex-row">
             <ScrollArea className="h-[calc(100vh-12rem)] w-full rounded-md border bg-gray-900 lg:w-1/2">

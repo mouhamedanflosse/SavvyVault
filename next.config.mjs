@@ -6,9 +6,12 @@ const nextConfig = {
     remotePatterns: [
       {
         hostname: process.env.NEXT_PUBLIC_CONVEX_URL.split("//")[1],
-        // protocol: "https",
-        // pathname: "/api/storage/*",
-        // port: "",
+      },
+      {
+        hostname: "img.clerk.com",
+        protocol: 'https',
+        port: '',
+        pathname: '/**',
       },
     ],
   },
