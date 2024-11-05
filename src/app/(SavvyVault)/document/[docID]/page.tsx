@@ -17,7 +17,8 @@ import {
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import MobileChatBotLayout from "@afs/components/custom/MobileChatBotLayout";
-import { getPlaiceholder } from "plaiceholder";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 
 
 export default  function Document({
@@ -27,18 +28,26 @@ export default  function Document({
     docID: Id<"docs">;
   };
 }) {
+  const [placeholder, setPlaceholder] = useState();
   const { organization } = useOrganization();
 
   const doc = useQuery(api.document.getDocument, {
     docId: params.docID,
     orgId: organization?.id,
   });
+  // const doc = {name : "me" , docURL : "https://www.google.com"} as any 
 
 
-  // const {
-  //   metadata: { height, width },
-  //   ...plaiceholder
-  // } =  getPlaiceholder(Buffer.from(doc?.docURL),{size : 10});
+
+  useEffect(() => {
+    if (doc?.docURL) {
+      fetch(`/api/getPlaiceholder?imageUrl=${encodeURIComponent(doc.docURL)}`)
+        .then((res) => res.json())
+        .then((data) => setPlaceholder(data.base64));
+        console.log(doc)
+        console.log(placeholder)
+    }
+  }, [doc]);
 
   // if (!doc) {
   //   return (
@@ -116,13 +125,15 @@ export default  function Document({
           </div>
           <div className="relative flex w-full flex-col gap-6 lg:flex-row">
             <ScrollArea className="h-[calc(100vh-12rem)] w-full rounded-md border bg-gray-900 lg:w-1/2">
-              {doc.docURL && (
+              {doc.docURL && doc.type.includes("image") ? 
+              <Image alt="document" blurDataURL={placeholder} fill={true} src={doc.docURL}  className="h-[calc(100vh-12rem)] w-full"/> : doc.docURL && !doc.type.includes("image") ?
+              (
                 <iframe
                   className="h-[calc(100vh-12rem)] w-full"
-                  src={doc.docURL}
+                  src={doc?.docURL}
                   title={`Document: ${doc.name}`}
                 />
-              )}
+              ) : ""}
             </ScrollArea>
             <div className="hidden h-[calc(100vh-12rem)] w-full lg:block lg:w-1/2">
               <ChatBox docId={params.docID} />
