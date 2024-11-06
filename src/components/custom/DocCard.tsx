@@ -1,6 +1,6 @@
 
 import { Button } from "@afs/components/ui/button";
-import { Eye } from "lucide-react";
+import { Eye, TriangleAlert } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -13,15 +13,14 @@ import { Doc } from "../../../convex/_generated/dataModel";
 import Link from "next/link";
 import OptionButton from "./OptionsButton";
 import { fileTypes } from "@afs/lib/utils";
-import { string } from "zod";
 import Image from "next/image";
-import { useEffect } from "react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@afs/components/ui/tooltip";
+import Countdown from 'react-countdown';
 
 export function Document({
   doc,
@@ -81,6 +80,11 @@ export function Document({
         </div> */}
 
         <CardTitle>{doc.name}</CardTitle>
+        {doc.schedulerId ?
+          <div className="absolute top-0 left-2 flex items-center gap-1">
+        <TriangleAlert  className="text-red-500 w-4 "/>
+        <Countdown className="text-red-500"  date={doc?.scheduledTime as number}/>
+        </div> : ''}
         <OptionButton restore={restore} user={user} saved={saved} doc={doc} />
       </CardHeader>
       <CardContent>
