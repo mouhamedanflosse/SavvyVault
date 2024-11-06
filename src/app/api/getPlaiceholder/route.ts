@@ -1,4 +1,5 @@
-import type { NextApiRequest, NextApiResponse  } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from 'next/server'
 import { getPlaiceholder } from "plaiceholder";
 
 type ResponseData = {
@@ -7,20 +8,21 @@ type ResponseData = {
   error?: string;
 };
 
-export async function POST(
+export default async function POST(
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>,
+  res: NextApiResponse<ResponseData>
 ) {
-  // console.log(req);
-  console.log(req.body.docURL);
-//   console.log(JSON.parse(req.body));
-  console.log(req.query.imageUrl);
+
+  console.log(req.method)
+  console.log(req.query)
+
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Method Not Allowed" });
+  }
+
   const imageUrl = Array.isArray(req.query.imageUrl)
     ? req.query.imageUrl[0]
     : req.query.imageUrl;
-
-  console.log(req.query.imageUrl);
-  console.log(imageUrl);
 
   if (!imageUrl) {
     return res.status(400).json({ error: "Image URL is required" });
@@ -34,7 +36,15 @@ export async function POST(
     const { metadata, base64 } = await getPlaiceholder(buffer, { size: 10 });
     res.status(200).json({ base64, metadata });
   } catch (error) {
-    console.log(error);
+    console.error("Error generating placeholder:", error);
     res.status(500).json({ error: "Error generating placeholder" });
   }
+}
+
+export async function GET( ) {
+  // const data = request.json()
+
+  // console.log(data)
+  // const result = await res.json()
+  return NextResponse.json({ data : NextRequest , message : 'mal had l9lawi' })
 }

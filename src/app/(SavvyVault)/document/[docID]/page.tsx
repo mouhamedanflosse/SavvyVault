@@ -54,14 +54,54 @@ export default  function Document({
       //   .then((res) => res.json())
       //   .then((data) => setPlaceholder(data.base64)).catch((err) => console.log(err));
 
-        axios({
-          method : "post",
-          url : `/api/getPlaiceholder?imageUrl=${encodeURIComponent(doc.docURL)}` ,
-          data : { docURL : doc.docURL  }
-        }).then((data : any) => setPlaceholder(data.base64)).catch((err : any) => console.log(err));
+  
+        // if (doc?.docURL) {
+        //   fetch(`/api/getPlaiceholder?imageUrl=${encodeURIComponent(doc.docURL)}`, {
+        //     headers: {
+        //       accept: 'application/json',
+        //       'User-agent': 'learning app',
+        //     },
+        //   })
+        //     .then(async (res) => {
+        //       if (!res.ok) {
+        //         throw new Error(`HTTP error! status: ${res.status}`);
+        //       }
+        //       return res.json();
+        //     })
+        //     .then((data) => setPlaceholder(data.base64))
+        //     .catch((err) => console.error("Fetch error:", err));
+      
+        //   console.log(doc);
+        //   console.log(placeholder);;
+        // }
 
-        console.log(doc)
-        console.log(placeholder)
+
+          fetch(`/api/getPlaiceholder?imageUrl=${encodeURIComponent(doc.docURL)}`, {
+            headers: {
+              accept: 'application/json',
+              'User-agent': 'learning app',
+            },
+            method : 'get'
+          })
+            .then(async (res) => {
+              if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+              }
+              return res.json();
+            })
+            .then((data) => console.log(data))
+            .catch((err) => console.error("Fetch error:", err));
+    
+      
+
+        // axios({
+        //   method : "get",
+        //   url : `/api/getPlaiceholdert` ,
+        //   data : { docURL : doc.docURL  }
+        // }).then((data : any) => console.log(data)).catch((err : any) => console.log(err));
+
+    //     console.log(doc)
+    //     console.log(placeholder)
     }
   }, [doc]);
 
