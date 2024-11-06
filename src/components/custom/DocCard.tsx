@@ -80,7 +80,7 @@ export function Document({
         </div> */}
 
         <CardTitle>{doc.name}</CardTitle>
-        {doc.schedulerId ?
+        {doc.status === "deleted" ?
           <div className="absolute top-0 left-2 flex items-center gap-1">
         <TriangleAlert  className="text-red-500 w-4 "/>
         <Countdown className="text-red-500"  date={doc?.scheduledTime as number}/>

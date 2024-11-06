@@ -282,7 +282,7 @@ export const moveToTrash = mutation({
       console.log("hasAccess", args, doc);
       // const deletedDocument = await ctx.db.delete(args.docId);
       // const deletedFile = await ctx.storage.delete(doc.fileId);
-      const schedulerId = (await ctx.scheduler.runAfter(3000000 , internal.document.deletedDocument , {docId : args.docId,fileId: doc.fileId})) as Id<"_scheduled_functions">
+      const schedulerId = (await ctx.scheduler.runAfter(3600000 , internal.document.deletedDocument , {docId : args.docId,fileId: doc.fileId})) as Id<"_scheduled_functions">
       const schedulerdoc = await ctx.db.system.get(schedulerId)
       const markAsdeleteed = await ctx.db.patch(args.docId , {status : "deleted" , schedulerId , completedTime : schedulerdoc?.completedTime , scheduledTime : schedulerdoc?.scheduledTime})
       return markAsdeleteed;
@@ -292,7 +292,7 @@ export const moveToTrash = mutation({
     if (doc.tokenIdentifier === identity.subject) {
       console.log("user", args, doc);
       // const deletedDocument = await ctx.db.delete(args.docId);
-      const schedulerId = (await ctx.scheduler.runAfter(3000000 , internal.document.deletedDocument , {docId : args.docId,fileId: doc.fileId})) as Id<"_scheduled_functions">
+      const schedulerId = (await ctx.scheduler.runAfter(3600000 , internal.document.deletedDocument , {docId : args.docId,fileId: doc.fileId})) as Id<"_scheduled_functions">
       const schedulerdoc = await ctx.db.system.get(schedulerId)
       const markAsdeleteed = await ctx.db.patch(args.docId , {status : "deleted" , schedulerId , completedTime : schedulerdoc?.completedTime , scheduledTime : schedulerdoc?.scheduledTime})
       return markAsdeleteed;
