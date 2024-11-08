@@ -181,8 +181,8 @@ export default  function Document({
           </div>
           <div className="relative flex w-full flex-col gap-6 lg:flex-row">
             <ScrollArea className="h-[calc(100vh-12rem)] w-full rounded-md border bg-gray-900 lg:w-1/2">
-              {doc.docURL && doc.type.includes("image") ? 
-              <Image alt="document" blurDataURL={placeholder} fill={true} src={doc.docURL}  className="h-[calc(100vh-12rem)] w-full"/> : doc.docURL && !doc.type.includes("image") ?
+              {doc.docURL && doc.type.includes("image") && placeholder ? 
+              <Image alt="document" placeholder="blur" blurDataURL={placeholder} fill={true} src={doc.docURL}  className="h-[calc(100vh-12rem)] w-full"/> : doc.docURL && !doc.type.includes("image") ?
               (
                 <iframe
                   className="h-[calc(100vh-12rem)] w-full"
