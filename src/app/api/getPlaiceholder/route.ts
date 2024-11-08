@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from "next/server";
 import { getPlaiceholder } from "plaiceholder";
 
 type ResponseData = {
@@ -10,15 +10,16 @@ type ResponseData = {
 
 export default async function POST(
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
+  res: NextApiResponse<ResponseData>,
 ) {
+  console.log(req.method);
+  console.log(req.query);
 
-  console.log(req.method)
-  console.log(req.query)
+  console.log("well recieved");
 
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method Not Allowed" });
-  }
+  // if (req.method !== "GET") {
+  //   return res.status(405).json({ error: "Method Not Allowed" });
+  // }
 
   const imageUrl = Array.isArray(req.query.imageUrl)
     ? req.query.imageUrl[0]
@@ -41,10 +42,16 @@ export default async function POST(
   }
 }
 
-export async function GET( ) {
+export async function GET(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  console.log("well recieved for GET");
   // const data = request.json()
+
+  console.log(req);
 
   // console.log(data)
   // const result = await res.json()
-  return NextResponse.json({ data : NextRequest , message : 'mal had l9lawi' })
+  return res.json({ data: NextRequest, message: "mal had l9lawi" });
 }

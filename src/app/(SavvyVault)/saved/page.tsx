@@ -5,7 +5,7 @@ import { Authenticated, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { UploadDoc } from "@afs/components/custom/UploadFiele";
 import Lottie from "lottie-react";
-import orange_sleepy_cat from "../../../../public/assets/orange_sleepy_cat.json";
+import orange_sleepy_cat from "../../../assets/orange_sleepy_cat.json";
 import { Document } from "@afs/components/custom/DocCard";
 import { Loader2 } from "lucide-react";
 import SearchBar from "@afs/components/custom/SearchBar";

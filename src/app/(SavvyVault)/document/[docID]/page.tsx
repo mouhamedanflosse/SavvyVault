@@ -42,17 +42,17 @@ export default  function Document({
 
   useEffect(() => {
     if (doc && doc.docURL) {
-      // fetch(`/api/getPlaiceholder?imageUrl=${encodeURIComponent(doc.docURL)}` ,  {
-      //   headers: {
-      //     accept: 'application/json',
-      //     'User-agent': 'learning app',
-      //   },
-      //   method: "POST",
-      //   body: JSON.stringify({ docURL : doc.docURL  }),
-      //   // body: JSON.stringify({ username: "example" }),
-      // })
-      //   .then((res) => res.json())
-      //   .then((data) => setPlaceholder(data.base64)).catch((err) => console.log(err));
+      fetch(`/api/getPlaiceholder?imageUrl=${encodeURIComponent(doc.docURL)}` ,  {
+        headers: {
+          accept: 'application/json',
+          'User-agent': 'learning app',
+        },
+        method: "POST",
+        body: JSON.stringify({ docURL : doc.docURL  }),
+        // body: JSON.stringify({ username: "example" }),
+      })
+        .then((res) => res.json())
+        .then((data) => setPlaceholder(data.base64)).catch((err) => console.log(err));
 
   
         // if (doc?.docURL) {
@@ -76,21 +76,21 @@ export default  function Document({
         // }
 
 
-          fetch(`/api/getPlaiceholder?imageUrl=${encodeURIComponent(doc.docURL)}`, {
-            headers: {
-              accept: 'application/json',
-              'User-agent': 'learning app',
-            },
-            method : 'get'
-          })
-            .then(async (res) => {
-              if (!res.ok) {
-                throw new Error(`HTTP error! status: ${res.status}`);
-              }
-              return res.json();
-            })
-            .then((data) => console.log(data))
-            .catch((err) => console.error("Fetch error:", err));
+          // fetch(`/api/getPlaiceholder?imageUrl=${encodeURIComponent(doc.docURL)}`, {
+          //   headers: {
+          //     accept: 'application/json',
+          //     'User-agent': 'learning app',
+          //   },
+          //   method : 'get'
+          // })
+          //   .then(async (res) => {
+          //     if (!res.ok) {
+          //       throw new Error(`HTTP error! status: ${res.status}`);
+          //     }
+          //     return res.json();
+          //   })
+          //   .then((data) => console.log(data))
+          //   .catch((err) => console.error("Fetch error:", err));
     
       
 

@@ -27,8 +27,11 @@ import { Input } from "@afs/components/ui/input";
 import { useToast } from "@afs/hooks/use-toast";
 import { Separator } from "@afs/components/ui/separator";
 // import { Icons } from "@afs/components/ui/icons";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, ServerCrash } from "lucide-react";
 import Afs_Button from "@afs/components/custom/Loading-button";
+import Link from "next/link";
+import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { ModeToggle } from "@afs/components/ui/mode-toggle";
 
 const signInSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -141,8 +144,33 @@ export default function EnhancedAuthPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
-      <Card className="w-full max-w-md">
+    <div className="flex flex-col items-center min-h-screen mt-4">
+      <header className="z-[50] sticky top-0 w-full bg-background/95 border-b backdrop-blur-sm  border-border/40">
+      <div className="container h-14 flex items-center">
+          <Link
+            href="/"
+            className="flex justify-start items-center hover:opacity-85 transition-opacity duration-300"
+          >
+            <ServerCrash className="w-6 h-6 mr-3" />
+            <span className="font-bold">SavvyVault</span>
+            <span className="sr-only">SavvyVault</span>
+          </Link>
+          <nav className="ml-auto flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full w-8 h-8 bg-background"
+              asChild
+            >
+              <Link href="https://github.com/salimi-my/shadcn-ui-sidebar">
+                <GitHubLogoIcon className="h-[1.2rem] w-[1.2rem]" />
+              </Link>
+            </Button>
+            <ModeToggle />
+          </nav>
+        </div>
+        </header>
+      <Card className="w-full max-w-md mt-14">
         <CardHeader>
           <CardTitle>
             {isSignUp ? "Create an account" : "Sign in to your account"}
@@ -234,16 +262,6 @@ export default function EnhancedAuthPage() {
                     </FormItem>
                   )}
                 />
-                {/* <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? (
-                    <>
-                      <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                      Please wait
-                    </>
-                  ) : (
-                    'Sign Up'
-                  )}
-                </Button> */}
                 <Afs_Button className="w-full" label="Sign Up" loading={isLoading} />
               </form>
             </Form>
@@ -310,16 +328,6 @@ export default function EnhancedAuthPage() {
                     Forgot password?
                   </Button>
                 </div>
-                {/* <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? (
-                    <>
-                      <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                      Please wait
-                    </>
-                  ) : (
-                    'Sign In'
-                  )}
-                </Button> */}
 
                 <Afs_Button className="w-full" label="Sign Up" loading={isLoading} />
               </form>
@@ -335,31 +343,12 @@ export default function EnhancedAuthPage() {
               </span>
             </div>
           </div>
-          {/* <div className="grid grid-cols-2 gap-4">
-            <Button
-              variant="outline"
-              onClick={() => onSocialLogin("Google")}
-              disabled={isLoading}
-            >
-              <Icons.google className="mr-2 h-4 w-4" />
-              Google
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => onSocialLogin("GitHub")}
-              disabled={isLoading}
-            >
-              <Icons.gitHub className="mr-2 h-4 w-4" />
-              GitHub
-            </Button>
-          </div> */}
            <Button
               className="w-full"
               variant="outline"
               onClick={() => onSocialLogin("Google")}
               disabled={isLoading}
             >
-              {/* <Icons.google className="mr-2 h-4 w-4" /> */}
               Guest
             </Button>
         </CardContent>
@@ -379,3 +368,8 @@ export default function EnhancedAuthPage() {
     </div>
   );
 }
+
+
+
+
+
