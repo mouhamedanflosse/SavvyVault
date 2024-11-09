@@ -13,16 +13,29 @@ import { ArrowRight, ServerCrash, UserCircle2 } from "lucide-react";
 import Link from "next/link";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { ModeToggle } from "@afs/components/ui/mode-toggle";
-import { SignInButton } from "@clerk/nextjs";
+import { SignInButton,useSignIn  } from "@clerk/nextjs";
 
 export default function EnhancedAuthPage() {
+  const {signIn} = useSignIn()
+  
+
   const handleSignIn = () => {
-    // Handle sign in logic here
+
+
     console.log("Navigating to sign in page");
   };
 
-  const handleGuestContinue = () => {
-    // Handle guest continuation logic here
+  const handleGuestContinue = async () => {
+    try {
+
+      await signIn?.create({
+        password : process.env.GUEST_PASSWORD!,
+        identifier:  process.env.GUEST_EMAILADDRESS!
+      })
+      
+    } catch(err) {
+      console.log(err)
+    }
     console.log("Continuing as guest");
   };
 
