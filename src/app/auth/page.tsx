@@ -14,8 +14,10 @@ import Link from "next/link";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { ModeToggle } from "@afs/components/ui/mode-toggle";
 import { SignInButton,useSignIn  } from "@clerk/nextjs";
+import { useRouter } from 'next/navigation'
 
 export default function EnhancedAuthPage() {
+  const router = useRouter();
   const {signIn} = useSignIn()
   
 
@@ -26,13 +28,15 @@ export default function EnhancedAuthPage() {
   };
 
   const handleGuestContinue = async () => {
+    console.log("sign in ")
     try {
 
       await signIn?.create({
         password : process.env.GUEST_PASSWORD!,
         identifier:  process.env.GUEST_EMAILADDRESS!
-      })
-      
+      }).then(() => router.push("/dashboard"))
+
+
     } catch(err) {
       console.log(err)
     }
