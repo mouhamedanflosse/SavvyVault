@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { Id } from "../../../../../convex/_generated/dataModel";
@@ -19,10 +19,9 @@ import { Loader2 } from "lucide-react";
 import MobileChatBotLayout from "@afs/components/custom/MobileChatBotLayout";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import axios from "axios"
+import axios from "axios";
 
-
-export default  function Document({
+export default function Document({
   params,
 }: {
   params: {
@@ -36,74 +35,24 @@ export default  function Document({
     docId: params.docID,
     orgId: organization?.id,
   });
-  // const doc = {name : "me" , docURL : "https://www.google.com"} as any 
+  // const doc = {name : "me" , docURL : "https://www.google.com"} as any
 
-
-
-  useEffect(() => {
-    if (doc && doc.docURL) {
-      fetch(`/api/getPlaiceholder?imageUrl=${encodeURIComponent(doc.docURL)}` ,  {
-        headers: {
-          accept: 'application/json',
-          'User-agent': 'learning app',
-        },
-        method: "POST",
-        body: JSON.stringify({ docURL : doc.docURL  }),
-        // body: JSON.stringify({ username: "example" }),
-      })
-        .then((res) => res.json())
-        .then((data) => setPlaceholder(data.base64)).catch((err) => console.log(err));
-
-  
-        // if (doc?.docURL) {
-        //   fetch(`/api/getPlaiceholder?imageUrl=${encodeURIComponent(doc.docURL)}`, {
-        //     headers: {
-        //       accept: 'application/json',
-        //       'User-agent': 'learning app',
-        //     },
-        //   })
-        //     .then(async (res) => {
-        //       if (!res.ok) {
-        //         throw new Error(`HTTP error! status: ${res.status}`);
-        //       }
-        //       return res.json();
-        //     })
-        //     .then((data) => setPlaceholder(data.base64))
-        //     .catch((err) => console.error("Fetch error:", err));
-      
-        //   console.log(doc);
-        //   console.log(placeholder);;
-        // }
-
-
-          // fetch(`/api/getPlaiceholder?imageUrl=${encodeURIComponent(doc.docURL)}`, {
-          //   headers: {
-          //     accept: 'application/json',
-          //     'User-agent': 'learning app',
-          //   },
-          //   method : 'get'
-          // })
-          //   .then(async (res) => {
-          //     if (!res.ok) {
-          //       throw new Error(`HTTP error! status: ${res.status}`);
-          //     }
-          //     return res.json();
-          //   })
-          //   .then((data) => console.log(data))
-          //   .catch((err) => console.error("Fetch error:", err));
-    
-      
-
-        // axios({
-        //   method : "get",
-        //   url : `/api/getPlaiceholdert` ,
-        //   data : { docURL : doc.docURL  }
-        // }).then((data : any) => console.log(data)).catch((err : any) => console.log(err));
-
-    //     console.log(doc)
-    //     console.log(placeholder)
-    }
-  }, [doc]);
+  // useEffect(() => {
+  //   if (doc && doc.docURL) {
+  //     fetch(`/api/getPlaiceholder?imageUrl=${encodeURIComponent(doc.docURL)}`, {
+  //       headers: {
+  //         accept: "application/json",
+  //         "User-agent": "learning app",
+  //       },
+  //       method: "POST",
+  //       body: JSON.stringify({ docURL: doc.docURL }),
+  //       // body: JSON.stringify({ username: "example" }),
+  //     })
+  //       .then((res) => res.json())
+  //       .then((data) => setPlaceholder(data.base64))
+  //       .catch((err) => console.log(err));
+  //   }
+  // }, [doc]);
 
   // if (!doc) {
   //   return (
@@ -127,8 +76,8 @@ export default  function Document({
   //       <h1 className="mt-32 text-center text-lg">
   //         You cannot view this content in
   //         {!organization
-  //           ? "personal mode. Please switch to the correct organization."
-  //           : "this organization. Please switch to the correct organization or your personal account."}
+  //           ? " personal mode. Please switch to the correct organization."
+  //           : " this organization. Please switch to the correct organization or your personal account."}
   //       </h1>
   //     </ContentLayout>
   //   );
@@ -155,8 +104,15 @@ export default  function Document({
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      {doc == undefined ? (
+      {doc === undefined ? (
         <Loader2 className="mx-auto mt-36 h-20 w-20 animate-spin text-3xl" />
+      ) : doc === null ? (
+        <h1 className="mt-32 text-center text-lg">
+          You cannot view this content in
+          {!organization
+            ? " personal mode. Please switch to the correct organization."
+            : " this organization. Please switch to the correct organization or your personal account."}
+        </h1>
       ) : (
         <div className="mt-6 flex flex-col gap-4">
           <div className="flex w-full items-center justify-between">
@@ -181,15 +137,24 @@ export default  function Document({
           </div>
           <div className="relative flex w-full flex-col gap-6 lg:flex-row">
             <ScrollArea className="h-[calc(100vh-12rem)] w-full rounded-md border bg-gray-900 lg:w-1/2">
-              {doc.docURL && doc.type.includes("image") && placeholder ? 
-              <Image alt="document" placeholder="blur" blurDataURL={placeholder} fill={true} src={doc.docURL}  className="h-[calc(100vh-12rem)] w-full"/> : doc.docURL && !doc.type.includes("image") ?
-              (
+              {doc.docURL && doc.type.includes("image") && placeholder ? (
+                <Image
+                  alt="document"
+                  // placeholder="blur"
+                  // blurDataURL={placeholder}
+                  fill={true}
+                  src={doc.docURL}
+                  className="h-[calc(100vh-12rem)] w-full"
+                />
+              ) : doc.docURL && !doc.type.includes("image") ? (
                 <iframe
                   className="h-[calc(100vh-12rem)] w-full"
                   src={doc?.docURL}
                   title={`Document: ${doc.name}`}
                 />
-              ) : ""}
+              ) : (
+                ""
+              )}
             </ScrollArea>
             <div className="hidden h-[calc(100vh-12rem)] w-full lg:block lg:w-1/2">
               <ChatBox docId={params.docID} />
