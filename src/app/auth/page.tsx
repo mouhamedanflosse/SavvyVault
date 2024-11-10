@@ -13,32 +13,46 @@ import { ArrowRight, ServerCrash, UserCircle2 } from "lucide-react";
 import Link from "next/link";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { ModeToggle } from "@afs/components/ui/mode-toggle";
-import { SignInButton,useSignIn  } from "@clerk/nextjs";
-import { useRouter } from 'next/navigation'
+import { SignInButton, useSignIn } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function EnhancedAuthPage() {
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const {signIn} = useSignIn()
-  
+  const { signIn, setActive, isLoaded } = useSignIn();
 
   const handleSignIn = () => {
-
-
     console.log("Navigating to sign in page");
   };
 
   const handleGuestContinue = async () => {
-    console.log("sign in ")
+    console.log("sign in ");
     try {
+      if (!isLoaded) return;
 
-      await signIn?.create({
-        password : process.env.GUEST_PASSWORD!,
-        identifier:  process.env.GUEST_EMAILADDRESS!
-      }).then(() => router.push("/dashboard"))
+      setIsLoading(true);
+      const result = await signIn.create({
+        password: process.env.NEXT_PUBLIC_GUEST_PASSWORD as string,
+        identifier: process.env.NEXT_PUBLIC_GUEST_EMAILADDRESS as string,
+      });
 
-
-    } catch(err) {
-      console.log(err)
+      console.log({
+        password: process.env.GUEST_PASSWORD as string,
+        identifier: process.env.GUEST_EMAILADDRESS as string,
+      });
+      if (result.status === "complete") {
+        await setActive({ session: result.createdSessionId });
+        setIsLoading(false);
+        router.push("/dashboard");
+      } else {
+        setIsLoading(false);
+        console.error("Sign in failed", result);
+        // setError("Sign in failed. Please try again.");
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
     }
     console.log("Continuing as guest");
   };
