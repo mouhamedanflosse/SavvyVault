@@ -60,7 +60,6 @@ export default function ChatBox({
       const userMessage: Message = { id: messages.length + 1, text: input, sender: 'user' };
       setMessages(prevMessages => [...prevMessages, userMessage]);
 
-      // Simulate bot response (replace this with actual chatbot logic)
       setTimeout(() => {
         const botMessage: Message = { 
           id: messages.length + 2, 

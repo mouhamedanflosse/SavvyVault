@@ -49,36 +49,6 @@ export function Document({
   return (
     <Card className="min-w-[280px] md:min-w-[200px]">
       <CardHeader className="relative flex w-full flex-row items-center justify-between">
-        {/* <Image alt="file type" src={FileIcon} width={64} height={64} /> */}
-        {/* <iframe src={fileTypes[doc.type]} ></iframe> */}
-        {/* {fileTypes[doc.type]} */}
-        {/* <div className="absolute right-0 top-0">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                {FileIcon ? (
-                  <div
-                    className="h-10 w-10 cursor-pointer"
-                    dangerouslySetInnerHTML={{ __html: FileIcon }} // Render SVG directly
-                    // style={{ width: '44px', height: '44px' }} // Set dimensions here if needed
-                  />
-                ) : doc.type.includes("image") ? (
-                  <div
-                    className="h-10 w-10 cursor-pointer"
-                    dangerouslySetInnerHTML={{ __html: fileTypes["image/*"] }} // Render SVG directly
-                    // style={{ width: '44px', height: '44px' }} // Set dimensions here if needed
-                  />
-                ) : (
-                  ""
-                )}
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{doc.type}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div> */}
-
         <CardTitle>{doc.name}</CardTitle>
         {doc.status === "deleted" ?
           <div className="absolute top-0 left-2 flex items-center gap-1">

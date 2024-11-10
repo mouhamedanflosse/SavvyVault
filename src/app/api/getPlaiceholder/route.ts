@@ -4,7 +4,6 @@ import { getPlaiceholder } from "plaiceholder";
 
 export async function POST(request: NextRequest) {
   try {
-    // Get the imageUrl from the URL parameters
     const { searchParams } = new URL(request.url);
     const imageUrl = searchParams.get('imageUrl');
 
