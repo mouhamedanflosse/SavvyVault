@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@afs/components/ui/card";
-import { ArrowRight, ServerCrash, UserCircle2 } from "lucide-react";
+import { ArrowRight, Loader2, ServerCrash, UserCircle2 } from "lucide-react";
 import Link from "next/link";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { ModeToggle } from "@afs/components/ui/mode-toggle";
@@ -20,9 +20,12 @@ import { useState } from "react";
 export default function EnhancedAuthPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { signIn, setActive, isLoaded } = useSignIn();
+  const { signIn, setActive, isLoaded, } = useSignIn();
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
+    const result = await signIn?.authenticateWithRedirect({  strategy: "oauth_google", // or "oauth_github", "oauth_facebook", etc.
+      redirectUrl: `${window.location.origin}/sso-callback`,
+      redirectUrlComplete: "/dashboard"})
     console.log("Navigating to sign in page");
   };
 
@@ -91,7 +94,7 @@ export default function EnhancedAuthPage() {
             <CardDescription>Sign in or continue as a guest</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <SignInButton>
+            {/* <SignInButton> */}
               <Button
                 className="w-full"
                 variant="outline"
@@ -100,10 +103,14 @@ export default function EnhancedAuthPage() {
                 <UserCircle2 className="mr-2 h-4 w-4" />
                 Sign In
               </Button>
-            </SignInButton>
+            {/* </SignInButton> */}
             <Button className="w-full" onClick={handleGuestContinue}>
+              {!isLoading ? <>
               Continue as Guest
               <ArrowRight className="ml-2 h-4 w-4" />
+              </>
+              : <Loader2 className="animate-spin w-6 h-6" />
+              }
             </Button>
           </CardContent>
           <CardFooter className="flex justify-center">

@@ -7,7 +7,7 @@ export default clerkMiddleware((auth, request) => {
   if (!isPublicRoute(request)) {
     auth().protect()
   }
-})
+}, {signInUrl : "/auth"})
 
 
 export const config = {
