@@ -90,7 +90,7 @@ export function Document({
                   />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{doc.type}</p>
+                  <p>{doc.type.split('/')[1]}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

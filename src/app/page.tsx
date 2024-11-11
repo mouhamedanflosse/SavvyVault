@@ -5,6 +5,8 @@ import { ArrowRightIcon, GitHubLogoIcon } from "@radix-ui/react-icons";
 import { Button } from "@afs/components/ui/button";
 import { ModeToggle } from "@afs/components/ui/mode-toggle";
 import { ServerCrash } from 'lucide-react';
+import darkimage from '@afs/assets/landing/landing.png'
+import lightimage from '@afs/assets/landing/landing-light.png'
 
 export default function HomePage() {
   return (
@@ -52,7 +54,7 @@ export default function HomePage() {
               </Button>
               <Button variant="outline" asChild>
                 <Link
-                  href="https://ui.shadcn.com/"
+                  href="https://github.com/mouhamedanflosse/SavvyVault"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -63,7 +65,7 @@ export default function HomePage() {
           </section>
           <div className="w-full flex justify-center relative">
             <Image
-              src="/demo-light-min.png"
+              src={lightimage}
               width={1080}
               height={608}
               alt="demo"
@@ -71,14 +73,14 @@ export default function HomePage() {
               className="border rounded-xl shadow-sm dark:hidden"
             />
             <Image
-              src="/demo-dark-min.png"
+              src={darkimage}
               width={1080}
               height={608}
               alt="demo-dark"
               priority
               className="border border-zinc-600 rounded-xl shadow-sm hidden dark:block dark:shadow-gray-500/5"
             />
-            <Image
+            {/* <Image
               src="/demo-mobile-light-min.png"
               width={228}
               height={494}
@@ -91,7 +93,7 @@ export default function HomePage() {
               height={494}
               alt="demo-mobile"
               className="border border-zinc-600 rounded-xl absolute bottom-0 right-0 hidden dark:lg:block"
-            />
+            /> */}
           </div>
         </div>
       </main>
