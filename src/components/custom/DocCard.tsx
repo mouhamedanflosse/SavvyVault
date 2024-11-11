@@ -49,7 +49,18 @@ export function Document({
   return (
     <Card className="min-w-[280px] md:min-w-[200px]">
       <CardHeader className="relative flex w-full flex-row items-center justify-between">
-        <CardTitle>{doc.name}</CardTitle>
+      <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+        <CardTitle className="line-clamp-1 w-32">
+          {doc.name}
+          </CardTitle>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{doc.name}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
         {doc.status === "deleted" ?
           <div className="absolute top-0 left-2 flex items-center gap-1">
         <TriangleAlert  className="text-red-500 w-4 "/>
