@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter , Poppins } from "next/font/google";
 import "./globals.css";
 import Providers from "./Providers";
 import Header from "./Header";
@@ -11,7 +11,13 @@ import { useState } from "react";
 import { SidebarProvider, SidebarTrigger } from "@afs/components/ui/sidebar"
 import { AppSidebar } from "@afs/components/custom/app-sidebar"
 
-const inter = Inter({ subsets: ["latin"] });
+ 
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight : '400',
+})
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: "Create Next App",
