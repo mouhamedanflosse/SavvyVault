@@ -92,13 +92,13 @@ export const insertDocument = mutation({
 //     docId: v.id("docs"),
 //   },
 //   handler: async (ctx, args) => {
-//     const user = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
+//     const user = (await ctx.auth.getUserIdentity())?.;
 //     if (!user) {
 //       throw new ConvexError("Not authenticated");
 //     }
 
 //     const doc = await ctx.runQuery(api.document.getDocument, {
-//       docId: args.docId,
+//       docId: args.docId,tokenIdentifier
 //     });
 
 //     if (!doc) {
@@ -142,7 +142,7 @@ export const getDocuments = query({
           const documents = docs.filter((doc) =>
             doc.name.toLowerCase().includes(query.toLowerCase()),
           );
-          return { docs: documents, user: hasAccess };
+          return { docs: documents, user: hasAccess  };
         }
         return { docs, user: hasAccess };
       }

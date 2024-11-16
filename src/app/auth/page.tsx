@@ -13,7 +13,7 @@ import { ArrowRight, Loader2, ServerCrash, UserCircle2 } from "lucide-react";
 import Link from "next/link";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { ModeToggle } from "@afs/components/ui/mode-toggle";
-import { SignInButton, useSignIn } from "@clerk/nextjs";
+import { SignInButton, useSignIn,AuthenticateWithRedirectCallback } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
