@@ -13,6 +13,8 @@ export default defineSchema({
     schedulerId: v.union(v.id("_scheduled_functions"), v.null()),
     scheduledTime: v.union(v.number(), v.float64() , v.null()),
     completedTime: v.optional(v.union(v.number(), v.float64(), v.null())),
+    author : v.string(),
+    author_img : v.string()
   })
     .index("by_token", ["tokenIdentifier", "orgId", "status"])
     .index("by_orgId", ["orgId", "status"]),

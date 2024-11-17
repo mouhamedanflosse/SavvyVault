@@ -13,20 +13,28 @@ import { ArrowRight, Loader2, ServerCrash, UserCircle2 } from "lucide-react";
 import Link from "next/link";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { ModeToggle } from "@afs/components/ui/mode-toggle";
-import { SignInButton, useSignIn,AuthenticateWithRedirectCallback } from "@clerk/nextjs";
+import { SignInButton, useSignIn,AuthenticateWithRedirectCallback, useSignUp } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function EnhancedAuthPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  // const { signUp } = useSignUp();
   const { signIn, setActive, isLoaded, } = useSignIn();
 
   const handleSignIn = async () => {
-    const result = await signIn?.authenticateWithRedirect({  strategy: "oauth_google", // or "oauth_github", "oauth_facebook", etc.
-      redirectUrl: `${window.location.origin}/sso-callback`,
-      redirectUrlComplete: "/dashboard"})
-    console.log("Navigating to sign in page");
+    try  {
+
+      const result = await signIn?.authenticateWithRedirect({
+        strategy: "oauth_google",
+        redirectUrl: `${window.location.origin}/sso-callback`,
+        redirectUrlComplete: "/dashboard",
+      });
+      console.log("Navigating to sign in page");
+    } catch(err) {
+      console.log(err)
+    }
   };
 
   const handleGuestContinue = async () => {

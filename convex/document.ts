@@ -79,7 +79,9 @@ export const insertDocument = mutation({
       status : "active",
       schedulerId : null,
       completedTime : null,
-      scheduledTime : null
+      scheduledTime : null,
+      author : user.name,
+      author_img : user.image
     });
     return newDoc;
   },

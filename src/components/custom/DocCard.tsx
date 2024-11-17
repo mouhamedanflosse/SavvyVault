@@ -122,11 +122,11 @@ export function Document({
                     width={24}
                     height={24}
                     className="cursor-pointer rounded-full border-2 border-transparent ring-2 ring-green-300 "
-                    src={user.image}
+                    src={doc.author_img}
                   />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <span>{user.name}</span>
+                  <span>{doc.author}</span>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
