@@ -212,7 +212,7 @@ export default function OptionButton({
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="cursor-pointer"
-                onSelect={() => window.open(doc.docUrl)}
+                onSelect={() => window.open(doc.docUrl,'_blank')}
               >
                 <Download className="mr-2 h-4 w-4" />
                 <span>Download</span>
