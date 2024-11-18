@@ -20,7 +20,6 @@ import { useState } from "react";
 export default function EnhancedAuthPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  // const { signUp } = useSignUp();
   const { signIn, setActive, isLoaded, } = useSignIn();
 
   const handleSignIn = async () => {

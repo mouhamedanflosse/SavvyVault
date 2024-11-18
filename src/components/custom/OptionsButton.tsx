@@ -29,6 +29,7 @@ import { toast } from "@afs/hooks/use-toast";
 import { Pencil } from "lucide-react";
 import { UploadDoc } from "./UploadFiele";
 import { BookmarkCheck } from "lucide-react";
+import { Download } from 'lucide-react';
 
 export default function OptionButton({
   doc,
@@ -201,6 +202,20 @@ export default function OptionButton({
               >
                 <Pencil className="mr-2 h-4 w-4" />
                 <span>Edit</span>
+              </DropdownMenuItem>
+            </>
+          ) : (
+            ""
+          )}
+          {allowEditDelete() ? (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onSelect={() => window.open(doc.docUrl)}
+              >
+                <Download className="mr-2 h-4 w-4" />
+                <span>Download</span>
               </DropdownMenuItem>
             </>
           ) : (
