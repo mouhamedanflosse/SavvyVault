@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@afs/components/ui/button";
 import {
   DropdownMenu,
@@ -153,6 +153,31 @@ export default function OptionButton({
     }
   }
 
+
+  // download file 
+  async function downloadfile(filename : string, DocUrl : string) {
+      try {
+        const response = await fetch(DocUrl);
+        const blob = await response.blob();
+        
+        const blobUrl = window.URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        
+        link.href = blobUrl;
+        link.download = filename; 
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        window.URL.revokeObjectURL(blobUrl);
+      } catch (error) {
+        console.error('Error downloading image:', error);
+        throw error;
+      }
+  }
+
   function allowEditDelete() {
     if (
       doc.tokenIdentifier == userId ||
@@ -212,7 +237,7 @@ export default function OptionButton({
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="cursor-pointer"
-                onSelect={() => window.open(doc.docUrl,'_blank')}
+                onSelect={() => downloadfile(doc.name,doc.docUrl)}
               >
                 <Download className="mr-2 h-4 w-4" />
                 <span>Download</span>
