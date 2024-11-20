@@ -168,15 +168,6 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
                 <FormItem>
                   <FormLabel>file</FormLabel>
                   <FormControl>
-                    {/* <Input
-                      type="file"
-                      {...fieldProps}
-                      onChange={(event) => {
-                        const file = event.target.files?.[0];
-                        onChange(file);
-                      }}
-                      // accept=".doc,.docx,.pdf,.xml,.csv,.txt,.json,.xlsx,.xls,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/pdf,text/plain,application/json"
-                    /> */}
                     <FileUploader  
                     value={field.value}
                     onValueChange={field.onChange}

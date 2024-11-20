@@ -191,17 +191,6 @@ export function FileUploader(props: FileUploaderProps) {
         const target =
           updatedFiles.length > 0 ? `${updatedFiles.length} files` : `file`
 
-        // toast.promise(onUpload(updatedFiles), {
-        //   loading: `Uploading ${target}...`,
-        //   success: () => {
-        //     setFiles([])
-        //     return `${target} uploaded`
-        //   },
-        //   error: `Failed to upload ${target}`,
-        // })
-        // toast({
-            
-        // })
       }
     },
 
@@ -215,18 +204,17 @@ export function FileUploader(props: FileUploaderProps) {
     onValueChange?.(newFiles)
   }
 
-//   // Revoke preview url when component unmounts
-//   React.useEffect(() => {
-//     return () => {
-//       if (!files) return
-//       files.forEach((file) => {
-//         if (isFileWithPreview(file)) {
-//           URL.revokeObjectURL(file.preview)
-//         }
-//       })
-//     }
-//     // eslint-disable-next-line react-hooks/exhaustive-deps
-//   }, [])
+  // Revoke preview url when component unmounts to avoid Memory Leak
+  React.useEffect(() => {
+    return () => {
+      if (!files) return
+      files.forEach((file) => {
+        if (isFileWithPreview(file)) {
+          URL.revokeObjectURL(file.preview)
+        }
+      })
+    }
+  }, [files])
 
   const isDisabled = disabled || (files?.length ?? 0) >= maxFileCount
 
@@ -317,12 +305,12 @@ interface FileCardProps {
 
 function FileCard({ file, onRemove }: FileCardProps) {
   return (
-    <div className="relative flex items-center gap-2.5">
+    <div className="relative flex  items-center gap-2.5">
       <div className="flex flex-1 gap-2.5">
         {isFileWithPreview(file) ? <FilePreview file={file} /> : null}
         <div className="flex w-full flex-col gap-2">
           <div className="flex flex-col gap-px">
-            <p className="line-clamp-1 text-sm font-medium text-foreground/80">
+            <p className="line-clamp-1 text-sm w-44 font-medium text-foreground/80">
               {file.name}
             </p>
             <p className="text-xs text-muted-foreground">
