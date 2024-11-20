@@ -116,9 +116,9 @@ export default function OptionButton({
       toast({
         variant: "success",
         title: "document saved successfully",
-        description: organization
-          ? `1 document has been saved from ${organization.name}`
-          : "1 document has been saved from your personal space",
+        description: organization && saved
+          ? `1 document has been unsaved from ${organization.name}`
+          : organization && !saved ? `1 document has been saved from ${organization.name}` : !organization && saved ? "1 document has been unsaved from your personal space" : !organization && !saved ? "1 document has been saved from your personal space",
       });
     } catch (err) {
       toast({
