@@ -35,15 +35,17 @@ const hasAccessTOrg = async (
   }
 
   const user = await getUser(ctx, identity.subject);
-
   if (!user) {
     return null;
   }
-
+  console.log("user exist check ✅")
+  
   const hasAccess = user.orgIds.some((item) => item.orgId === orgId);
+  console.log("has access to the org....",hasAccess,user.orgIds ,orgId )
   if (!hasAccess) {
     return null;
   }
+  console.log("has access to the org check ✅")
   return user;
 };
 
@@ -60,7 +62,6 @@ export const insertDocument = mutation({
       throw new ConvexError("Not authenticated");
     }
 
-    console.log("SB vs TN", identity.subject, identity.tokenIdentifier);
     const user = await getUser(ctx, identity.subject);
 
     const docUrl = (await ctx.storage.getUrl(args.fileId)) as string;
@@ -418,11 +419,14 @@ export const toggleSaveDoc = mutation({
 
     const docAlreadySaved = user.saved.some((Id) => Id == args.docId);
 
-    const hasAccess = await hasAccessTOrg(ctx, args.docId);
+    const hasAccess = await hasAccessTOrg(ctx, args.orgId);
 
     // for an orgnization member
+    console.log("no access for orgs")
     if (hasAccess) {
+      console.log("doc already saved")
       if (docAlreadySaved) {
+        console.log("KJ hh")
         const saveDocTouser = ctx.db.patch(user?._id, {
           saved: [...user.saved].filter((id) => id !== args.docId),
         });
