@@ -15,7 +15,7 @@ export default function Providers({
   return (
     <ThemeProvider
     attribute="class"
-    defaultTheme="default"
+    defaultTheme="dark"
     enableSystem
     disableTransitionOnChange
   >
