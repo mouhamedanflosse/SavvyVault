@@ -2,6 +2,7 @@ import AuthHeader from "@afs/app/Auth-header";
 import { SheetMenu } from "@afs/components/custom/admin-panel/sheet-menu";
 import { ModeToggle } from "@afs/components/ui/mode-toggle";
 import { OrganizationSwitcher } from "@clerk/nextjs";
+import CustomOrganizationSwitcher from "../custom-organization-switcher";
 
 interface NavbarProps {
   title: string;
@@ -20,6 +21,7 @@ export function Navbar({ title }: NavbarProps) {
           {/* <UserNav /> */}
           <div className="flex items-center gap-4">
             <OrganizationSwitcher />
+            <CustomOrganizationSwitcher />
             <AuthHeader />
             <ModeToggle />
           </div>

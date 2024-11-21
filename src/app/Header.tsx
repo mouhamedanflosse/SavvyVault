@@ -13,7 +13,7 @@ export default function Header() {
       <Link href="/" className="text-2xl">SavvyVault</Link>
       <div className="flex gap-4 items-center">
         <OrganizationSwitcher />
-        <CustomOrganizationSwitcher />
+        {/* <CustomOrganizationSwitcher /> */}
         <AuthHeader />
         <ModeToggle />
       </div>
