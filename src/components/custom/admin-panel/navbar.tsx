@@ -21,7 +21,7 @@ export function Navbar({ title }: NavbarProps) {
           {/* <UserNav /> */}
           <div className="flex items-center gap-4">
             <OrganizationSwitcher />
-            <CustomOrganizationSwitcher />
+            {/* <CustomOrganizationSwitcher /> */}
             <AuthHeader />
             <ModeToggle />
           </div>
