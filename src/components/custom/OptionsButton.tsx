@@ -232,7 +232,6 @@ export default function OptionButton({
           ) : (
             ""
           )}
-          {allowEditDelete() ? (
             <>
               <DropdownMenuSeparator />
               <DropdownMenuItem
@@ -243,9 +242,6 @@ export default function OptionButton({
                 <span>Download</span>
               </DropdownMenuItem>
             </>
-          ) : (
-            ""
-          )}
           {restore ? (
             <>
               <DropdownMenuSeparator />
