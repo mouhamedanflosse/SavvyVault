@@ -119,6 +119,8 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
     await editDoc({docId : doc?._id! , documentInfo : {name: values.name, fileId ,  type : values.file ? values.file[0].type : doc?.type! }, orgId : organization?.id  });
     
     form.reset({ name: "" });
+
+    // @ts-ignore
     setEditing(false);
     
     toast({
@@ -169,6 +171,7 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
                   <FormLabel>file</FormLabel>
                   <FormControl>
                     <FileUploader  
+                    // @ts-ignore
                     value={field.value}
                     onValueChange={field.onChange}
                     maxFileCount={1}
