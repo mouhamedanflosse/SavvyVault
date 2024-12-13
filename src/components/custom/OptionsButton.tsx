@@ -57,7 +57,7 @@ export default function OptionButton({
   const deleteDoc = useMutation(api.document.deleteDocument);
 
   // for a srr issue
-  if (!typeof window) {
+  if (!window || !document) {
     return <></>;
   }
 
