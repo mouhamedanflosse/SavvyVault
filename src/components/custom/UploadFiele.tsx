@@ -79,7 +79,7 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
         });
         const { storageId } = await result.json();
         
-        await addDoc({ name: values.name, fileId: storageId , orgId : organization?.id , type : values.file[0].type });
+        await addDoc({ name: values.name, fileId: storageId , orgId : organization?.id , type : values.file![0].type })
         
         form.reset({ name: "" });
         // fix it later
