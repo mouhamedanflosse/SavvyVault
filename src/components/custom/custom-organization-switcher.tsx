@@ -55,6 +55,7 @@ export default function CustomOrganizationSwitcher() {
                 <CommandItem
                   key={organization.id}
                   onSelect={() => {
+                    // @ts-ignore
                     setActive({ organization: organization.id })
                     setOpen(false)
                   }}
