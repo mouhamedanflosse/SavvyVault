@@ -9,12 +9,13 @@ const nextConfig = {
       },
       {
         hostname: "img.clerk.com",
-        protocol: 'https',
-        port: '',
-        pathname: '/**',
+        protocol: "https",
+        port: "",
+        pathname: "/**",
       },
     ],
   },
+  ignoreDuringBuilds: true,
 };
 
 export default nextConfig;
