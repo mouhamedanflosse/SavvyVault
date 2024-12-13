@@ -1,4 +1,3 @@
-
 import { Button } from "@afs/components/ui/button";
 import { Eye, TriangleAlert } from "lucide-react";
 import {
@@ -20,7 +19,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@afs/components/ui/tooltip";
-import Countdown from 'react-countdown';
+import Countdown from "react-countdown";
 
 export function Document({
   doc,
@@ -44,28 +43,30 @@ export function Document({
     }
   }
 
-  console.log(user);
-
   return (
     <Card className="min-w-[280px] md:min-w-[200px]">
       <CardHeader className="relative flex w-full flex-row items-center justify-between">
-      <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-        <CardTitle className="line-clamp-1 w-32">
-          {doc.name}
-          </CardTitle>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{doc.name}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-        {doc.status === "deleted" ?
-          <div className="absolute top-0 left-2 flex items-center gap-1">
-        <TriangleAlert  className="text-red-500 w-4 "/>
-        <Countdown className="text-red-500"  date={doc?.scheduledTime as number}/>
-        </div> : ''}
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <CardTitle className="line-clamp-1 w-32">{doc.name}</CardTitle>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{doc.name}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        {doc.status === "deleted" ? (
+          <div className="absolute left-2 top-0 flex items-center gap-1">
+            <TriangleAlert className="w-4 text-red-500" />
+            <Countdown
+              className="text-red-500"
+              date={doc?.scheduledTime as number}
+            />
+          </div>
+        ) : (
+          ""
+        )}
         <OptionButton restore={restore} user={user} saved={saved} doc={doc} />
       </CardHeader>
       <CardContent>
@@ -90,7 +91,7 @@ export function Document({
                   />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{doc.type.split('/')[1]}</p>
+                  <p>{doc.type.split("/")[1]}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -121,7 +122,7 @@ export function Document({
                     alt="author"
                     width={24}
                     height={24}
-                    className="cursor-pointer rounded-full border-2 border-transparent ring-2 ring-green-300 "
+                    className="cursor-pointer rounded-full border-2 border-transparent ring-2 ring-green-300"
                     src={doc.author_img}
                   />
                 </TooltipTrigger>

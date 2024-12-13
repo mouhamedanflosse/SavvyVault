@@ -29,7 +29,7 @@ import { toast } from "@afs/hooks/use-toast";
 import { Pencil } from "lucide-react";
 import { UploadDoc } from "./UploadFiele";
 import { BookmarkCheck } from "lucide-react";
-import { Download } from 'lucide-react';
+import { Download } from "lucide-react";
 
 export default function OptionButton({
   doc,
@@ -54,6 +54,11 @@ export default function OptionButton({
   // for restore page
   const restoreDoc = useMutation(api.document.restoreDocument);
   const deleteDoc = useMutation(api.document.deleteDocument);
+
+  // for a srr issue
+  if (typeof window == "undefined") {
+    return <></>;
+  }
 
   // move to trash
   const MoveDocToTrash = () => {
@@ -116,9 +121,16 @@ export default function OptionButton({
       toast({
         variant: "success",
         title: "document saved successfully",
-        description: organization && saved
-          ? `1 document has been unsaved from ${organization.name}`
-          : organization && !saved ? `1 document has been saved from ${organization.name}` : !organization && saved ? "1 document has been unsaved from your personal space" : !organization && !saved ? "1 document has been saved from your personal space" : "",
+        description:
+          organization && saved
+            ? `1 document has been unsaved from ${organization.name}`
+            : organization && !saved
+              ? `1 document has been saved from ${organization.name}`
+              : !organization && saved
+                ? "1 document has been unsaved from your personal space"
+                : !organization && !saved
+                  ? "1 document has been saved from your personal space"
+                  : "",
       });
     } catch (err) {
       toast({
@@ -153,29 +165,28 @@ export default function OptionButton({
     }
   }
 
+  // download file
+  async function downloadfile(filename: string, DocUrl: string) {
+    try {
+      const response = await fetch(DocUrl);
+      const blob = await response.blob();
 
-  // download file 
-  async function downloadfile(filename : string, DocUrl : string) {
-      try {
-        const response = await fetch(DocUrl);
-        const blob = await response.blob();
-        
-        const blobUrl = window.URL.createObjectURL(blob);
-        
-        const link = document.createElement('a');
-        
-        link.href = blobUrl;
-        link.download = filename; 
-        
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        window.URL.revokeObjectURL(blobUrl);
-      } catch (error) {
-        console.error('Error downloading image:', error);
-        throw error;
-      }
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+
+      link.href = blobUrl;
+      link.download = filename;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Error downloading image:", error);
+      throw error;
+    }
   }
 
   function allowEditDelete() {
@@ -232,16 +243,16 @@ export default function OptionButton({
           ) : (
             ""
           )}
-            <>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onSelect={() => downloadfile(doc.name,doc.docUrl)}
-              >
-                <Download className="mr-2 h-4 w-4" />
-                <span>Download</span>
-              </DropdownMenuItem>
-            </>
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onSelect={() => downloadfile(doc.name, doc.docUrl)}
+            >
+              <Download className="mr-2 h-4 w-4" />
+              <span>Download</span>
+            </DropdownMenuItem>
+          </>
           {restore ? (
             <>
               <DropdownMenuSeparator />

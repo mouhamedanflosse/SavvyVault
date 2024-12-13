@@ -1,7 +1,6 @@
-import { hostname } from "os";
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  ignoreDuringBuilds: true,
   images: {
     remotePatterns: [
       {
@@ -15,7 +14,6 @@ const nextConfig = {
       },
     ],
   },
-  ignoreDuringBuilds: true,
 };
 
 export default nextConfig;
