@@ -171,16 +171,17 @@ export default function OptionButton({
       const response = await fetch(DocUrl);
       const blob = await response.blob();
 
-      const blobUrl = window.URL.createObjectURL(blob);
+      const blobUrl = window?.URL.createObjectURL(blob);
 
-      const link = document.createElement("a");
+      const link = document?.createElement("a");
+      // @ts-ignore
+      link?.href = blobUrl;
+      // @ts-ignore
+      link?.download = filename;
 
-      link.href = blobUrl;
-      link.download = filename;
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      document?.body.appendChild(link);
+      link?.click();
+      document?.body.removeChild(link);
 
       window.URL.revokeObjectURL(blobUrl);
     } catch (error) {
