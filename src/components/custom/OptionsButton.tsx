@@ -43,6 +43,7 @@ export default function OptionButton({
   restore?: boolean;
 }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+
   const [editing, setEditing] = useState<boolean>(false);
   const { organization } = useOrganization();
 
@@ -56,13 +57,12 @@ export default function OptionButton({
   const deleteDoc = useMutation(api.document.deleteDocument);
 
   // for a srr issue
-  if (typeof window == "undefined") {
+  if (!typeof window) {
     return <></>;
   }
 
   // move to trash
   const MoveDocToTrash = () => {
-    console.log(editing);
     // Implement your delete logic here
     try {
       moveToTrash({ docId: doc._id, orgId: organization?.id });
