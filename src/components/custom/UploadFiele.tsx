@@ -141,7 +141,7 @@ export function UploadDoc({editMode,editing,setEditing , doc } : {editMode : boo
       : ""}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{editMode ? "upload document" : "edit document"}</DialogTitle>
+          <DialogTitle>{editMode ? "edit document" : "upload document" }</DialogTitle>
           <DialogDescription>
             document description will generated automatically
           </DialogDescription>

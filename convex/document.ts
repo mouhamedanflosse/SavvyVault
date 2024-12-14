@@ -355,7 +355,7 @@ export const editDocument = mutation({
 
     console.log("data :", args.docId, {
       name: args.documentInfo.name,
-      fileId: args.documentInfo.fileId ? fileId : args.documentInfo.fileId,
+      fileId: args.documentInfo.fileId ? args.documentInfo.fileId : fileId ,
       type: args.documentInfo.type,
       docUrl,
     });
@@ -366,6 +366,8 @@ export const editDocument = mutation({
         .find((org) => org.orgId == args.orgId)
         ?.role.includes("admin");
       if (isAdmin) {
+
+        console.log(args.documentInfo.fileId ? args.documentInfo.fileId : fileId)
         const deletedDocument = await ctx.db.patch(args.docId, {
           name: args.documentInfo.name,
           fileId: args.documentInfo.fileId ? args.documentInfo.fileId : fileId,
