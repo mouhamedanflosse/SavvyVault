@@ -386,7 +386,7 @@ export const editDocument = mutation({
       console.log("user", args, doc);
       const deletedDocument = await ctx.db.patch(args.docId, {
         name: args.documentInfo.name,
-        fileId: args.documentInfo.fileId,
+        fileId: args.documentInfo.fileId ? args.documentInfo.fileId : fileId,
         type: args.documentInfo.type,
         docUrl,
       });
