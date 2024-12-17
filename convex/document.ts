@@ -1,10 +1,17 @@
 import { Doc, Id, TableNames } from "./_generated/dataModel";
-import { mutation, query, QueryCtx, MutationCtx, internalMutation, action } from "./_generated/server";
+import {
+  mutation,
+  query,
+  QueryCtx,
+  MutationCtx,
+  internalMutation,
+  action,
+} from "./_generated/server";
 import { v, ConvexError } from "convex/values";
 import { getUserById } from "./users";
 import { api, internal } from "./_generated/api";
 // import OpenAI from "openai";
-import Groq from 'groq-sdk'
+import Groq from "groq-sdk";
 
 export const generateUploadUrl = mutation(async (ctx) => {
   return await ctx.storage.generateUploadUrl();
@@ -12,7 +19,6 @@ export const generateUploadUrl = mutation(async (ctx) => {
 
 // init Ai module client
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
 
 // const client = new OpenAI({
 //   apiKey: process.env.OPENAI_API_KEY,
@@ -42,14 +48,14 @@ const hasAccessTOrg = async (
   if (!user) {
     return null;
   }
-  console.log("user exist check ✅")
-  
+  console.log("user exist check ✅");
+
   const hasAccess = user.orgIds.some((item) => item.orgId === orgId);
-  console.log("has access to the org....",hasAccess,user.orgIds ,orgId )
+  console.log("has access to the org....", hasAccess, user.orgIds, orgId);
   if (!hasAccess) {
     return null;
   }
-  console.log("has access to the org check ✅")
+  console.log("has access to the org check ✅");
   return user;
 };
 
@@ -81,12 +87,12 @@ export const insertDocument = mutation({
       orgId: args.orgId,
       type: args.type,
       docUrl,
-      status : "active",
-      schedulerId : null,
-      completedTime : null,
-      scheduledTime : null,
-      author : user.name,
-      author_img : user.image
+      status: "active",
+      schedulerId: null,
+      completedTime: null,
+      scheduledTime: null,
+      author: user.name,
+      author_img: user.image,
     });
     return newDoc;
   },
@@ -97,37 +103,111 @@ export const askQuestion = action({
   args: {
     question: v.string(),
     docId: v.id("docs"),
-    orgId : v.optional(v.string())
+    orgId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    
     const user = (await ctx.auth.getUserIdentity())?.subject;
 
     if (!user) {
       throw new ConvexError("Not authenticated");
     }
 
-    console.log('docID', args.docId)
+    console.log("docID", args.docId);
     const doc = await ctx.runQuery(api.document.getDocument, {
       docId: args.docId,
-      orgId : args.orgId
+      orgId: args.orgId,
     });
 
-    console.log("doc" , doc)
+    console.log("doc", doc);
 
     if (!doc) {
       throw new ConvexError("Document not found");
     }
 
-    const chatCompletion = await groq.chat.completions.create({
-      "messages": [{role : 'user' , content : args.question}],
-      "model": "llama3-groq-8b-8192-tool-use-preview",
-      "temperature": 0.5,
-      "max_tokens": 1024,
-      "top_p": 0.65,
-      "stream": false,
-      "stop": null
-    });
+    const file = (await ctx.storage.get(doc.fileId)) as any;
+
+    const text = await file.text();
+
+
+    
+    const CHUNK_SIZE = 4000; 
+    const CHUNK_OVERLAP = 200;
+    
+    // Split text into overlapping chunks
+    const chunks = [];
+    let currentIndex = 0;
+    
+    while (currentIndex < 5) {
+      const chunk = text.slice(
+        Math.max(0, currentIndex),
+        Math.min(currentIndex + CHUNK_SIZE, text.length)
+      );
+      chunks.push(chunk);
+      currentIndex += 1;
+    }
+
+    // Construct prompt with context
+    const systemPrompt = `You are a helpful AI assistant. Use the following context to answer the question. 
+If you cannot find the answer in the context, say "I cannot find the answer in the provided document."`;
+  
+   const responses = await Promise.all(
+    chunks.map(async (chunk, index) => {
+
+      const chatCompletion = await groq.chat.completions.create({
+        messages : [
+          { 
+            role: "system", 
+            content: `${systemPrompt}\n\nContext (part ${index + 1}/${chunks.length}):\n${chunk}`
+          },
+          { 
+            role: "user", 
+            content: args.question 
+          }
+        ],
+        model: "gemma-7b-it",
+        temperature: 0.7,
+        max_tokens: 2000,
+        top_p: 0.95,
+        stream: false,
+        stop: null,
+      });
+
+      return chatCompletion.choices[0]?.message?.content || "";
+    })
+  );
+
+  // Combine responses intelligently
+  const combinedResponse = responses.join("\n\n");
+      
+  return {
+    answer: combinedResponse,
+    status: "success",
+  };
+
+    // // Handle large file content
+    // const MAX_TEXT_LENGTH = 8000; 
+    // const truncatedText =
+    //   text.length > MAX_TEXT_LENGTH
+    //     ? text.substring(0, MAX_TEXT_LENGTH) + "..."
+    //     : text;
+
+    // console.log("File content length:", text.length);
+
+    // const chatCompletion = await groq.chat.completions.create({
+    //   messages: [
+    //     { role: "user", content: `answer that question: ${args.question}` },
+    //     {
+    //       role: "system",
+    //       content: `here is the file : ${text}`,
+    //     },
+    //   ],
+    //   model: "gemma-7b-it",
+    //   temperature: 1,
+    //   max_tokens: 8000,
+    //   top_p: 1,
+    //   stream: false,
+    //   stop: null,
+    // });
 
     // const chatCompletion: OpenAI.Chat.ChatCompletion =
     //   await client.chat.completions.create({
@@ -137,7 +217,7 @@ export const askQuestion = action({
 
     // console.log(chatCompletion);
 
-    return chatCompletion;
+    // return chatCompletion;
   },
 });
 
@@ -157,14 +237,16 @@ export const getDocuments = query({
       if (hasAccess) {
         const docs = await ctx.db
           .query("docs")
-          .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId).eq("status" , "active"))
+          .withIndex("by_orgId", (q) =>
+            q.eq("orgId", args.orgId).eq("status", "active"),
+          )
           .collect();
         const query = args.query;
         if (query) {
           const documents = docs.filter((doc) =>
             doc.name.toLowerCase().includes(query.toLowerCase()),
           );
-          return { docs: documents, user: hasAccess  };
+          return { docs: documents, user: hasAccess };
         }
         return { docs, user: hasAccess };
       }
@@ -175,7 +257,10 @@ export const getDocuments = query({
     const docs = await ctx.db
       .query("docs")
       .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", user).eq("orgId", undefined).eq("status" , "active"),
+        q
+          .eq("tokenIdentifier", user)
+          .eq("orgId", undefined)
+          .eq("status", "active"),
       )
       .collect();
 
@@ -259,7 +344,7 @@ export const deleteDocument = mutation({
       const deletedDocument = await ctx.db.delete(args.docId);
       const deletedFile = await ctx.storage.delete(doc.fileId);
       if (doc.schedulerId) {
-        const processDeletion = await ctx.scheduler.cancel(doc.schedulerId)
+        const processDeletion = await ctx.scheduler.cancel(doc.schedulerId);
       }
       return deletedDocument;
     }
@@ -269,7 +354,7 @@ export const deleteDocument = mutation({
       const deletedDocument = await ctx.db.delete(args.docId);
       const deletedFile = await ctx.storage.delete(doc.fileId);
       if (doc.schedulerId) {
-        const processDeletion = await ctx.scheduler.cancel(doc.schedulerId)
+        const processDeletion = await ctx.scheduler.cancel(doc.schedulerId);
       }
       return deletedDocument;
     }
@@ -304,9 +389,18 @@ export const moveToTrash = mutation({
       console.log("hasAccess", args, doc);
       // const deletedDocument = await ctx.db.delete(args.docId);
       // const deletedFile = await ctx.storage.delete(doc.fileId);
-      const schedulerId = (await ctx.scheduler.runAfter(3600000 , internal.document.deletedDocument , {docId : args.docId,fileId: doc.fileId})) as Id<"_scheduled_functions">
-      const schedulerdoc = await ctx.db.system.get(schedulerId)
-      const markAsdeleteed = await ctx.db.patch(args.docId , {status : "deleted" , schedulerId , completedTime : schedulerdoc?.completedTime , scheduledTime : schedulerdoc?.scheduledTime})
+      const schedulerId = (await ctx.scheduler.runAfter(
+        3600000,
+        internal.document.deletedDocument,
+        { docId: args.docId, fileId: doc.fileId },
+      )) as Id<"_scheduled_functions">;
+      const schedulerdoc = await ctx.db.system.get(schedulerId);
+      const markAsdeleteed = await ctx.db.patch(args.docId, {
+        status: "deleted",
+        schedulerId,
+        completedTime: schedulerdoc?.completedTime,
+        scheduledTime: schedulerdoc?.scheduledTime,
+      });
       return markAsdeleteed;
     }
 
@@ -314,9 +408,18 @@ export const moveToTrash = mutation({
     if (doc.tokenIdentifier === identity.subject) {
       console.log("user", args, doc);
       // const deletedDocument = await ctx.db.delete(args.docId);
-      const schedulerId = (await ctx.scheduler.runAfter(3600000 , internal.document.deletedDocument , {docId : args.docId,fileId: doc.fileId})) as Id<"_scheduled_functions">
-      const schedulerdoc = await ctx.db.system.get(schedulerId)
-      const markAsdeleteed = await ctx.db.patch(args.docId , {status : "deleted" , schedulerId , completedTime : schedulerdoc?.completedTime , scheduledTime : schedulerdoc?.scheduledTime})
+      const schedulerId = (await ctx.scheduler.runAfter(
+        3600000,
+        internal.document.deletedDocument,
+        { docId: args.docId, fileId: doc.fileId },
+      )) as Id<"_scheduled_functions">;
+      const schedulerdoc = await ctx.db.system.get(schedulerId);
+      const markAsdeleteed = await ctx.db.patch(args.docId, {
+        status: "deleted",
+        schedulerId,
+        completedTime: schedulerdoc?.completedTime,
+        scheduledTime: schedulerdoc?.scheduledTime,
+      });
       return markAsdeleteed;
     }
 
@@ -330,12 +433,12 @@ export const moveToTrash = mutation({
 export const deletedDocument = internalMutation({
   args: {
     docId: v.id("docs"),
-    fileId : v.id("_storage")
+    fileId: v.id("_storage"),
   },
   handler: async (ctx, args) => {
     const deletedDocument = await ctx.db.delete(args.docId);
     const deletedFile = await ctx.storage.delete(args.fileId);
-    return deletedDocument
+    return deletedDocument;
   },
 });
 
@@ -374,7 +477,7 @@ export const editDocument = mutation({
 
     console.log("data :", args.docId, {
       name: args.documentInfo.name,
-      fileId: args.documentInfo.fileId ? args.documentInfo.fileId : fileId ,
+      fileId: args.documentInfo.fileId ? args.documentInfo.fileId : fileId,
       type: args.documentInfo.type,
       docUrl,
     });
@@ -385,8 +488,9 @@ export const editDocument = mutation({
         .find((org) => org.orgId == args.orgId)
         ?.role.includes("admin");
       if (isAdmin) {
-
-        console.log(args.documentInfo.fileId ? args.documentInfo.fileId : fileId)
+        console.log(
+          args.documentInfo.fileId ? args.documentInfo.fileId : fileId,
+        );
         const deletedDocument = await ctx.db.patch(args.docId, {
           name: args.documentInfo.name,
           fileId: args.documentInfo.fileId ? args.documentInfo.fileId : fileId,
@@ -443,11 +547,11 @@ export const toggleSaveDoc = mutation({
     const hasAccess = await hasAccessTOrg(ctx, args.orgId);
 
     // for an orgnization member
-    console.log("no access for orgs")
+    console.log("no access for orgs");
     if (hasAccess) {
-      console.log("doc already saved")
+      console.log("doc already saved");
       if (docAlreadySaved) {
-        console.log("KJ hh")
+        console.log("KJ hh");
         const saveDocTouser = ctx.db.patch(user?._id, {
           saved: [...user.saved].filter((id) => id !== args.docId),
         });
@@ -498,7 +602,9 @@ export const getsavedDocuments = query({
       if (hasAccess) {
         const docs = await ctx.db
           .query("docs")
-          .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId).eq("status" , "active"))
+          .withIndex("by_orgId", (q) =>
+            q.eq("orgId", args.orgId).eq("status", "active"),
+          )
           .collect();
         console.log("docs:", docs);
         const query = args.query;
@@ -523,7 +629,10 @@ export const getsavedDocuments = query({
     const docs = await ctx.db
       .query("docs")
       .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", user).eq("orgId", undefined).eq("status" , "active"),
+        q
+          .eq("tokenIdentifier", user)
+          .eq("orgId", undefined)
+          .eq("status", "active"),
       )
       .collect();
 
@@ -566,7 +675,9 @@ export const getDeletedDocuments = query({
       if (hasAccess) {
         const docs = await ctx.db
           .query("docs")
-          .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId).eq("status" , "deleted"))
+          .withIndex("by_orgId", (q) =>
+            q.eq("orgId", args.orgId).eq("status", "deleted"),
+          )
           .collect();
         console.log("docs:", docs);
         const query = args.query;
@@ -585,7 +696,10 @@ export const getDeletedDocuments = query({
     const docs = await ctx.db
       .query("docs")
       .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", user).eq("orgId", undefined).eq("status" , "deleted"),
+        q
+          .eq("tokenIdentifier", user)
+          .eq("orgId", undefined)
+          .eq("status", "deleted"),
       )
       .collect();
 
@@ -625,8 +739,10 @@ export const restoreDocument = mutation({
     if (hasAccess) {
       console.log("hasAccess", args, doc);
       if (doc.schedulerId) {
-        const processDeletion = await ctx.scheduler.cancel(doc.schedulerId)
-        const markAsdeleteed = await ctx.db.patch(args.docId , {status : "active"})
+        const processDeletion = await ctx.scheduler.cancel(doc.schedulerId);
+        const markAsdeleteed = await ctx.db.patch(args.docId, {
+          status: "active",
+        });
         return markAsdeleteed;
       }
     }
@@ -635,9 +751,11 @@ export const restoreDocument = mutation({
     if (doc.tokenIdentifier === identity.subject) {
       console.log("user", args, doc);
       if (doc.schedulerId) {
-        const processDeletion = await ctx.scheduler.cancel(doc.schedulerId)
-        
-        const markAsdeleteed = await ctx.db.patch(args.docId , {status : "active"})
+        const processDeletion = await ctx.scheduler.cancel(doc.schedulerId);
+
+        const markAsdeleteed = await ctx.db.patch(args.docId, {
+          status: "active",
+        });
         return markAsdeleteed;
       }
     }

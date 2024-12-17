@@ -66,16 +66,16 @@ export default function ChatBox({
       const userMessage: Message = { id: messages.length + 1, text: input, sender: 'user' };
       setMessages(prevMessages => [...prevMessages, userMessage]);
       const botMessage = await askAI({docId : docId , question : input , orgId : organization?.id })
-      // setTimeout(() => {
-      //   const botMessage: Message = { 
-      //     id: messages.length + 2, 
-      //     text: "Thank you for your message. I'm a demo chatbot, so I don't have real responses yet.", 
-      //     sender: 'bot' 
-      //   };
-      //   setMessages(prevMessages => [...prevMessages, botMessage]);
-      // }, 1000);
+      setTimeout(() => {
+        const botMessage: Message = { 
+          id: messages.length + 2, 
+          text: "Thank you for your message. I'm a demo chatbot, so I don't have real responses yet.", 
+          sender: 'bot' 
+        };
+        setMessages(prevMessages => [...prevMessages, botMessage]);
+      }, 1000);
       console.log(botMessage)
-        setMessages(prevMessages => [...prevMessages, { id: messages.length + 2, text: botMessage.choices[0]?.message?.content || '', sender: 'bot' }]);
+        // setMessages(prevMessages => [...prevMessages, { id: messages.length + 2, text: botMessage.choices[0]?.message?.content || '', sender: 'bot' }]);
       form.reset();
     }
   }
@@ -92,7 +92,7 @@ export default function ChatBox({
             className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-[70%] rounded-lg p-3 ${
+              className={`max-w-[70%] rounded-lg p-3 my-1 ${
                 message.sender === 'user'
                   ? 'bg-primary text-primary-foreground'
                   : 'bg-secondary text-secondary-foreground'

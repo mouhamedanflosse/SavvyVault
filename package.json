@@ -36,6 +36,7 @@
     "next": "14.2.5",
     "next-themes": "^0.3.0",
     "openai": "^4.58.1",
+    "pdfjs-dist": "^4.9.155",
     "plaiceholder": "^3.0.0",
     "react": "^18",
     "react-countdown": "^2.3.6",
@@ -51,6 +52,7 @@
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/pdfjs-dist": "^2.10.377",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
