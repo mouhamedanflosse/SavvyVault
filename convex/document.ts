@@ -1,15 +1,19 @@
 import { Doc, Id, TableNames } from "./_generated/dataModel";
-import { mutation, query, QueryCtx, MutationCtx, internalMutation } from "./_generated/server";
+import { mutation, query, QueryCtx, MutationCtx, internalMutation, action } from "./_generated/server";
 import { v, ConvexError } from "convex/values";
 import { getUserById } from "./users";
-import { internal } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 // import OpenAI from "openai";
+import Groq from 'groq-sdk'
 
 export const generateUploadUrl = mutation(async (ctx) => {
   return await ctx.storage.generateUploadUrl();
 });
 
-// init openai client
+// init Ai module client
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+
 // const client = new OpenAI({
 //   apiKey: process.env.OPENAI_API_KEY,
 // });
@@ -89,38 +93,53 @@ export const insertDocument = mutation({
 });
 
 // ask questions
-// export const askQuestion = action({
-//   args: {
-//     question: v.string(),
-//     docId: v.id("docs"),
-//   },
-//   handler: async (ctx, args) => {
-//     const user = (await ctx.auth.getUserIdentity())?.;
-//     if (!user) {
-//       throw new ConvexError("Not authenticated");
-//     }
+export const askQuestion = action({
+  args: {
+    question: v.string(),
+    docId: v.id("docs"),
+    orgId : v.optional(v.string())
+  },
+  handler: async (ctx, args) => {
+    
+    const user = (await ctx.auth.getUserIdentity())?.subject;
 
-//     const doc = await ctx.runQuery(api.document.getDocument, {
-//       docId: args.docId,tokenIdentifier
-//     });
+    if (!user) {
+      throw new ConvexError("Not authenticated");
+    }
 
-//     if (!doc) {
-//       throw new ConvexError("Document not found");
-//     }
+    console.log('docID', args.docId)
+    const doc = await ctx.runQuery(api.document.getDocument, {
+      docId: args.docId,
+      orgId : args.orgId
+    });
 
-//     console.log(doc);
+    console.log("doc" , doc)
 
-//     const chatCompletion: OpenAI.Chat.ChatCompletion =
-//       await client.chat.completions.create({
-//         messages: [{ role: "user", content: "Say this is a test" }],
-//         model: "gpt-3.5-turbo",
-//       });
+    if (!doc) {
+      throw new ConvexError("Document not found");
+    }
 
-//     console.log(chatCompletion);
+    const chatCompletion = await groq.chat.completions.create({
+      "messages": [{role : 'user' , content : "say Hello world"}],
+      "model": "llama3-groq-8b-8192-tool-use-preview",
+      "temperature": 0.5,
+      "max_tokens": 1024,
+      "top_p": 0.65,
+      "stream": false,
+      "stop": null
+    });
 
-//     return chatCompletion;
-//   },
-// });
+    // const chatCompletion: OpenAI.Chat.ChatCompletion =
+    //   await client.chat.completions.create({
+    //     messages: [{ role: "user", content: "Say this is a test" }],
+    //     model: "gpt-3.5-turbo",
+    //   });
+
+    // console.log(chatCompletion);
+
+    return chatCompletion;
+  },
+});
 
 export const getDocuments = query({
   args: { orgId: v.optional(v.string()), query: v.optional(v.string()) },

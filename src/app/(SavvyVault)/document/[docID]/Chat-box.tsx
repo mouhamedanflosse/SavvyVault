@@ -17,6 +17,9 @@ import { Button } from "@afs/components/ui/button";
 import { Id } from "../../../../../convex/_generated/dataModel";
 import { useState } from "react";
 import { Send } from "lucide-react";
+import { useAction, useQuery } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
+import { useOrganization } from "@clerk/nextjs";
 
 interface Message {
   id: number;
@@ -33,6 +36,9 @@ export default function ChatBox({
 }: {
   docId: Id<"docs">
 }) {
+  const {organization} = useOrganization()
+  const askAI = useAction(api.document.askQuestion)
+
   const [messages, setMessages] = useState<Message[]>([
     { id: 1, text: "Hello! How can I assist you today?", sender: 'bot' }
   ]);
@@ -59,16 +65,17 @@ export default function ChatBox({
     if (input) {
       const userMessage: Message = { id: messages.length + 1, text: input, sender: 'user' };
       setMessages(prevMessages => [...prevMessages, userMessage]);
-
-      setTimeout(() => {
-        const botMessage: Message = { 
-          id: messages.length + 2, 
-          text: "Thank you for your message. I'm a demo chatbot, so I don't have real responses yet.", 
-          sender: 'bot' 
-        };
-        setMessages(prevMessages => [...prevMessages, botMessage]);
-      }, 1000);
-
+      const botMessage = await askAI({docId : docId , question : input , orgId : organization?.id })
+      // setTimeout(() => {
+      //   const botMessage: Message = { 
+      //     id: messages.length + 2, 
+      //     text: "Thank you for your message. I'm a demo chatbot, so I don't have real responses yet.", 
+      //     sender: 'bot' 
+      //   };
+      //   setMessages(prevMessages => [...prevMessages, botMessage]);
+      // }, 1000);
+      console.log(botMessage)
+        setMessages(prevMessages => [...prevMessages, { id: messages.length + 2, text: botMessage.choices[0]?.message?.content || '', sender: 'bot' }]);
       form.reset();
     }
   }
