@@ -120,7 +120,7 @@ export const askQuestion = action({
     }
 
     const chatCompletion = await groq.chat.completions.create({
-      "messages": [{role : 'user' , content : "say Hello world"}],
+      "messages": [{role : 'user' , content : args.question}],
       "model": "llama3-groq-8b-8192-tool-use-preview",
       "temperature": 0.5,
       "max_tokens": 1024,
