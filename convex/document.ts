@@ -128,19 +128,17 @@ export const askQuestion = action({
 
     const text = await file.text();
 
-
-    
-    const CHUNK_SIZE = 4000; 
+    const CHUNK_SIZE = 4000;
     const CHUNK_OVERLAP = 200;
-    
+
     // Split text into overlapping chunks
     const chunks = [];
     let currentIndex = 0;
-    
+
     while (currentIndex < 5) {
       const chunk = text.slice(
         Math.max(0, currentIndex),
-        Math.min(currentIndex + CHUNK_SIZE, text.length)
+        Math.min(currentIndex + CHUNK_SIZE, text.length),
       );
       chunks.push(chunk);
       currentIndex += 1;
@@ -149,43 +147,63 @@ export const askQuestion = action({
     // Construct prompt with context
     const systemPrompt = `You are a helpful AI assistant. Use the following context to answer the question. 
 If you cannot find the answer in the context, say "I cannot find the answer in the provided document."`;
-  
-   const responses = await Promise.all(
-    chunks.map(async (chunk, index) => {
 
-      const chatCompletion = await groq.chat.completions.create({
-        messages : [
-          { 
-            role: "system", 
-            content: `${systemPrompt}\n\nContext (part ${index + 1}/${chunks.length}):\n${chunk}`
-          },
-          { 
-            role: "user", 
-            content: args.question 
-          }
-        ],
-        model: "gemma-7b-it",
-        temperature: 0.7,
-        max_tokens: 2000,
-        top_p: 0.95,
-        stream: false,
-        stop: null,
-      });
+    const responses = await Promise.all(
+      chunks.map(async (chunk, index) => {
+        const chatCompletion = await groq.chat.completions.create({
+          messages: [
+            {
+              role: "system",
+              content: `${systemPrompt}\n\nContext (part ${index + 1}/${chunks.length}):\n${chunk}`,
+            },
+            {
+              role: "user",
+              content: args.question,
+            },
+          ],
+          model: "gemma2-9b-it",
+          temperature: 1,
+          max_tokens: 2000,
+          top_p: 0.95,
+          stream: false,
+          stop: null,
+        });
 
-      return chatCompletion.choices[0]?.message?.content || "";
-    })
-  );
+        return chatCompletion.choices[0]?.message?.content || "";
+      }),
+    );
 
-  // Combine responses intelligently
-  const combinedResponse = responses.join("\n\n");
-      
-  return {
-    answer: combinedResponse,
-    status: "success",
-  };
+    // Combine responses intelligently
+    const combinedResponse = responses.join("\n\n");
+
+    const formatedResponse = await  groq.chat.completions.create({
+          messages: [
+            {
+              role: "system",
+              content: `can you summarize this paragraph `,
+            },
+            {
+              role: "user",
+              content: `here is the paragraph :${combinedResponse}`,
+            },
+          ],
+          model: "gemma2-9b-it",
+          temperature: 1,
+          max_tokens: 2000,
+          top_p: 0.95,
+          stream: false,
+          stop: null,
+        }).then((chatCompletion) => chatCompletion.choices[0]?.message?.content || "");
+
+    console.log(formatedResponse)
+
+    return {
+      answer: formatedResponse,
+      status: "success",
+    };
 
     // // Handle large file content
-    // const MAX_TEXT_LENGTH = 8000; 
+    // const MAX_TEXT_LENGTH = 8000;
     // const truncatedText =
     //   text.length > MAX_TEXT_LENGTH
     //     ? text.substring(0, MAX_TEXT_LENGTH) + "..."

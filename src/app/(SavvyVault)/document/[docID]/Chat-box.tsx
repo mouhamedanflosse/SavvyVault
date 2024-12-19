@@ -72,10 +72,10 @@ export default function ChatBox({
           text: "Thank you for your message. I'm a demo chatbot, so I don't have real responses yet.", 
           sender: 'bot' 
         };
-        setMessages(prevMessages => [...prevMessages, botMessage]);
+        // setMessages(prevMessages => [...prevMessages, botMessage]);
       }, 1000);
       console.log(botMessage)
-        // setMessages(prevMessages => [...prevMessages, { id: messages.length + 2, text: botMessage.choices[0]?.message?.content || '', sender: 'bot' }]);
+        setMessages(prevMessages => [...prevMessages, { id: messages.length + 2, text: botMessage.answer || '', sender: 'bot' }]);
       form.reset();
     }
   }
