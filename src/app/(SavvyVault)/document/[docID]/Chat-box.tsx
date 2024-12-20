@@ -20,27 +20,26 @@ import { Send } from "lucide-react";
 import { useAction, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { useOrganization } from "@clerk/nextjs";
+import { motion } from "framer-motion";
 
 interface Message {
   id: number;
   text: string;
-  sender: 'user' | 'bot';
+  sender: "user" | "bot";
 }
 
 const formSchema = z.object({
   message: z.string().min(1, { message: "Please type a message" }),
 });
 
-export default function ChatBox({
-  docId,
-}: {
-  docId: Id<"docs">
-}) {
-  const {organization} = useOrganization()
-  const askAI = useAction(api.document.askQuestion)
+export default function ChatBox({ docId }: { docId: Id<"docs"> }) {
+  const { organization } = useOrganization();
+
+  const [loading, setloading] = useState(false);
+  const askAI = useAction(api.document.askQuestion);
 
   const [messages, setMessages] = useState<Message[]>([
-    { id: 1, text: "Hello! How can I assist you today?", sender: 'bot' }
+    { id: 1, text: "Hello! How can I assist you today?", sender: "bot" },
   ]);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -61,21 +60,38 @@ export default function ChatBox({
   }, [messages]);
 
   async function handleSubmit(values: z.infer<typeof formSchema>) {
+    setloading(true);
     const input = values.message.trim();
     if (input) {
-      const userMessage: Message = { id: messages.length + 1, text: input, sender: 'user' };
-      setMessages(prevMessages => [...prevMessages, userMessage]);
-      const botMessage = await askAI({docId : docId , question : input , orgId : organization?.id })
+      const userMessage: Message = {
+        id: messages.length + 1,
+        text: input,
+        sender: "user",
+      };
+      setMessages((prevMessages) => [...prevMessages, userMessage]);
+      const botMessage = await askAI({
+        docId: docId,
+        question: input,
+        orgId: organization?.id,
+      });
       setTimeout(() => {
-        const botMessage: Message = { 
-          id: messages.length + 2, 
-          text: "Thank you for your message. I'm a demo chatbot, so I don't have real responses yet.", 
-          sender: 'bot' 
+        const botMessage: Message = {
+          id: messages.length + 2,
+          text: "Thank you for your message. I'm a demo chatbot, so I don't have real responses yet.",
+          sender: "bot",
         };
         // setMessages(prevMessages => [...prevMessages, botMessage]);
       }, 1000);
-      console.log(botMessage)
-        setMessages(prevMessages => [...prevMessages, { id: messages.length + 2, text: botMessage.answer || '', sender: 'bot' }]);
+      console.log(botMessage);
+      setloading(false);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          id: messages.length + 2,
+          text: botMessage.answer || "",
+          sender: "bot",
+        },
+      ]);
       form.reset();
     }
   }
@@ -83,19 +99,21 @@ export default function ChatBox({
   return (
     <div className="flex h-[500px] w-full max-w-2xl flex-col justify-between rounded-lg border bg-background shadow-lg">
       <div className="bg-primary p-4">
-        <h2 className="text-2xl font-bold text-primary-foreground">Chat Assistant</h2>
+        <h2 className="text-2xl font-bold text-primary-foreground">
+          Chat Assistant
+        </h2>
       </div>
-      <ScrollArea ref={scrollAreaRef} className="flex-grow p-4 space-y-4">
-        {messages.map(message => (
+      <ScrollArea ref={scrollAreaRef} className="flex-grow space-y-4 p-4">
+        {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+            className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`max-w-[70%] rounded-lg p-3 my-1 ${
-                message.sender === 'user'
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-secondary text-secondary-foreground'
+              className={`my-1 max-w-[70%] rounded-lg p-3 ${
+                message.sender === "user"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-secondary text-secondary-foreground"
               }`}
             >
               {message.text}
@@ -103,19 +121,46 @@ export default function ChatBox({
           </div>
         ))}
         <div ref={messagesEndRef} />
+        {loading ? (
+          <motion.div
+            initial={{ opacity: 0.3 }}
+            animate={{ opacity: 1 }}
+            className="item-center relative flex w-20 justify-center gap-1.5 rounded-sm bg-secondary px-3 py-2"
+            transition={{
+              duration: 0.3,
+              repeat: Infinity,
+              repeatDelay: 0.7,
+              bounce: true,
+              ease: "linear",
+            }}
+          >
+            {/* fix it later */}
+            {/* <div className="absolute -left-6 top-0 z-10 h-10 w-10 border-8 border-s-8 border-white bg-red-800">
+              .
+            </div> */}
+            <span className="aspect-square w-3 rounded-full bg-secondary-foreground"></span>
+            <span className="aspect-square w-3 rounded-full bg-secondary-foreground"></span>
+            <span className="aspect-square w-3 rounded-full bg-secondary-foreground"></span>
+          </motion.div>
+        ) : (
+          ""
+        )}
       </ScrollArea>
       <div className="border-t p-4">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="flex space-x-2">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="flex space-x-2"
+          >
             <FormField
               control={form.control}
               name="message"
               render={({ field }) => (
                 <FormItem className="flex-grow">
                   <FormControl>
-                    <Input 
-                      placeholder="Type your message..." 
-                      {...field} 
+                    <Input
+                      placeholder="Type your message..."
+                      {...field}
                       className="w-full"
                       aria-label="Chat message"
                     />
