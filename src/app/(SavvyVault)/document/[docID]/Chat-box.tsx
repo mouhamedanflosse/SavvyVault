@@ -125,7 +125,7 @@ export default function ChatBox({ docId }: { docId: Id<"docs"> }) {
           <motion.div
             initial={{ opacity: 0.3 }}
             animate={{ opacity: 1 }}
-            className="item-center relative flex w-20 justify-center gap-1.5 rounded-sm bg-secondary px-3 py-2"
+            className="item-center relative flex w-20 justify-center gap-1.5 rounded-sm bg-secondary px-3 py-2 ml-5"
             transition={{
               duration: 0.3,
               repeat: Infinity,
@@ -134,10 +134,8 @@ export default function ChatBox({ docId }: { docId: Id<"docs"> }) {
               ease: "linear",
             }}
           >
-            {/* fix it later */}
-            {/* <div className="absolute -left-6 top-0 z-10 h-10 w-10 border-8 border-s-8 border-white bg-red-800">
-              .
-            </div> */}
+            <div className="absolute p-0 left-0 top-0 z-10 h-2 w-1 border-8 border-l-transparent border-t-transparent border-b-transparent loadingMessage ">
+            </div>
             <span className="aspect-square w-3 rounded-full bg-secondary-foreground"></span>
             <span className="aspect-square w-3 rounded-full bg-secondary-foreground"></span>
             <span className="aspect-square w-3 rounded-full bg-secondary-foreground"></span>

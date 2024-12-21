@@ -2,54 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;600&display=swap");
 
 @layer base {
   :root {
     /* Light Theme - Updated */
     --background: 220 22% 98%;
     --foreground: 218 17% 12%;
-    
+
     --card: 0 0% 100%;
     --card-foreground: 218 17% 12%;
     --card-border: 206 45% 90%;
     --card-shadow: 342 89% 59% / 8%;
-    
+
     --popover: 0 0% 100%;
     --popover-foreground: 218 17% 12%;
-    
+
     /* Primary Color */
     --primary: 342 89% 55%;
     --primary-hover: 342 85% 50%;
     --primary-foreground: 210 40% 98%;
-    
+
     /* Secondary Color - Updated */
     --secondary: 342 30% 92%;
     --secondary-hover: 342 30% 85%;
     --secondary-foreground: 218 17% 15%;
-    
+
     /* Muted colors */
     --muted: 342 20% 92%;
     --muted-foreground: 215.4 16.3% 45.9%;
-    
+
     /* Accent - Updated to complement primary */
     --accent: 342 89% 55%;
     --accent-hover: 342 85% 50%;
     --accent-foreground: 210 40% 98%;
-    
+
     /* Status colors */
     --success: 142 72% 29%;
     --success-foreground: 210 40% 98%;
-    
+
     --destructive: 0 80% 58%;
     --destructive-hover: 0 70% 50%;
     --destructive-foreground: 210 40% 98%;
-    
+
     /* UI elements */
     --border: 342 20% 92%;
     --input: 342 20% 92%;
     --ring: 342 89% 55%;
-    
+
     /* Sidebar */
     --sidebar-background: 220 22% 98%;
     --sidebar-foreground: 218 17% 12%;
@@ -59,7 +59,7 @@
     --sidebar-accent-foreground: 218 17% 12%;
     --sidebar-border: 342 20% 92%;
     --sidebar-ring: 342 89% 55%;
-    
+
     --radius: 0.75rem;
   }
 
@@ -67,34 +67,34 @@
     /* Dark Theme - Updated */
     --background: 218 17% 15%;
     --foreground: 210 40% 98%;
-    
+
     --card: 220 22% 18%;
     --card-foreground: 210 40% 98%;
     --card-border: 342 20% 30%;
     --card-shadow: 342 89% 59% / 8%;
-    
+
     --popover: 220 22% 18%;
     --popover-foreground: 210 40% 98%;
-    
+
     /* Primary */
     --primary: 342 89% 65%;
     --primary-hover: 342 80% 60%;
     --primary-foreground: 210 40% 98%;
-    
+
     /* Secondary - Updated */
     --secondary: 342 30% 30%;
     --secondary-hover: 342 30% 25%;
     --secondary-foreground: 210 40% 98%;
-    
+
     /* Muted */
     --muted: 342 20% 30%;
     --muted-foreground: 215 20.2% 75%;
-    
+
     /* Accent - Updated */
     --accent: 342 89% 65%;
     --accent-hover: 342 80% 60%;
     --accent-foreground: 210 40% 98%;
-    
+
     /* UI elements */
     --border: 342 20% 30%;
     --input: 342 20% 30%;
@@ -116,25 +116,25 @@
   * {
     @apply border-border;
   }
-  
+
   html {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     scroll-behavior: smooth;
   }
-  
+
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
   }
 
   /* Card styling */
   .card {
-    @apply rounded-lg border border-card-border bg-card backdrop-blur-lg shadow-lg transition-all duration-200 hover:border-primary-hover hover:shadow-md hover:shadow-primary/10;
+    @apply border-card-border hover:border-primary-hover rounded-lg border bg-card shadow-lg backdrop-blur-lg transition-all duration-200 hover:shadow-md hover:shadow-primary/10;
   }
 
   /* Buttons */
   .button {
-    @apply transition-all duration-200 rounded-md hover:translate-y-[-1px] active:translate-y-[1px] focus:ring-2 focus:ring-offset-2 focus:ring-ring;
+    @apply rounded-md transition-all duration-200 hover:translate-y-[-1px] focus:ring-2 focus:ring-ring focus:ring-offset-2 active:translate-y-[1px];
     background-color: hsl(var(--primary));
     color: hsl(var(--primary-foreground));
   }
@@ -143,4 +143,21 @@
   .button:hover {
     background-color: hsl(var(--primary-hover));
   }
+}
+
+.loadingMessage::before {
+  z-index: 10;
+  left: -30px;
+  top: -12px;
+  border: 6px solid #fff;
+  border-color: transparent;
+  border-right: 20px solid hsl(var(--secondary));
+  transform: rotate(30deg);
+}
+
+.loadingMessage::before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
 }
