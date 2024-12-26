@@ -17,6 +17,7 @@ import type {
 import type * as clerk from "../clerk.js";
 import type * as document from "../document.js";
 import type * as http from "../http.js";
+import type * as textract from "../textract.js";
 import type * as users from "../users.js";
 
 /**
@@ -31,6 +32,7 @@ declare const fullApi: ApiFromModules<{
   clerk: typeof clerk;
   document: typeof document;
   http: typeof http;
+  textract: typeof textract;
   users: typeof users;
 }>;
 export declare const api: FilterApi<

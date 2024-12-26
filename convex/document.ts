@@ -1,4 +1,4 @@
-import { Doc, Id, TableNames } from "./_generated/dataModel";
+import { DataModel, Doc, Id, TableNames } from "./_generated/dataModel";
 import {
   mutation,
   query,
@@ -12,6 +12,7 @@ import { getUserById } from "./users";
 import { api, internal } from "./_generated/api";
 // import OpenAI from "openai";
 import Groq from "groq-sdk";
+import textract from 'textract'
 
 export const generateUploadUrl = mutation(async (ctx) => {
   return await ctx.storage.generateUploadUrl();
@@ -116,7 +117,7 @@ export const askQuestion = action({
     const doc = await ctx.runQuery(api.document.getDocument, {
       docId: args.docId,
       orgId: args.orgId,
-    });
+    }) as Doc<'docs'> || null ;
 
     console.log("doc", doc);
 
@@ -126,7 +127,20 @@ export const askQuestion = action({
 
     const file = (await ctx.storage.get(doc.fileId)) as any;
 
-    const text = await file.text();
+    const text = await file.text(file);
+
+    // const text_ = await ctx.runAction(internal.textract.extract_text , {fileId : doc.fileId , docUrl : doc.docUrl})
+
+    // console.log('text_12121' , text_)
+
+    // const text_ = await textract.fromUrl(doc.docUrl , function( error : any, text : any ) {
+    //   console.log('extracted text' , text)
+    //   console.log('extrated text',error)
+
+    //   return text
+    // })
+
+    // console.log(text_)
 
     const CHUNK_SIZE = 4000;
     const CHUNK_OVERLAP = 200;
@@ -180,7 +194,7 @@ If you cannot find the answer in the context, say "I cannot find the answer in t
           messages: [
             {
               role: "system",
-              content: `can you summarize this paragraph `,
+              content: `can you summarize this paragraph , without mentiong that you did summarize it, try to talk behalf the original author `,
             },
             {
               role: "user",
